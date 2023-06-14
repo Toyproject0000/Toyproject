@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_dongne/login_page/join_membership_page.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -25,6 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           Positioned(
@@ -55,7 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Container(
                     padding: EdgeInsets.all(20.0),
                     width: MediaQuery.of(context).size.width - 50,
-                    height: 280,
+                    height: 330,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5),
                       border: Border.all(
@@ -65,85 +67,87 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     child: Form(
                       key : _formKey,
-                      child: Column(
-                        children: [
-                          TextFormField(
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return '아이디를 입력하시오.';
-                              }
-                              else if (value!.contains('@')){
-                                return '이메일을 형식으로 작성하시오';
-                              }
-                              return null;
-                            },
-                            onSaved: (value) {
-                              userEmail = value!;
-                            },
-                            onChanged: (value) {
-                              userEmail = value;
-                            },
-                            decoration: InputDecoration(
-                                prefixIcon: Icon(Icons.person),
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.grey),
-                                ),
-                                hintText: '아이디'),
-                          ),
-                          TextFormField(
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return '비밀번호를 입력하시오';
-                              }
-                              return null;
-                            },
-                            onSaved: (value) {
-                              userPassworld = value!;
-                            },
-                            onChanged: (value) {
-                              userPassworld = value;
-                            },
-                            obscureText: true,
-                            decoration: InputDecoration(
-                                prefixIcon: Icon(Icons.lock),
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.grey),
-                                ),
-                                hintText: '비밀번호'),
-                          ),
-                          Container(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                IconButton(
-                                  onPressed: () {},
-                                  icon: Icon(Icons.check_circle, size: 20),
-                                ),
-                                Text(
-                                  '로그인 상태를 유지',
-                                  style: TextStyle(fontSize: 13),
-                                ),
-                              ],
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            TextFormField(
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return '아이디를 입력하시오';
+                                }
+                                else if (value!.contains('@')){
+                                  return '이메일 형식을 입력하시오';
+                                }
+                                return null;
+                              },
+                              onSaved: (value) {
+                                userEmail = value!;
+                              },
+                              onChanged: (value) {
+                                userEmail = value;
+                              },
+                              decoration: InputDecoration(
+                                  prefixIcon: Icon(Icons.email),
+                                  border: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.grey),
+                                  ),
+                                  hintText: '아이디'),
                             ),
-                          ),
-                          // 로그인 버튼
-                          ElevatedButton(
-                            onPressed: () {
-                              _tryValidation();
-                            },
-                            child: Text(
-                              '로그인',
-                              style: TextStyle(
-                                fontSize: 30,
-                                color: Colors.white,
+                            TextFormField(
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return '비밀번호를 입력하시오';
+                                }
+                                return null;
+                              },
+                              onSaved: (value) {
+                                userPassworld = value!;
+                              },
+                              onChanged: (value) {
+                                userPassworld = value;
+                              },
+                              obscureText: true,
+                              decoration: InputDecoration(
+                                  prefixIcon: Icon(Icons.lock),
+                                  border: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.grey),
+                                  ),
+                                  hintText: '비밀번호'),
+                            ),
+                            Container(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  IconButton(
+                                    onPressed: () {},
+                                    icon: Icon(Icons.check_circle, size: 20),
+                                  ),
+                                  Text(
+                                    '로그인 상태를 유지',
+                                    style: TextStyle(fontSize: 13),
+                                  ),
+                                ],
                               ),
                             ),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blue,
-                              minimumSize: Size(double.infinity, 48),
+                            // 로그인 버튼
+                            ElevatedButton(
+                              onPressed: () {
+                                _tryValidation();
+                              },
+                              child: Text(
+                                '로그인',
+                                style: TextStyle(
+                                  fontSize: 30,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.blue,
+                                minimumSize: Size(double.infinity, 48),
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -170,7 +174,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushNamed(context, Joinmembership.routeName);
+                      },
                       child: Text(
                         '회원가입',
                         style: TextStyle(

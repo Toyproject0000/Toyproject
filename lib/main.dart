@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_dongne/login_page/join_membership_page.dart';
 import 'package:smart_dongne/login_page/login_page.dart';
 
 void main() {
@@ -16,6 +17,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(primarySwatch: Colors.lightGreen),
       routes: {
         LoginScreen.routeName : (context) => LoginScreen(),
+        Joinmembership.routeName : (context) => Joinmembership(),
       },
     );
   }
