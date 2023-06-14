@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_dongne/login_page/find_password.dart';
 import 'package:smart_dongne/login_page/join_membership_page.dart';
 import 'package:smart_dongne/login_page/login_page.dart';
 
@@ -18,6 +19,8 @@ class MyApp extends StatelessWidget {
       routes: {
         LoginScreen.routeName : (context) => LoginScreen(),
         Joinmembership.routeName : (context) => Joinmembership(),
+        FindPassword.routeName: (context) => FindPassword(),
+
       },
     );
   }

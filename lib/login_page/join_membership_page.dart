@@ -11,134 +11,236 @@ class Joinmembership extends StatefulWidget {
 }
 
 class _JoinmembershipState extends State<Joinmembership> {
+  final _formkey = GlobalKey<FormState>();
+
+  String userEmail = '';
+  String userPassword = '';
+  String userName = '';
+  int phoneNumber = 0;
+  int dateofBirth = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: SingleChildScrollView(
-        child: Stack(
-          children: [
-            Positioned(
-              top: 0,
-              right: 0,
-              left: 0,
-              child: Center(
-                child: Container(
-                  padding: EdgeInsets.only(top: 70),
-                  child: Text(
-                    'Smart DongNe',
-                    style: TextStyle(
-                      color: Colors.blue,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 50,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            Positioned(
-              top: 140,
-              right: 0,
-              left: 0,
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: SingleChildScrollView(
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+            child: Form(
+              key: _formkey,
               child: Column(
                 children: [
+                  Center(
+                    child: Text(
+                      'Smart DongNe',
+                      style: TextStyle(
+                        color: Colors.blue,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 50,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  TextFormField(
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return '아이디를 입력하시오';
+                      }
+                      else if (value!.contains('@')){
+                        return '이메일 형식을 입력하시오';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) {
+                      userEmail = value!;
+                    },
+                    onChanged: (value) {
+                      userEmail = value;
+                    },
+                    decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.email),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                        hintText: '아이디'),
+                  ),
+                  TextFormField(
+                    validator: (value) {
+                      if (value!.isEmpty || value.length < 8) {
+                        return '8글자 이상을 입력하시오';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) {
+                      userPassword = value!;
+                    },
+                    onChanged: (value) {
+                      userPassword = value;
+                    },
+                    obscureText: true,
+                    decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.lock),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                        hintText: '비밀번호'),
+                  ),
+                  TextFormField(
+                    validator: (value) {
+                      // 위에 입력한 비밀번호와 비교
+                      return null;
+                    },
+
+                    onChanged: (value) {
+                      userPassword = value;
+                    },
+                    obscureText: true,
+                    decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.lock),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                        hintText: '비밀번호 확인'),
+                  ),
+                  SizedBox(
+                    height: 33,
+                  ),
+                  TextFormField(
+                    validator: (value) {
+                      if (value!.isEmpty || value.length < 2) {
+                        return '2글자 이상을 입력하시오';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) {
+                      userName = value!;
+                    },
+                    onChanged: (value) {
+                      userName = value;
+                    },
+                    decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.lock),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                        hintText: '이름'),
+                  ),
+                  TextFormField(
+                    validator: (value) {
+                      if (value!.isEmpty || value.length < 8) {
+                        return '생년월일 8자리를 입력하시오';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) {
+                      dateofBirth = int.parse(value!);
+                    },
+                    onChanged: (value) {
+                      dateofBirth = int.parse(value);
+                    },
+                    decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.calendar_month),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                        hintText: '생년월일(8자리)'),
+                  ),
                   Container(
-                    margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                    child: Column(
+                    height: 60,
+                    padding: EdgeInsets.all(10.0),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.grey,
+                        width: 1.0,
+                      ),
+                    ),
+                    child: Center(
+                      child: Text('통신사 입력 칸'),
+                    ),
+                  ),
+                  Container(
+                    height: 60,
+                    padding: EdgeInsets.all(10.0),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.grey,
+                        width: 1.0,
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        TextFormField(
-                          decoration: InputDecoration(
-                              prefixIcon: Icon(Icons.email),
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.grey),
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: () {},
+                            child: Text(
+                              '남성',
+                              style: TextStyle(
+                                color: Colors.grey,
                               ),
-                              hintText: '아이디'),
+                            ),
+                            style: ElevatedButton.styleFrom(),
+                          ),
                         ),
-                        TextFormField(
-                          obscureText: true,
-                          decoration: InputDecoration(
-                              prefixIcon: Icon(Icons.lock),
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.grey),
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: () {},
+                            child: Text(
+                              '여성',
+                              style: TextStyle(
+                                color: Colors.grey,
                               ),
-                              hintText: '비밀번호'),
+                            ),
+                            style: ElevatedButton.styleFrom(),
+                          ),
                         ),
-                        TextFormField(
-                          obscureText: true,
-                          decoration: InputDecoration(
-                              prefixIcon: Icon(Icons.lock),
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.grey),
-                              ),
-                              hintText: '비밀번호 확인'),
-                        ),
-                        SizedBox(
-                          height: 33,
-                        ),
-                        TextFormField(
-                          decoration: InputDecoration(
-                              prefixIcon: Icon(Icons.lock),
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.grey),
-                              ),
-                              hintText: '이름'),
-                        ),
-                        TextFormField(
-                          decoration: InputDecoration(
-                              prefixIcon: Icon(Icons.calendar_month),
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.grey),
-                              ),
-                              hintText: '생년월일(8자리)'),
-                        ),
-                        TextFormField(
-                          decoration: InputDecoration(
-                              prefixIcon: Icon(Icons.phone_android),
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.grey),
-                              ),
-                              hintText: '통신사'),
-                        ),
-                        // Container(
-                        //   padding: EdgeInsets.all(0.8),
-                        //   height: 65,
-                        //   decoration: BoxDecoration(
-                        //     border: Border.all(
-                        //       color: Colors.grey, // 테두리 색상 설정
-                        //       width: 2.0, // 테두리 두께 설정
-                        //     ),
-                        //     borderRadius:
-                        //         BorderRadius.circular(8.0), // 테두리의 모서리 반경 설정
-                        //   ),
-                        //   child: Row(
-                        //     mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        //     children: [
-                        //       ElevatedButton(
-                        //         onPressed: () {},
-                        //         child: Text('남성'),
-                        //         style: ElevatedButton.styleFrom(
-                        //           backgroundColor: Colors.blue,
-                        //           minimumSize: Size(double.infinity, 48),
-                        //         ),
-                        //       ),
-                        //       ElevatedButton(
-                        //         onPressed: () {},
-                        //         child: Text('여성'),
-                        //         style: ElevatedButton.styleFrom(
-                        //           backgroundColor: Colors.blue,
-                        //           minimumSize: Size(double.infinity, 48),
-                        //         ),
-                        //       ),
-                        //     ],
-                        //   ),
-                        // )
                       ],
+                    ),
+                  ),
+                  TextFormField(
+                    validator: (value) {
+                      if (value!.isEmpty || value.length < 11) {
+                        return '전화번호를 올바르게 입력하시오';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) {
+                      phoneNumber = int.parse(value!);
+                    },
+                    onChanged: (value) {
+                      phoneNumber = int.parse(value);
+                    },
+                    decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.phone_android),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                        hintText: '전화번호'),
+                  ),
+                  SizedBox(height: 20,),
+                  ElevatedButton(
+                    onPressed: () {},
+                    child: Text(
+                      '회원 가입하기',
+                      style: TextStyle(
+                        fontSize: 25,
+                        color: Colors.white,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      minimumSize: Size(double.infinity, 48),
                     ),
                   ),
                 ],
               ),
             ),
-          ],
+          ),
         ),
       ),
     );
