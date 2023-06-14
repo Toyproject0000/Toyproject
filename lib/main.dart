@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_dongne/login_page/login_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,6 +15,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       theme: ThemeData(primarySwatch: Colors.lightGreen),
       routes: {
+        LoginScreen.routeName : (context) => LoginScreen(),
       },
     );
   }
