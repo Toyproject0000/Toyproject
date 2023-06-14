@@ -49,7 +49,7 @@ class _JoinmembershipState extends State<Joinmembership> {
                   TextFormField(
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return '아이디를 입력하시오';
+                        return '이메일을 입력하시오';
                       }
                       else if (value!.contains('@')){
                         return '이메일 형식을 입력하시오';
@@ -67,7 +67,7 @@ class _JoinmembershipState extends State<Joinmembership> {
                         border: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey),
                         ),
-                        hintText: '아이디'),
+                        hintText: '이메일'),
                   ),
                   TextFormField(
                     validator: (value) {

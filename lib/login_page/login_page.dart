@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_dongne/login_page/find_password.dart';
 import 'package:smart_dongne/login_page/join_membership_page.dart';
+import 'package:smart_dongne/main_page/homepage.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -96,7 +97,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                     border: OutlineInputBorder(
                                       borderSide: BorderSide(color: Colors.grey),
                                     ),
-                                    hintText: '아이디'),
+                                    hintText: '아이디',
+                                ),
                               ),
                               TextFormField(
                                 validator: (value) {
@@ -138,6 +140,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               ElevatedButton(
                                 onPressed: () {
                                   _tryValidation();
+                                  // 임시
+                                  Navigator.pushNamed(context ,HomePage.routeName);
                                 },
                                 child: Text(
                                   '로그인',
