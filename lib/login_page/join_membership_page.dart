@@ -35,15 +35,17 @@ class _JoinmembershipState extends State<Joinmembership> {
               key: _formkey,
               child: Column(
                 children: [
-                  Center(
-                    child: Text(
-                      'Smart DongNe',
-                      style: TextStyle(
-                        color: Colors.blue,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 50,
+                  Row(
+                    children: [
+                      Text(
+                        '회원가입',
+                        style: TextStyle(
+                          color: Colors.black54,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 30,
+                        ),
                       ),
-                    ),
+                    ],
                   ),
                   SizedBox(
                     height: 30,
@@ -194,42 +196,50 @@ class _JoinmembershipState extends State<Joinmembership> {
                     ),
                   ),
                   SizedBox(height: 25,),
-                  TextFormField(
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly,
-                    ],
-                    validator: (value) {
-                      if (value!.isEmpty || value.length < 11) {
-                        return '전화번호를 올바르게 입력하시오';
-                      }
-                      return null;
-                    },
-                    onSaved: (value) {
-                      phoneNumber = int.parse(value!);
-                    },
-                    onChanged: (value) {
-                      phoneNumber = int.parse(value);
-                    },
-                    decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.phone_android),
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                        hintText: '전화번호'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {},
-                    child: Text(
-                      '인증번호 보내기',
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.white,
+                  Container(
+                    height: 60,
+                    padding: EdgeInsets.all(10.0),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.grey,
+                        width: 1.0,
                       ),
                     ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      minimumSize: Size(double.infinity, 48),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextFormField(
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                            ],
+                            validator: (value) {
+                              if (value!.isEmpty || value.length < 11) {
+                                return '전화번호를 올바르게 입력하시오';
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              phoneNumber = int.parse(value!);
+                            },
+                            onChanged: (value) {
+                              phoneNumber = int.parse(value);
+                            },
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                                hintText: '전화번호'),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () {},
+                          child: Text(
+                            '인증번호 요청',
+                            style: TextStyle(
+                                color: Colors.blue
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   Container(
@@ -243,18 +253,6 @@ class _JoinmembershipState extends State<Joinmembership> {
                       ),
                       child: Row(
                         children: [
-                          TextButton(
-                            onPressed: () {},
-                            child: Text(
-                              '인증번호확인',
-                              style: TextStyle(
-                                color: Colors.blue
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
                           Expanded(
                             child: TextFormField(
                               keyboardType: TextInputType.number,
@@ -262,7 +260,20 @@ class _JoinmembershipState extends State<Joinmembership> {
                                 FilteringTextInputFormatter.digitsOnly,
                               ],
                               decoration: InputDecoration(
-                                  hintText: '인증번호 입력하기'
+                                  border: InputBorder.none,
+                                  hintText: '인증번호입력하기'
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          TextButton(
+                            onPressed: () {},
+                            child: Text(
+                              '인증번호확인',
+                              style: TextStyle(
+                                  color: Colors.blue
                               ),
                             ),
                           ),

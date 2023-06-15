@@ -1,23 +1,35 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '4_page/home_page.dart';
+import '4_page/profile.dart';
+import '4_page/search_page.dart';
+import '4_page/writing_page.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
-  static const routeName = '/home';
+
+class SetPage extends StatefulWidget {
+  const SetPage({Key? key}) : super(key: key);
+  static const routeName = '/setPage';
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<SetPage> createState() => SetPageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class SetPageState extends State<SetPage> {
   int currentIndex = 0;
+  final screens = [
+    HomePage(),
+    SearchPage(),
+    WritingPage(),
+    ProfilePage(),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Text('hello'),
+      body: IndexedStack(
+        index: currentIndex,
+        children: screens,
       ),
         bottomNavigationBar: Container(
           decoration: BoxDecoration(
