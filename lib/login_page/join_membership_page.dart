@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:smart_dongne/login_page/setnickname.dart';
 
 class Joinmembership extends StatefulWidget {
   const Joinmembership({Key? key}) : super(key: key);
@@ -50,8 +52,7 @@ class _JoinmembershipState extends State<Joinmembership> {
                     validator: (value) {
                       if (value!.isEmpty) {
                         return '이메일을 입력하시오';
-                      }
-                      else if (value!.contains('@')){
+                      } else if (value!.contains('@')) {
                         return '이메일 형식을 입력하시오';
                       }
                       return null;
@@ -95,7 +96,6 @@ class _JoinmembershipState extends State<Joinmembership> {
                       // 위에 입력한 비밀번호와 비교
                       return null;
                     },
-
                     onChanged: (value) {
                       userPassword = value;
                     },
@@ -131,6 +131,10 @@ class _JoinmembershipState extends State<Joinmembership> {
                         hintText: '이름'),
                   ),
                   TextFormField(
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                    ],
                     validator: (value) {
                       if (value!.isEmpty || value.length < 8) {
                         return '생년월일 8자리를 입력하시오';
@@ -149,19 +153,6 @@ class _JoinmembershipState extends State<Joinmembership> {
                           borderSide: BorderSide(color: Colors.grey),
                         ),
                         hintText: '생년월일(8자리)'),
-                  ),
-                  Container(
-                    height: 60,
-                    padding: EdgeInsets.all(10.0),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.grey,
-                        width: 1.0,
-                      ),
-                    ),
-                    child: Center(
-                      child: Text('통신사 입력 칸'),
-                    ),
                   ),
                   Container(
                     height: 60,
@@ -203,6 +194,10 @@ class _JoinmembershipState extends State<Joinmembership> {
                     ),
                   ),
                   TextFormField(
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                    ],
                     validator: (value) {
                       if (value!.isEmpty || value.length < 11) {
                         return '전화번호를 올바르게 입력하시오';
@@ -222,9 +217,49 @@ class _JoinmembershipState extends State<Joinmembership> {
                         ),
                         hintText: '전화번호'),
                   ),
-                  SizedBox(height: 20,),
+                  Container(
+                      height: 60,
+                      padding: EdgeInsets.all(10.0),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.grey,
+                          width: 1.0,
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          TextButton(
+                            onPressed: () {},
+                            child: Text(
+                              '본인인증',
+                              style: TextStyle(
+                                color: Colors.blue
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Expanded(
+                            child: TextFormField(
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                              ],
+                              decoration: InputDecoration(
+                                  hintText: '인증번호 입력하기'
+                              ),
+                            ),
+                          ),
+                        ],
+                      )),
+                  SizedBox(
+                    height: 20,
+                  ),
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushNamed(context, SetNickName.routeName);
+                    },
                     child: Text(
                       '회원 가입하기',
                       style: TextStyle(
