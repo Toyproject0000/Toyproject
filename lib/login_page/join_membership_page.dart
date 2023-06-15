@@ -193,6 +193,7 @@ class _JoinmembershipState extends State<Joinmembership> {
                       ],
                     ),
                   ),
+                  SizedBox(height: 25,),
                   TextFormField(
                     keyboardType: TextInputType.number,
                     inputFormatters: [
@@ -217,6 +218,20 @@ class _JoinmembershipState extends State<Joinmembership> {
                         ),
                         hintText: '전화번호'),
                   ),
+                  ElevatedButton(
+                    onPressed: () {},
+                    child: Text(
+                      '인증번호 보내기',
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.white,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      minimumSize: Size(double.infinity, 48),
+                    ),
+                  ),
                   Container(
                       height: 60,
                       padding: EdgeInsets.all(10.0),
@@ -231,7 +246,7 @@ class _JoinmembershipState extends State<Joinmembership> {
                           TextButton(
                             onPressed: () {},
                             child: Text(
-                              '본인인증',
+                              '인증번호확인',
                               style: TextStyle(
                                 color: Colors.blue
                               ),

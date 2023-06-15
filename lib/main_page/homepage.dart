@@ -19,26 +19,39 @@ class _HomePageState extends State<HomePage> {
       body: Center(
         child: Text('hello'),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        currentIndex: currentIndex,
-        selectedItemColor: Colors.black,
-        onTap: (index) => setState(() => currentIndex = index),
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+        bottomNavigationBar: Container(
+          decoration: BoxDecoration(
+            border: Border(top: BorderSide(color: Colors.grey, width: 1.0)), // 라인효과
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.menu_book,),
+          child: BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
+            currentIndex: currentIndex,
+            selectedItemColor: Colors.black,
+            unselectedItemColor: Colors.grey,
+            selectedIconTheme : IconThemeData(size: 30),
+            showSelectedLabels: false,
+            showUnselectedLabels: false,
+            onTap: (index) => setState(() => currentIndex = index),
+            items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: 'Home',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.menu_book,),
+                label: 'Search'
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.abc),
+                label: 'write'
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.person),
+                label : 'profile'
+              ),
+            ],
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.abc),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-          ),
-        ],
-      ),
-    );
+        ),
+      );
+    }
   }
-}

@@ -17,39 +17,41 @@ class _SetNickNameState extends State<SetNickName> {
           return AlertDialog(
             title: Text('닉네임 설정'),
             content: SingleChildScrollView(
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      TextButton(
-                        onPressed: () {},
-                        child: Text(
-                          '중복확인',
-                          style: TextStyle(
-                            color: Colors.blue,
-                          ),
+              child: Column(children: [
+                Row(
+                  children: [
+                    TextButton(
+                      onPressed: () {},
+                      child: Text(
+                        '중복확인',
+                        style: TextStyle(
+                          color: Colors.blue,
                         ),
-                      ),
-                      SizedBox(width: 10,),
-                      Expanded(
-                        child: TextFormField(
-                          decoration: InputDecoration(hintText: '닉네임 설정'),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 10,),
-                  Center(
-                    child: Text(
-                      '띄어쓰기 없이 2글자 이상으로 작성해주세요',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey,
                       ),
                     ),
-                  )
-                ]
-              ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Expanded(
+                      child: TextFormField(
+                        decoration: InputDecoration(hintText: '닉네임 설정'),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Center(
+                  child: Text(
+                    '띄어쓰기 없이 2글자 이상으로 작성해주세요',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey,
+                    ),
+                  ),
+                )
+              ]),
             ),
             actions: [
               Row(
@@ -58,8 +60,11 @@ class _SetNickNameState extends State<SetNickName> {
                   Expanded(
                     child: Center(
                       child: TextButton(
-                        onPressed: (){},
-                        child: Text('설정',
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text(
+                          '취소',
                           style: TextStyle(
                             color: Colors.grey,
                             fontSize: 20,
@@ -71,8 +76,9 @@ class _SetNickNameState extends State<SetNickName> {
                   Expanded(
                     child: Center(
                       child: TextButton(
-                        onPressed: (){},
-                        child: Text('설정',
+                        onPressed: () {},
+                        child: Text(
+                          '설정',
                           style: TextStyle(
                             color: Colors.grey,
                             fontSize: 20,
@@ -96,6 +102,16 @@ class _SetNickNameState extends State<SetNickName> {
           padding: EdgeInsets.symmetric(horizontal: 30),
           child: Column(
             children: [
+              TextButton(
+                child: Text(
+                  '프로필 설정',
+                  style: TextStyle(
+                    fontSize: 35
+                  ),
+                ),
+                onPressed: (){},
+              ),
+              SizedBox(height: 15,),
               CircleAvatar(
                 radius: 100,
               ),
@@ -103,30 +119,18 @@ class _SetNickNameState extends State<SetNickName> {
                 height: 10,
               ),
               Container(
-                height: 60,
-                padding: EdgeInsets.all(10.0),
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.grey,
-                    width: 1.0,
+                  height: 60,
+                  padding: EdgeInsets.all(10.0),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.grey,
+                      width: 1.0,
+                    ),
                   ),
-                ),
-                child: Row(
-                  children: [
-                    Text(
-                      '닉네임 설정',
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    GestureDetector(
-                      onTap: () => _profile(context),
-                      child: Icon(Icons.add),
-                    )
-                  ],
-                ),
-              ),
+                  child: OutlinedButton(
+                    child: Text('닉네임 설정'),
+                    onPressed: () => _profile(context),
+                  )),
             ],
           ),
         ),
