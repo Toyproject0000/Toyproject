@@ -23,7 +23,6 @@ class MyApp extends StatelessWidget {
         Joinmembership.routeName : (context) => Joinmembership(),
         FindPassword.routeName: (context) => FindPassword(),
         SetPage.routeName : (context) => SetPage(),
-        SetNickName.routeName : (context) => SetNickName(),
 
       },
     );

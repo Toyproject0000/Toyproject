@@ -21,6 +21,15 @@ class _JoinmembershipState extends State<Joinmembership> {
   int phoneNumber = 0;
   int dateofBirth = 0;
 
+  void _profile(context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return NickName();
+        }
+      );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -284,7 +293,7 @@ class _JoinmembershipState extends State<Joinmembership> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, SetNickName.routeName);
+                      _profile(context);
                     },
                     child: Text(
                       '회원 가입하기',

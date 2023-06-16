@@ -1,140 +1,95 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_dongne/main_page/setpage.dart';
 
-class SetNickName extends StatefulWidget {
-  const SetNickName({Key? key}) : super(key: key);
-  static const routeName = '/nickName';
+class NickName extends StatefulWidget {
+  const NickName({Key? key}) : super(key: key);
 
   @override
-  State<SetNickName> createState() => _SetNickNameState();
+  State<NickName> createState() => _NickNameState();
 }
 
-class _SetNickNameState extends State<SetNickName> {
-  void _profile(context) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('닉네임 설정'),
-            content: SingleChildScrollView(
-              child: Column(children: [
-                Row(
-                  children: [
-                    TextButton(
-                      onPressed: () {},
-                      child: Text(
-                        '중복확인',
-                        style: TextStyle(
-                          color: Colors.blue,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Expanded(
-                      child: TextFormField(
-                        decoration: InputDecoration(hintText: '닉네임 설정'),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Center(
-                  child: Text(
-                    '띄어쓰기 없이 2글자 이상으로 작성해주세요',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey,
-                    ),
-                  ),
-                )
-              ]),
-            ),
-            actions: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Expanded(
-                    child: Center(
-                      child: TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: Text(
-                          '취소',
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 20,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Center(
-                      child: TextButton(
-                        onPressed: () {},
-                        child: Text(
-                          '설정',
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 20,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              )
-            ],
-          );
-        });
-  }
-
+class _NickNameState extends State<NickName> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: 30),
-          child: Column(
+    return AlertDialog(
+      title: Text('닉네임 설정'),
+      content: SingleChildScrollView(
+        child: Column(children: [
+          Row(
             children: [
               TextButton(
+                onPressed: () {},
                 child: Text(
-                  '프로필 설정',
+                  '중복확인',
                   style: TextStyle(
-                    fontSize: 35
+                    color: Colors.blue,
                   ),
                 ),
-                onPressed: (){},
-              ),
-              SizedBox(height: 15,),
-              CircleAvatar(
-                radius: 100,
               ),
               SizedBox(
-                height: 10,
+                width: 10,
               ),
-              Container(
-                  height: 60,
-                  padding: EdgeInsets.all(10.0),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.grey,
-                      width: 1.0,
-                    ),
-                  ),
-                  child: OutlinedButton(
-                    child: Text('닉네임 설정'),
-                    onPressed: () => _profile(context),
-                  )),
+              Expanded(
+                child: TextFormField(
+                  decoration: InputDecoration(hintText: '닉네임 설정'),
+                ),
+              ),
             ],
           ),
-        ),
+          SizedBox(
+            height: 10,
+          ),
+          Center(
+            child: Text(
+              '띄어쓰기 없이 2글자 이상으로 작성해주세요',
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.grey,
+              ),
+            ),
+          )
+        ]),
       ),
+      actions: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Expanded(
+              child: Center(
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    '취소',
+                    style: TextStyle(
+                      color: Colors.black87,
+                      fontSize: 20,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              child: Center(
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, SetPage.routeName);
+                  },
+                  child: Text(
+                    '설정',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 20,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        )
+      ],
     );
   }
 }

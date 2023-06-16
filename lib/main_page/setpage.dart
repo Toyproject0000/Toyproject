@@ -50,11 +50,11 @@ class SetPageState extends State<SetPage> {
                 label: 'Home',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.menu_book,),
+                icon: Icon(Icons.numbers,),
                 label: 'Search'
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.abc),
+                icon: Icon(Icons.feed_outlined),
                 label: 'write'
               ),
               BottomNavigationBarItem(
