@@ -160,10 +160,8 @@ class _WritingPageState extends State<WritingPage> {
                   ),
                 ),
                 if (completionTool != null)
-                  AnimatedContainer(
-                    duration: Duration(seconds: 3),
-                    curve: Curves.easeInOut,
-                    height: containerHeight,
+                  Container(
+                    height: 50,
                     child: completionTool,
                   ),
                 Container(
