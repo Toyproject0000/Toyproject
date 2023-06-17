@@ -54,7 +54,7 @@ class SetPageState extends State<SetPage> {
                 label: 'Search'
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.feed_outlined),
+                icon: Icon(Icons.edit_note_outlined),
                 label: 'write'
               ),
               BottomNavigationBarItem(

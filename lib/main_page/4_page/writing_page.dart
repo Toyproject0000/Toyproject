@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:smart_dongne/main_page/4_page/writing_tool.dart';
 
 class WritingPage extends StatefulWidget {
   const WritingPage({Key? key}) : super(key: key);
@@ -10,8 +11,80 @@ class WritingPage extends StatefulWidget {
 }
 
 class _WritingPageState extends State<WritingPage> {
+
+  bool usertouch = false;
+  Widget? completionTool;
+  double? containerHeight;
+
+
+
+  void maketool(int index) {
+    setState(() {
+      completionTool = detailedTools[index];
+      containerHeight = 50;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    List<Widget> toolbar = [
+      IconButton(
+        onPressed: () {
+          int index = 0;
+        },
+        icon: Icon(
+          Icons.image,
+          size: 35,
+        ),
+      ),
+      IconButton(
+        onPressed: () {
+          int index = 1;
+          maketool(index);
+        },
+        icon: Icon(
+          Icons.density_large,
+          size: 35,
+        ),
+      ),
+      IconButton(
+        onPressed: () {
+          int index = 2;
+        },
+        icon: Icon(
+          Icons.format_size,
+          size: 35,
+        ),
+      ),
+      IconButton(
+        onPressed: () {
+          int index = 3;
+        },
+        icon: Icon(
+          Icons.format_align_center,
+          size: 35,
+        ),
+      ),
+      IconButton(
+        onPressed: () {
+          int index = 4;
+        },
+        icon: Icon(
+          Icons.emoji_symbols_rounded,
+          size: 35,
+        ),
+      ),
+      IconButton(
+        onPressed: () {
+          int index = 5;
+        },
+        icon: Icon(
+          Icons.color_lens,
+          size: 35,
+        ),
+      ),
+    ];
+
     return Scaffold(
       body: GestureDetector(
         onTap: () {
@@ -83,52 +156,16 @@ class _WritingPageState extends State<WritingPage> {
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      IconButton(
-                        onPressed: (){},
-                        icon: Icon(
-                          Icons.image,
-                          size: 35,
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: (){},
-                        icon: Icon(
-                          Icons.density_large,
-                          size: 35,
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: (){},
-                        icon: Icon(
-                          Icons.format_bold,
-                          size: 35,
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: (){},
-                        icon: Icon(
-                          Icons.format_size,
-                          size: 35,
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: (){},
-                        icon: Icon(
-                          Icons.emoji_symbols_rounded,
-                          size: 35,
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: (){},
-                        icon: Icon(
-                          Icons.color_lens,
-                          size: 35,
-                        ),
-                      ),
-                    ],
+                    children: toolbar,
                   ),
                 ),
+                if (completionTool != null)
+                  AnimatedContainer(
+                    duration: Duration(seconds: 3),
+                    curve: Curves.easeInOut,
+                    height: containerHeight,
+                    child: completionTool,
+                  ),
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 5),
                   child: TextFormField(
@@ -142,7 +179,6 @@ class _WritingPageState extends State<WritingPage> {
                     ),
                   ),
                 ),
-
               ],
             ),
           ),
