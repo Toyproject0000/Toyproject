@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '4_page/home_page.dart';
 import '4_page/profile.dart';
@@ -54,7 +55,7 @@ class SetPageState extends State<SetPage> {
                 label: 'Search'
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.edit_note_outlined),
+                icon: FaIcon(FontAwesomeIcons.pencil),
                 label: 'write'
               ),
               BottomNavigationBarItem(
