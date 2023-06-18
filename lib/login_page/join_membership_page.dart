@@ -181,9 +181,9 @@ class _JoinmembershipState extends State<Joinmembership> {
                   ),
                   TextFormField(
                     keyboardType: TextInputType.number,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly,
-                    ],
+                    // inputFormatters: [
+                    //   FilteringTextInputFormatter.digitsOnly,
+                    // ],
                     validator: (value) {
                       if (value!.isEmpty || value.length < 8) {
                         return '생년월일 8자리를 입력하시오';
@@ -272,7 +272,7 @@ class _JoinmembershipState extends State<Joinmembership> {
                           child: Form(
                             key: _numberKey,
                             child: TextFormField(
-                              keyboardType: TextInputType.number,
+                              // keyboardType: TextInputType.number,
                               inputFormatters: [
                                 FilteringTextInputFormatter.digitsOnly,
                               ],
