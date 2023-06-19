@@ -117,7 +117,7 @@ class _JoinmembershipState extends State<Joinmembership> {
                       if (value!.isEmpty || value.length < 8) {
                         return '8글자 이상을 입력하시오';
                       }
-                      // else if (value! == regex){
+                      // else if (value == regex){
                       //   return '비멀번호는 숫자,문자,특수기호를 포함한 형식으로 작성해주세요';
                       // }
                       perfectPassWord = value; // 수정해야햄
@@ -375,6 +375,7 @@ class _JoinmembershipState extends State<Joinmembership> {
                           // 'gender' : manButton,
                         };
                         sendData(data);
+                        _profile(context);
                       }catch(e){
                         print(e);
                         if(mounted){
