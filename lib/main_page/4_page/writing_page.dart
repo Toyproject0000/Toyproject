@@ -16,24 +16,20 @@ class WritingPage extends StatefulWidget {
 class _WritingPageState extends State<WritingPage> {
   TextEditingController bodyController = TextEditingController();
   FocusNode _focusNode = FocusNode();
-
   bool usertouch = false;
   Widget? completionTool;
   double? containerHeight;
   File? imagePath;
   bool barActivation = false;
   FocusNode? newFocusNode;
-  double width = 0;
+  double? screenWidth;
 
   final GlobalKey _widgetKey = GlobalKey();
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final MediaQueryData mediaQuery = MediaQuery.of(context);
-    width = mediaQuery.size.width;
-  }
-
+  TextStyle basicFont = TextStyle(
+    fontSize: 15,
+    color: Colors.black
+  );
+  
   void showImageMenu(BuildContext context) {
     final RenderBox overlay =
         Overlay.of(context)!.context.findRenderObject() as RenderBox; // 더 공부하기
@@ -105,32 +101,22 @@ class _WritingPageState extends State<WritingPage> {
                 event.logicalKey == LogicalKeyboardKey.backspace) {
               removeLastWidget();
             }
-            else if(currentText.length >= 37 && event is RawKeyDownEvent &&
-                event.logicalKey != LogicalKeyboardKey.backspace){
-              addWidgetToColumn();
-            }
           },
           child: Container(
             padding: EdgeInsets.symmetric(vertical: 3),
             child: EditableText(
-              inputFormatters: [
-                LengthLimitingTextInputFormatter(37),
-              ],
               keyboardType: TextInputType.text,
               backgroundCursorColor: Colors.black,
               cursorColor: Colors.black,
-                onEditingComplete: () {
-                  print('함수가 실행됬다.');
-                  addWidgetToColumn();
-                },
+              onEditingComplete: () {
+                print('함수가 실행됬다.');
+                addWidgetToColumn();
+              },
               controller: newController,
               focusNode: newFocusNode,
-              style: TextStyle(
-                fontSize: 15,
-                color: Colors.black,
-              ),
+              style: basicFont,
               onChanged: (text){
-                if(text.length == 37){
+                if(text.length * basicFont.fontSize! >= screenWidth!){
                   addWidgetToColumn();
                 }
               },
@@ -151,38 +137,40 @@ class _WritingPageState extends State<WritingPage> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      final mediaQuery = MediaQuery.of(context);
+      setState(() {
+        screenWidth = mediaQuery.size.width * 2;
+        // 다른 부분에서 필요한 로직을 추가할 수 있습니다.
+      });
+    });
+
     widgetList = [
       Container(
-        width: width,
         padding: EdgeInsets.only(bottom: 3),
-        child: EditableText(
-          inputFormatters: [
-            LengthLimitingTextInputFormatter(37),
-          ],
-          controller: bodyController,
-          focusNode: _focusNode,
-          style: TextStyle(
-            fontSize: 15,
-            color: Colors.black,
-          ),
-          onEditingComplete: (){
-            print('함수가 실행됬다.');
-            addWidgetToColumn();
-          },
-          cursorColor: Colors.black,
-          backgroundCursorColor: Colors.black,
-          onChanged: (text){
-            if(text.length == 37){
+          child: EditableText(
+            controller: bodyController,
+            focusNode: _focusNode,
+            style: basicFont,
+            onEditingComplete: (){
+              print('함수가 실행됬다.');
               addWidgetToColumn();
-            }
-          },
-        ),
+            },
+            cursorColor: Colors.black,
+            backgroundCursorColor: Colors.black,
+            onChanged: (text){
+              if(text.length * basicFont.fontSize! >= screenWidth!){
+                addWidgetToColumn();
+              }
+            },
+          ),
       ),
     ];
   }
 
   @override
   Widget build(BuildContext context) {
+
     List<Widget> toolbar = [
       IconButton(
         tooltip: '배경이미지',
@@ -286,7 +274,6 @@ class _WritingPageState extends State<WritingPage> {
                 ),
                 child: TextFormField(
                   maxLength: 20,
-                  maxLines: null,
                   decoration: InputDecoration(
                     hintText: '제목',
                     focusedBorder: InputBorder.none,
@@ -322,11 +309,12 @@ class _WritingPageState extends State<WritingPage> {
                   child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: widgetList.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return widgetList[index];
-                        }),
+                      shrinkWrap: true,
+                      itemCount: widgetList.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return widgetList[index];
+                      }
+                    ),
                   ),
                 ),
               ),
