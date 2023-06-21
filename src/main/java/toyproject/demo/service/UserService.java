@@ -7,9 +7,11 @@ import toyproject.demo.repository.UserRepository;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final SmsService smsService;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, SmsService smsService) {
         this.userRepository = userRepository;
+        this.smsService = smsService;
     }
 
     public String join(User user){
@@ -22,15 +24,25 @@ public class UserService {
         }
     }
 
-    public String login(String id, String password){
+    public String loginId(String id){
         try {
-            userRepository.findByIdAndPassword(id, password);
+            userRepository.findById(id);
             return "ok";
         }
         catch (Exception e){
-            return "cancel";
+            return "ID가 틀림";
         }
     }
+
+    public String loginPassword(String password){
+        try {
+            userRepository.findByPassword(password);
+            return "ok";
+        }catch (Exception e){
+            return "비번이 틀림";
+        }
+    }
+
 
     public String edit(User user){
         try {
@@ -40,6 +52,12 @@ public class UserService {
         catch (Exception e){
             return "cancel";
         }
+    }
+
+
+    public String authentication(String phoneNumber){
+
+        return "ok";
     }
 
 

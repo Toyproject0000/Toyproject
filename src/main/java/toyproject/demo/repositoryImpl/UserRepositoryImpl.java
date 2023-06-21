@@ -37,8 +37,12 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public List<User> findByIdAndPassword(String id, String password) {
-        return jdbcTemplate.query("select * from user where id = ? and password = ?", rowMapper, id, password);
+    public List<User> findById(String id) {
+        return jdbcTemplate.query("select * from user where id = ?", rowMapper, id);
+    }
+    @Override
+    public List<User> findByPassword(String password) {
+        return jdbcTemplate.query("select * from user where password = ?", rowMapper, password);
     }
 
     @Override

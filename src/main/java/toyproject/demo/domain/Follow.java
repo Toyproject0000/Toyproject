@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @Setter
 public class Follow {
     Long id;
-    String followingUserId;
-    String followedUserId;
+    String followingUserId; //팔로잉하는사람
+    String followedUserId; //팔로잉받는사람
     LocalDate day;
 }
