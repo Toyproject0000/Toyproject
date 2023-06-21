@@ -23,8 +23,16 @@ class _WritingPageState extends State<WritingPage> {
   File? imagePath;
   bool barActivation = false;
   FocusNode? newFocusNode;
+  double width = 0;
 
   final GlobalKey _widgetKey = GlobalKey();
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final MediaQueryData mediaQuery = MediaQuery.of(context);
+    width = mediaQuery.size.width;
+  }
 
   void showImageMenu(BuildContext context) {
     final RenderBox overlay =
@@ -89,28 +97,44 @@ class _WritingPageState extends State<WritingPage> {
     final FocusNode newFocusNode = FocusNode();
     setState(() {
       widgetList.add(
-        Container(
-          padding: EdgeInsets.symmetric(vertical: 3),
-          child: EditableText(
-            keyboardType: TextInputType.text,
-            backgroundCursorColor: Colors.black,
-            cursorColor: Colors.black,
-              onEditingComplete: () {
-                print('함수가 실행됬다.');
-                addWidgetToColumn();
-                // FocusScope.of(context).requestFocus(newFocusNode);
+        RawKeyboardListener(
+          focusNode: FocusNode(),
+          onKey: (event) {
+            String currentText = newController.text;
+            if (currentText.isEmpty && event is RawKeyDownEvent &&
+                event.logicalKey == LogicalKeyboardKey.backspace) {
+              removeLastWidget();
+            }
+            else if(currentText.length >= 37 && event is RawKeyDownEvent &&
+                event.logicalKey != LogicalKeyboardKey.backspace){
+              addWidgetToColumn();
+            }
+          },
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: 3),
+            child: EditableText(
+              inputFormatters: [
+                LengthLimitingTextInputFormatter(37),
+              ],
+              keyboardType: TextInputType.text,
+              backgroundCursorColor: Colors.black,
+              cursorColor: Colors.black,
+                onEditingComplete: () {
+                  print('함수가 실행됬다.');
+                  addWidgetToColumn();
+                },
+              controller: newController,
+              focusNode: newFocusNode,
+              style: TextStyle(
+                fontSize: 15,
+                color: Colors.black,
+              ),
+              onChanged: (text){
+                if(text.length == 37){
+                  addWidgetToColumn();
+                }
               },
-            controller: newController,
-            focusNode: newFocusNode,
-            style: TextStyle(
-              fontSize: 15,
-              color: Colors.black,
             ),
-            onChanged: (text) {
-              if (text.isEmpty) {
-                removeLastWidget();
-              }
-            },
           ),
         ),
       );
@@ -121,6 +145,7 @@ class _WritingPageState extends State<WritingPage> {
     });
   }
 
+
   List<Widget> widgetList = [];
 
   @override
@@ -128,8 +153,12 @@ class _WritingPageState extends State<WritingPage> {
     super.initState();
     widgetList = [
       Container(
+        width: width,
         padding: EdgeInsets.only(bottom: 3),
         child: EditableText(
+          inputFormatters: [
+            LengthLimitingTextInputFormatter(37),
+          ],
           controller: bodyController,
           focusNode: _focusNode,
           style: TextStyle(
@@ -139,13 +168,12 @@ class _WritingPageState extends State<WritingPage> {
           onEditingComplete: (){
             print('함수가 실행됬다.');
             addWidgetToColumn();
-            // FocusScope.of(context).requestFocus(newFocusNode);
           },
           cursorColor: Colors.black,
           backgroundCursorColor: Colors.black,
-          onChanged: (text) {
-            if (text.isEmpty) {
-              removeLastWidget(); // 모든 텍스트가 삭제되었을 때 함수 호출
+          onChanged: (text){
+            if(text.length == 37){
+              addWidgetToColumn();
             }
           },
         ),
