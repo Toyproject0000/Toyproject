@@ -3,6 +3,7 @@ package toyproject.demo.Controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import toyproject.demo.domain.User;
 import toyproject.demo.service.SmsService;
@@ -24,18 +25,18 @@ public class UserController {
     }
 
     @PostMapping("/join")
-    public String join(User user){
+    public String join(@RequestBody User user){
         return userService.join(user);
     }
 
     @PostMapping("/login")
-    public String login(String id, String password){
+    public String login(@RequestBody User user){
 
-        if (userService.loginId(id).equals("ID가 틀림")){
+        if (userService.loginId(user.getId()).equals("ID가 틀림")){
             return "ID가 틀림";
         }
 
-        if (userService.loginPassword(password).equals("비번이 틀림")){
+        if (userService.loginPassword(user.getPassword()).equals("비번이 틀림")){
             return "비번이 틀림";
         }
 
@@ -43,12 +44,12 @@ public class UserController {
     }
 
     @PostMapping("/edit")
-    public String edit(User user){
+    public String edit(@RequestBody User user){
         return userService.edit(user);
     }
 
     @GetMapping("/authentication ")
-    public String authentication(String phoneNumber) throws UnsupportedEncodingException, NoSuchAlgorithmException, URISyntaxException, InvalidKeyException, JsonProcessingException {
+    public String authentication(@RequestBody String phoneNumber) throws UnsupportedEncodingException, NoSuchAlgorithmException, URISyntaxException, InvalidKeyException, JsonProcessingException {
 
         smsService.sendSms(phoneNumber);
 

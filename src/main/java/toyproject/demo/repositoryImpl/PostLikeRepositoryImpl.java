@@ -27,8 +27,4 @@ public class PostLikeRepositoryImpl implements PostLikeRepository {
         jdbcTemplate.update("delete from postLike where postId = ? And userID = ?", postLike.getPostId(), postLike.getUserId());
     }
 
-
-//    public List<Post> findAllLikePost(String userId) {
-//        return jdbcTemplate.query("SELECT * FROM post WHERE id IN (SELECT postId FROM postLike WHERE userId = ?)", rowMapper, userId);
-//    }
 }

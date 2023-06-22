@@ -21,13 +21,13 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public void insert(User user) {
-        jdbcTemplate.update("INSERT INTO users (id, password, name, phoneNumber, nickname, gender) " +
+        jdbcTemplate.update("INSERT INTO user (id, password, name, phoneNumber, nickname, gender) " +
                 "VALUES (?, ?, ?, ?, ?, ?)", user.getId(), user.getPassword(), user.getName(), user.getPhoneNumber(), user.getNickname(), user.getGender());
     }
 
     @Override
     public void update(User user) {
-        jdbcTemplate.update("UPDATE users SET password = ?, name = ?, phoneNumber = ?, nickname = ?, gender = ? WHERE id = ?",
+        jdbcTemplate.update("UPDATE user SET password = ?, name = ?, phoneNumber = ?, nickname = ?, gender = ? WHERE id = ?",
                 user.getPassword(), user.getName(), user.getPhoneNumber(), user.getNickname(), user.getGender(), user.getId());
     }
 

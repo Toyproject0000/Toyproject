@@ -4,6 +4,8 @@ import org.springframework.stereotype.Service;
 import toyproject.demo.domain.User;
 import toyproject.demo.repository.UserRepository;
 
+import java.util.List;
+
 @Service
 public class UserService {
     private final UserRepository userRepository;
@@ -25,23 +27,20 @@ public class UserService {
     }
 
     public String loginId(String id){
-        try {
-            userRepository.findById(id);
-            return "ok";
-        }
-        catch (Exception e){
-            return "ID가 틀림";
-        }
+        List<User> result = userRepository.findById(id);
+        if (result.size()==0) return "ID가 틀림";
+        else return "ok";
     }
 
     public String loginPassword(String password){
-        try {
-            userRepository.findByPassword(password);
-            return "ok";
-        }catch (Exception e){
-            return "비번이 틀림";
-        }
+        List<User> result = userRepository.findByPassword(password);
+        if (result.size()==0) return "비번이 틀림";
+        else return "ok";
     }
+    /*
+    * 로그인 메소드 따로 만들고
+    * 아이디찾기, 비번찾기용으로 바꾸기
+    * */
 
 
     public String edit(User user){
