@@ -1,7 +1,9 @@
+import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 
 void fetchData() async {
-  var url = Uri.parse('http://10.0.2.2:8080/join');
+  var url = Uri.parse('http://localhost:8080/join');
 
   // GET 요청을 보냅니다.
   var response = await http.get(url);
@@ -16,10 +18,10 @@ void fetchData() async {
 }
 
 void sendData(data) async {
-  var url = Uri.parse('http://10.0.2.2:8080/join');
+  var url = Uri.parse('http://localhost:8080/join');
 
 
-  var response = await http.post(url, body: data);
+  var response = await http.post(url, body: jsonEncode(data));
 
   if (response.statusCode == 200) {
     // 성공적으로 요청을 보냈습니다.

@@ -17,19 +17,16 @@ class _WritingPageState extends State<WritingPage> {
   TextEditingController bodyController = TextEditingController();
   FocusNode _focusNode = FocusNode();
   bool usertouch = false;
-  Widget? completionTool;
+  Detailed? completionTool;
   double? containerHeight;
   File? imagePath;
   bool barActivation = false;
   FocusNode? newFocusNode;
-  double? screenWidth;
+  bool removeWidget = false;
 
   final GlobalKey _widgetKey = GlobalKey();
-  TextStyle basicFont = TextStyle(
-    fontSize: 15,
-    color: Colors.black
-  );
-  
+  TextStyle basicFont = TextStyle(fontSize: 15, color: Colors.black);
+
   void showImageMenu(BuildContext context) {
     final RenderBox overlay =
         Overlay.of(context)!.context.findRenderObject() as RenderBox; // 더 공부하기
@@ -75,10 +72,65 @@ class _WritingPageState extends State<WritingPage> {
     });
   }
 
+  void addLine(numberindex) {
+    final TextEditingController newController = TextEditingController();
+    final FocusNode newFocusNode = FocusNode();
+    setState(() {
+      widgetList.add(
+        RawKeyboardListener(
+          focusNode: FocusNode(),
+          onKey: (event) {
+            if (event is RawKeyDownEvent &&
+                event.logicalKey == LogicalKeyboardKey.backspace ) {
+              removeLastWidget();
+            }
+
+          },
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: 5),
+            child: Image.asset(
+                'image/line1.png',
+              ),
+           ),
+        ),
+      );
+      widgetList.add(
+        RawKeyboardListener(
+          focusNode: FocusNode(),
+          onKey: (event) {
+            String currentText = newController.text;
+            if (currentText.isEmpty &&
+                event is RawKeyDownEvent &&
+                event.logicalKey == LogicalKeyboardKey.backspace) {
+              removeLastWidget();
+            }
+          },
+          child: EditableText(
+            keyboardType: TextInputType.text,
+            backgroundCursorColor: Colors.black,
+            cursorColor: Colors.black,
+            onEditingComplete: () {
+              print('함수가 실행됬다.');
+              addWidgetToColumn();
+            },
+            controller: newController,
+            focusNode: newFocusNode,
+            maxLines: null,
+            style: basicFont,
+          ),
+        ),
+      );
+    });
+    Future.delayed(Duration(milliseconds: 100), () {
+      // 새로운 EditableText에 focus 설정을 위해 잠시 지연시간을 줍니다.
+      FocusScope.of(context).requestFocus(newFocusNode);
+    });
+  }
+
   void maketool(int index, bool barActivation) {
     if (barActivation == true) {
       setState(() {
-        completionTool = detailedTools[index];
+        completionTool = Detailed(index, addLine);
         containerHeight = 50;
       });
     } else {
@@ -97,30 +149,24 @@ class _WritingPageState extends State<WritingPage> {
           focusNode: FocusNode(),
           onKey: (event) {
             String currentText = newController.text;
-            if (currentText.isEmpty && event is RawKeyDownEvent &&
+            if (currentText.isEmpty &&
+                event is RawKeyDownEvent &&
                 event.logicalKey == LogicalKeyboardKey.backspace) {
               removeLastWidget();
             }
           },
-          child: Container(
-            padding: EdgeInsets.symmetric(vertical: 3),
-            child: EditableText(
-              keyboardType: TextInputType.text,
-              backgroundCursorColor: Colors.black,
-              cursorColor: Colors.black,
-              onEditingComplete: () {
-                print('함수가 실행됬다.');
-                addWidgetToColumn();
-              },
-              controller: newController,
-              focusNode: newFocusNode,
-              style: basicFont,
-              onChanged: (text){
-                if(text.length * basicFont.fontSize! >= screenWidth!){
-                  addWidgetToColumn();
-                }
-              },
-            ),
+          child: EditableText(
+            keyboardType: TextInputType.text,
+            backgroundCursorColor: Colors.black,
+            cursorColor: Colors.black,
+            onEditingComplete: () {
+              print('함수가 실행됬다.');
+              addWidgetToColumn();
+            },
+            controller: newController,
+            focusNode: newFocusNode,
+            maxLines: null,
+            style: basicFont,
           ),
         ),
       );
@@ -131,46 +177,31 @@ class _WritingPageState extends State<WritingPage> {
     });
   }
 
-
-  List<Widget> widgetList = [];
+  List<Widget> widgetList = [
+    // Container(height: 10,),
+  ];
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
-      final mediaQuery = MediaQuery.of(context);
-      setState(() {
-        screenWidth = mediaQuery.size.width * 2;
-        // 다른 부분에서 필요한 로직을 추가할 수 있습니다.
-      });
-    });
-
     widgetList = [
-      Container(
-        padding: EdgeInsets.only(bottom: 3),
-          child: EditableText(
-            controller: bodyController,
-            focusNode: _focusNode,
-            style: basicFont,
-            onEditingComplete: (){
-              print('함수가 실행됬다.');
-              addWidgetToColumn();
-            },
-            cursorColor: Colors.black,
-            backgroundCursorColor: Colors.black,
-            onChanged: (text){
-              if(text.length * basicFont.fontSize! >= screenWidth!){
-                addWidgetToColumn();
-              }
-            },
-          ),
+      EditableText(
+        controller: bodyController,
+        focusNode: _focusNode,
+        style: basicFont,
+        onEditingComplete: () {
+          print('함수가 실행됬다.');
+          addWidgetToColumn();
+        },
+        cursorColor: Colors.black,
+        backgroundCursorColor: Colors.black,
+        maxLines: null,
       ),
     ];
   }
 
   @override
   Widget build(BuildContext context) {
-
     List<Widget> toolbar = [
       IconButton(
         tooltip: '배경이미지',
@@ -303,18 +334,17 @@ class _WritingPageState extends State<WritingPage> {
                 ),
               Expanded(
                 child: GestureDetector(
-                  onTap: (){
+                  onTap: () {
                     FocusScope.of(context).requestFocus(_focusNode);
                   },
                   child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: widgetList.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return widgetList[index];
-                      }
-                    ),
+                        shrinkWrap: true,
+                        itemCount: widgetList.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return widgetList[index];
+                        }),
                   ),
                 ),
               ),

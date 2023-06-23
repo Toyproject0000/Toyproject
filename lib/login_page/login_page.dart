@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_dongne/Server.dart';
 import 'package:smart_dongne/login_page/find_password.dart';
 import 'package:smart_dongne/login_page/join_membership_page.dart';
 import 'package:smart_dongne/main_page/setpage.dart';
@@ -16,7 +17,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final _formKey = GlobalKey<FormState>();
   String userEmail = '';
-  String userPassworld = '';
+  String userPassword = '';
 
   void _tryValidation() {
     final isValid = _formKey.currentState!.validate();
@@ -81,7 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   if (value!.isEmpty) {
                                     return '아이디를 입력하시오';
                                   }
-                                  else if (value!.contains('@')){
+                                  else if (!value.contains('@')){
                                     return '이메일 형식을 입력하시오';
                                   }
                                   return null;
@@ -108,10 +109,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                   return null;
                                 },
                                 onSaved: (value) {
-                                  userPassworld = value!;
+                                  userPassword = value!;
                                 },
                                 onChanged: (value) {
-                                  userPassworld = value;
+                                  userPassword = value;
                                 },
                                 obscureText: true,
                                 decoration: InputDecoration(

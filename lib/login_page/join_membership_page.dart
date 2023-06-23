@@ -368,11 +368,13 @@ class _JoinmembershipState extends State<Joinmembership> {
                     onPressed: () {
                       _tryValidation();
                       try{
-                        var data = {
-                          'name' : userName,
-                          'email' : userEmail,
-                          'password' : userPassword,
-                          // 'gender' : manButton,
+                        Map<String, dynamic> data = {
+                          'id' : 'test@gmail.com',
+                          'password' : '1234qwer@',
+                          'name' : 'testguy',
+                          'phoneNumber' : '01012348765',
+                          'nickname' : "test",
+                          'Boolean' : true,
                         };
                         sendData(data);
                         _profile(context);
