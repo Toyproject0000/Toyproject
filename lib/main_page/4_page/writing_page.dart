@@ -1,6 +1,6 @@
 import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -14,15 +14,15 @@ class WritingPage extends StatefulWidget {
 }
 
 class _WritingPageState extends State<WritingPage> {
+  ScrollController _scrollController = ScrollController();
   TextEditingController bodyController = TextEditingController();
   FocusNode _focusNode = FocusNode();
   bool usertouch = false;
-  Detailed? completionTool;
   double? containerHeight;
   File? imagePath;
   bool barActivation = false;
   FocusNode? newFocusNode;
-  bool removeWidget = false;
+  int? widgetListIndex;
 
   final GlobalKey _widgetKey = GlobalKey();
   TextStyle basicFont = TextStyle(fontSize: 15, color: Colors.black);
@@ -42,15 +42,14 @@ class _WritingPageState extends State<WritingPage> {
     ];
 
     showMenu(
-      context: context,
-      position: RelativeRect.fromLTRB(
-        widgetPosition.dx, // 왼쪽
-        widgetPosition.dy + widgetBox.size.height, // 위쪽
-        overlay.size.width - widgetPosition.dx - widgetBox.size.width, // 오른쪽
-        overlay.size.height - widgetPosition.dy, // 아래쪽
-      ),
-      items: menuItems,
-    );
+        context: context,
+        position: RelativeRect.fromLTRB(
+          widgetPosition.dx, // 왼쪽
+          widgetPosition.dy + widgetBox.size.height, // 위쪽
+          overlay.size.width - widgetPosition.dx - widgetBox.size.width, // 오른쪽
+          overlay.size.height - widgetPosition.dy, // 아래쪽
+        ),
+        items: menuItems);
   }
 
   Future<void> pickImage() async {
@@ -63,46 +62,115 @@ class _WritingPageState extends State<WritingPage> {
       });
     }
   }
-
-  void removeLastWidget() {
+  
+  void removeWidget(int index){
     setState(() {
-      if (widgetList.isNotEmpty) {
-        widgetList.removeLast();
+      if (widgetList.length > 1) {
+        widgetList.removeAt(index);
       }
     });
   }
+  
 
-  void addLine(numberindex) {
+  void addLine(context) {
     final TextEditingController newController = TextEditingController();
     final FocusNode newFocusNode = FocusNode();
-    setState(() {
-      widgetList.add(
-        RawKeyboardListener(
-          focusNode: FocusNode(),
-          onKey: (event) {
-            if (event is RawKeyDownEvent &&
-                event.logicalKey == LogicalKeyboardKey.backspace ) {
-              removeLastWidget();
-            }
+    final GlobalKey lineKey = GlobalKey();
 
-          },
-          child: Container(
-            padding: EdgeInsets.symmetric(vertical: 5),
-            child: Image.asset(
-                'image/line1.png',
+    _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent,
+      duration: const Duration(milliseconds: 200),
+      curve: Curves.easeInOut,
+    );
+
+    showLineMenu(BuildContext context,) {
+      final RenderBox overlay = Overlay.of(context)!
+          .context
+          .findRenderObject() as RenderBox; // 더 공부하기
+      final RenderBox widgetBox =
+      lineKey.currentContext!.findRenderObject() as RenderBox;
+      final Offset widgetPosition =
+      widgetBox.localToGlobal(Offset.zero); // 로컬에서 젼역으로 변경하는 코드
+
+      final List<PopupMenuEntry> menuItems = [
+        PopupMenuItem(
+          child: Row(
+            children: [
+              IconButton(
+                icon: Icon(Icons.linear_scale_outlined),
+                onPressed: () {
+                  setState(() {
+                    barActivation = false;
+                    Navigator.pop(context);
+                  });
+                },
               ),
-           ),
-        ),
+              IconButton(
+                icon: Icon(Icons.line_axis_outlined),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+              IconButton(
+                icon: Icon(Icons.line_weight_sharp),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        )
+      ];
+      setState(() {
+        barActivation = true;
+        showMenu(
+            context: context,
+            position: RelativeRect.fromLTRB(
+              widgetPosition.dx, // 왼쪽
+              widgetPosition.dy + widgetBox.size.height, // 위쪽
+              overlay.size.width -
+                  widgetPosition.dx -
+                  widgetBox.size.width, // 오른쪽
+              overlay.size.height - widgetPosition.dy, // 아래쪽
+            ),
+            items: menuItems);
+      });
+    }
+
+    setState(() {
+      widgetListIndex = widgetList.length - 1;
+      widgetList.add(
+          GestureDetector(
+            key: lineKey,
+            onTap: () {
+              showLineMenu(context);
+            },
+            child: RawKeyboardListener(
+              focusNode: FocusNode(),
+              onKey: (event) {
+                if (event is RawKeyDownEvent &&
+                    event.logicalKey == LogicalKeyboardKey.backspace) {}
+              },
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 10),
+                child: Image.asset(
+                  'image/line1.png',
+                ),
+              ),
+            ),
+          )
       );
       widgetList.add(
         RawKeyboardListener(
+          key: GlobalKey(),
           focusNode: FocusNode(),
           onKey: (event) {
             String currentText = newController.text;
+            widgetListIndex = widgetListIndex;
             if (currentText.isEmpty &&
                 event is RawKeyDownEvent &&
                 event.logicalKey == LogicalKeyboardKey.backspace) {
-              removeLastWidget();
+              removeWidget(widgetListIndex!);
             }
           },
           child: EditableText(
@@ -125,48 +193,37 @@ class _WritingPageState extends State<WritingPage> {
       // 새로운 EditableText에 focus 설정을 위해 잠시 지연시간을 줍니다.
       FocusScope.of(context).requestFocus(newFocusNode);
     });
-  }
-
-  void maketool(int index, bool barActivation) {
-    if (barActivation == true) {
-      setState(() {
-        completionTool = Detailed(index, addLine);
-        containerHeight = 50;
-      });
-    } else {
-      setState(() {
-        completionTool = null;
-      });
-    }
   }
 
   void addWidgetToColumn() {
     final TextEditingController newController = TextEditingController();
     final FocusNode newFocusNode = FocusNode();
     setState(() {
+      widgetListIndex = widgetList.length - 1;
       widgetList.add(
         RawKeyboardListener(
           focusNode: FocusNode(),
           onKey: (event) {
             String currentText = newController.text;
-            if (currentText.isEmpty &&
-                event is RawKeyDownEvent &&
+            if (currentText.isEmpty && event is RawKeyDownEvent &&
                 event.logicalKey == LogicalKeyboardKey.backspace) {
-              removeLastWidget();
+              removeWidget(widgetListIndex!);
             }
           },
-          child: EditableText(
-            keyboardType: TextInputType.text,
-            backgroundCursorColor: Colors.black,
-            cursorColor: Colors.black,
-            onEditingComplete: () {
-              print('함수가 실행됬다.');
-              addWidgetToColumn();
-            },
-            controller: newController,
-            focusNode: newFocusNode,
-            maxLines: null,
-            style: basicFont,
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: 3),
+            child: EditableText(
+              keyboardType: TextInputType.text,
+              backgroundCursorColor: Colors.black,
+              cursorColor: Colors.black,
+              onEditingComplete: () {
+                print('함수가 실행됬다.');
+                addWidgetToColumn();
+              },
+              controller: newController,
+              focusNode: newFocusNode,
+              style: basicFont,
+            ),
           ),
         ),
       );
@@ -177,9 +234,7 @@ class _WritingPageState extends State<WritingPage> {
     });
   }
 
-  List<Widget> widgetList = [
-    // Container(height: 10,),
-  ];
+  List<Widget> widgetList = [];
 
   @override
   void initState() {
@@ -189,10 +244,6 @@ class _WritingPageState extends State<WritingPage> {
         controller: bodyController,
         focusNode: _focusNode,
         style: basicFont,
-        onEditingComplete: () {
-          print('함수가 실행됬다.');
-          addWidgetToColumn();
-        },
         cursorColor: Colors.black,
         backgroundCursorColor: Colors.black,
         maxLines: null,
@@ -218,15 +269,7 @@ class _WritingPageState extends State<WritingPage> {
       IconButton(
         tooltip: '구분선',
         onPressed: () {
-          if (barActivation == false) {
-            int index = 1;
-            barActivation = true;
-            maketool(index, barActivation);
-          } else {
-            barActivation = false;
-            int index = 1;
-            maketool(index, barActivation);
-          }
+          addLine(context);
         },
         icon: Icon(
           Icons.density_large,
@@ -327,11 +370,6 @@ class _WritingPageState extends State<WritingPage> {
                   children: toolbar,
                 ),
               ),
-              if (completionTool != null)
-                Container(
-                  height: 50,
-                  child: completionTool,
-                ),
               Expanded(
                 child: GestureDetector(
                   onTap: () {
@@ -340,11 +378,13 @@ class _WritingPageState extends State<WritingPage> {
                   child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: widgetList.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return widgetList[index];
-                        }),
+                      controller: _scrollController,
+                      physics: AlwaysScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: widgetList.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return widgetList[index];
+                      }),
                   ),
                 ),
               ),
