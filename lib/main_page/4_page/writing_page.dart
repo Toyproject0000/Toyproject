@@ -15,6 +15,7 @@ class WritingPage extends StatefulWidget {
 
 class _WritingPageState extends State<WritingPage> {
   ScrollController _scrollController = ScrollController();
+  ScrollController _scrollController2 = ScrollController();
   TextEditingController bodyController = TextEditingController();
   FocusNode _focusNode = FocusNode();
   bool usertouch = false;
@@ -235,6 +236,7 @@ class _WritingPageState extends State<WritingPage> {
   }
 
   List<Widget> widgetList = [];
+  List<Widget> everyThing = [];
 
   @override
   void initState() {
@@ -298,97 +300,103 @@ class _WritingPageState extends State<WritingPage> {
       ),
     ];
 
+    everyThing = [
+      Container(
+        decoration: BoxDecoration(
+          border: Border.symmetric(
+            horizontal: BorderSide(color: Colors.grey),
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            IconButton(
+              onPressed: () {},
+              icon: Icon(
+                Icons.cancel_outlined,
+                size: 40,
+              ),
+            ),
+            Text(
+              '새 게시물',
+              style: TextStyle(fontSize: 20),
+            ),
+            TextButton(
+              onPressed: () {},
+              child: Text(
+                '다음',
+                style: TextStyle(color: Colors.blue, fontSize: 20),
+              ),
+            ),
+          ],
+        ),
+      ),
+      Container(
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        decoration: BoxDecoration(
+          border: Border.symmetric(
+            horizontal: BorderSide(color: Colors.grey),
+          ),
+        ),
+        child: TextFormField(
+          maxLength: 20,
+          decoration: InputDecoration(
+            hintText: '제목',
+            focusedBorder: InputBorder.none,
+            counterText: '',
+            enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.transparent),
+            ),
+          ),
+        ),
+      ),
+      Container(
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        decoration: BoxDecoration(
+          border: Border.symmetric(
+            horizontal: BorderSide(color: Colors.grey),
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: toolbar,
+        ),
+      ),
+      Expanded(
+        child: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).requestFocus(_focusNode);
+          },
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: ListView.builder(
+                controller: _scrollController,
+                physics: AlwaysScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: widgetList.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return widgetList[index];
+                }),
+          ),
+        ),
+      ),
+    ];
+
+
     return Scaffold(
       body: GestureDetector(
         onTap: () {
           FocusScope.of(context).unfocus();
         },
         child: Container(
-          child: Column(
-            children: [
-              SizedBox(
-                height: 10,
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.symmetric(
-                    horizontal: BorderSide(color: Colors.grey),
-                  ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    IconButton(
-                      onPressed: () {},
-                      icon: Icon(
-                        Icons.cancel_outlined,
-                        size: 40,
-                      ),
-                    ),
-                    Text(
-                      '새 게시물',
-                      style: TextStyle(fontSize: 20),
-                    ),
-                    TextButton(
-                      onPressed: () {},
-                      child: Text(
-                        '다음',
-                        style: TextStyle(color: Colors.blue, fontSize: 20),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                decoration: BoxDecoration(
-                  border: Border.symmetric(
-                    horizontal: BorderSide(color: Colors.grey),
-                  ),
-                ),
-                child: TextFormField(
-                  maxLength: 20,
-                  decoration: InputDecoration(
-                    hintText: '제목',
-                    focusedBorder: InputBorder.none,
-                    counterText: '',
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.transparent),
-                    ),
-                  ),
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                decoration: BoxDecoration(
-                  border: Border.symmetric(
-                    horizontal: BorderSide(color: Colors.grey),
-                  ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: toolbar,
-                ),
-              ),
-              Expanded(
-                child: GestureDetector(
-                  onTap: () {
-                    FocusScope.of(context).requestFocus(_focusNode);
-                  },
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: ListView.builder(
-                      controller: _scrollController,
-                      physics: AlwaysScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: widgetList.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return widgetList[index];
-                      }),
-                  ),
-                ),
-              ),
-            ],
+          child: ListView.builder(
+            controller: _scrollController2,
+            physics: AlwaysScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: everyThing.length,
+            itemBuilder: (BuildContext context, int index) {
+              return everyThing[index];
+            }
           ),
         ),
       ),
