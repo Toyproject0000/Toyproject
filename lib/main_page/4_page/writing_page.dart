@@ -30,11 +30,11 @@ class _WritingPageState extends State<WritingPage> {
 
   void showImageMenu(BuildContext context) {
     final RenderBox overlay =
-        Overlay.of(context)!.context.findRenderObject() as RenderBox; // 더 공부하기
+    Overlay.of(context)!.context.findRenderObject() as RenderBox; // 더 공부하기
     final RenderBox widgetBox =
-        _widgetKey.currentContext!.findRenderObject() as RenderBox;
+    _widgetKey.currentContext!.findRenderObject() as RenderBox;
     final Offset widgetPosition =
-        widgetBox.localToGlobal(Offset.zero); // 상대 위치를 절대 위치로 변경
+    widgetBox.localToGlobal(Offset.zero); // 상대 위치를 절대 위치로 변경
 
     final List<PopupMenuEntry> menuItems = [
       PopupMenuItem(child: Text('사진 찍기')),
@@ -63,7 +63,7 @@ class _WritingPageState extends State<WritingPage> {
       });
     }
   }
-  
+
   void removeWidget(int index){
     setState(() {
       if (widgetList.length > 1) {
@@ -71,7 +71,7 @@ class _WritingPageState extends State<WritingPage> {
       }
     });
   }
-  
+
 
   void addLine(context) {
     final TextEditingController newController = TextEditingController();
@@ -362,24 +362,22 @@ class _WritingPageState extends State<WritingPage> {
           children: toolbar,
         ),
       ),
-      Expanded(
-        child: GestureDetector(
-          onTap: () {
-            FocusScope.of(context).requestFocus(_focusNode);
-          },
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            child: ListView.builder(
-                controller: _scrollController,
-                physics: AlwaysScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: widgetList.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return widgetList[index];
-                }),
-          ),
+      GestureDetector(
+        onTap: () {
+          FocusScope.of(context).requestFocus(_focusNode);
+        },
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 10),
+          child: ListView.builder(
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: widgetList.length,
+              itemBuilder: (BuildContext context, int index) {
+                return widgetList[index];
+              }),
         ),
       ),
+      SizedBox(height: 100,),
     ];
 
 
@@ -390,13 +388,13 @@ class _WritingPageState extends State<WritingPage> {
         },
         child: Container(
           child: ListView.builder(
-            controller: _scrollController2,
-            physics: AlwaysScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: everyThing.length,
-            itemBuilder: (BuildContext context, int index) {
-              return everyThing[index];
-            }
+              controller: _scrollController,
+              physics: AlwaysScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: everyThing.length,
+              itemBuilder: (BuildContext context, int index) {
+                return everyThing[index];
+              }
           ),
         ),
       ),
