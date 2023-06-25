@@ -1,10 +1,10 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-void sendData() async {
-  final url = Uri.parse('http://localhost:8080/join');
+Future<void> sendData() async {
+  final url = Uri.parse('http://172.30.1.11:8080/join');
   final headers = {'Content-Type': 'application/json'};
-  final data = jsonEncode({'id': 'test', 'password': 'test'});
+  final data = jsonEncode({'id': 'hello', 'password': '1234qwer'});
 
   try {
     final response = await http.post(url, headers: headers, body: data);

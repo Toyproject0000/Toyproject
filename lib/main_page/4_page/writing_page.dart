@@ -362,22 +362,16 @@ class _WritingPageState extends State<WritingPage> {
           children: toolbar,
         ),
       ),
-      Expanded(
+      Container(
+        height: MediaQuery.of(context).size.height,
+        padding: EdgeInsets.all(10),
         child: GestureDetector(
           onTap: () {
             FocusScope.of(context).requestFocus(_focusNode);
           },
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            child: ListView.builder(
-                controller: _scrollController,
-                physics: AlwaysScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: widgetList.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return widgetList[index];
-                }),
-          ),
+          child: Column(
+            children: widgetList,
+          )
         ),
       ),
     ];
