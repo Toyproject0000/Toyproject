@@ -393,7 +393,6 @@ class _WritingPageState extends State<WritingPage> {
           SizedBox(height: 75,)
         ],
       ),
-
     ];
 
 
