@@ -70,6 +70,15 @@ class _WritingPageState extends State<WritingPage> {
         widgetList.removeAt(index);
       }
     });
+    // Future.delayed(Duration(milliseconds: 100), () {
+    //   _scrollController.animateTo(
+    //     _scrollController.position.maxScrollExtent,
+    //     duration: Duration(milliseconds: 300),
+    //     curve: Curves.easeInOut,
+    //   );
+    //   // 새로운 EditableText에 focus 설정을 위해 잠시 지연시간을 줍니다.
+    //   FocusScope.of(context).requestFocus();
+    // });
   }
 
 
@@ -77,12 +86,6 @@ class _WritingPageState extends State<WritingPage> {
     final TextEditingController newController = TextEditingController();
     final FocusNode newFocusNode = FocusNode();
     final GlobalKey lineKey = GlobalKey();
-
-    _scrollController.animateTo(
-      _scrollController.position.maxScrollExtent,
-      duration: const Duration(milliseconds: 200),
-      curve: Curves.easeInOut,
-    );
 
     showLineMenu(BuildContext context,) {
       final RenderBox overlay = Overlay.of(context)!
@@ -139,7 +142,6 @@ class _WritingPageState extends State<WritingPage> {
     }
 
     setState(() {
-      widgetListIndex = widgetList.length - 1;
       widgetList.add(
           GestureDetector(
             key: lineKey,
@@ -161,36 +163,13 @@ class _WritingPageState extends State<WritingPage> {
             ),
           )
       );
-      widgetList.add(
-        RawKeyboardListener(
-          key: GlobalKey(),
-          focusNode: FocusNode(),
-          onKey: (event) {
-            String currentText = newController.text;
-            widgetListIndex = widgetListIndex;
-            if (currentText.isEmpty &&
-                event is RawKeyDownEvent &&
-                event.logicalKey == LogicalKeyboardKey.backspace) {
-              removeWidget(widgetListIndex!);
-            }
-          },
-          child: EditableText(
-            keyboardType: TextInputType.text,
-            backgroundCursorColor: Colors.black,
-            cursorColor: Colors.black,
-            onEditingComplete: () {
-              print('함수가 실행됬다.');
-              addWidgetToColumn();
-            },
-            controller: newController,
-            focusNode: newFocusNode,
-            maxLines: null,
-            style: basicFont,
-          ),
-        ),
-      );
     });
     Future.delayed(Duration(milliseconds: 100), () {
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
       // 새로운 EditableText에 focus 설정을 위해 잠시 지연시간을 줍니다.
       FocusScope.of(context).requestFocus(newFocusNode);
     });
@@ -199,16 +178,19 @@ class _WritingPageState extends State<WritingPage> {
   void addWidgetToColumn() {
     final TextEditingController newController = TextEditingController();
     final FocusNode newFocusNode = FocusNode();
+    final IndexWidget = widgetList.length;
+
+
     setState(() {
-      widgetListIndex = widgetList.length - 1;
-      widgetList.add(
+      widgetList.insert(IndexWidget,
         RawKeyboardListener(
           focusNode: FocusNode(),
           onKey: (event) {
             String currentText = newController.text;
             if (currentText.isEmpty && event is RawKeyDownEvent &&
                 event.logicalKey == LogicalKeyboardKey.backspace) {
-              removeWidget(widgetListIndex!);
+              removeWidget(IndexWidget);
+
             }
           },
           child: Container(
@@ -221,15 +203,27 @@ class _WritingPageState extends State<WritingPage> {
                 print('함수가 실행됬다.');
                 addWidgetToColumn();
               },
+              onChanged: (text){
+                if(text.contains('\n')){
+                  newController.text = lineChange();
+                  addWidgetToColumn();
+                }
+              },
               controller: newController,
               focusNode: newFocusNode,
               style: basicFont,
+              maxLines: null,
             ),
           ),
         ),
       );
     });
     Future.delayed(Duration(milliseconds: 100), () {
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
       // 새로운 EditableText에 focus 설정을 위해 잠시 지연시간을 줍니다.
       FocusScope.of(context).requestFocus(newFocusNode);
     });
@@ -237,6 +231,12 @@ class _WritingPageState extends State<WritingPage> {
 
   List<Widget> widgetList = [];
   List<Widget> everyThing = [];
+
+  lineChange(){
+    String currentText = bodyController.text.replaceAll('\n', '');
+    print('줄바껴써용~');
+    return currentText;
+  }
 
   @override
   void initState() {
@@ -249,6 +249,17 @@ class _WritingPageState extends State<WritingPage> {
         cursorColor: Colors.black,
         backgroundCursorColor: Colors.black,
         maxLines: null,
+        onEditingComplete: () {
+          print('함수가 실행됬다.');
+          addWidgetToColumn();
+        },
+        onChanged: (text){
+          if(text.contains('\n')){
+            bodyController.text = lineChange();
+
+            addWidgetToColumn();
+          }
+        },
       ),
     ];
   }
@@ -362,22 +373,27 @@ class _WritingPageState extends State<WritingPage> {
           children: toolbar,
         ),
       ),
-      GestureDetector(
-        onTap: () {
-          FocusScope.of(context).requestFocus(_focusNode);
-        },
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 10),
-          child: ListView.builder(
-              physics: NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: widgetList.length,
-              itemBuilder: (BuildContext context, int index) {
-                return widgetList[index];
-              }),
-        ),
+      Column(
+        children: [
+          GestureDetector(
+            onTap: () {
+              FocusScope.of(context).requestFocus(_focusNode);
+            },
+            child: Container(
+              padding: EdgeInsets.all(10),
+              child: ListView.builder(
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: widgetList.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return widgetList[index];
+                  }),
+            ),
+          ),
+          SizedBox(height: 75,)
+        ],
       ),
-      SizedBox(height: 100,),
+
     ];
 
 
