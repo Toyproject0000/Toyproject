@@ -3,6 +3,7 @@ package toyproject.demo.repositoryImpl;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
 import toyproject.demo.domain.Post;
 import toyproject.demo.domain.Reply;
 import toyproject.demo.domain.User;
@@ -10,6 +11,7 @@ import toyproject.demo.repository.ReplyRepository;
 
 import java.util.List;
 
+@Repository
 public class ReplyRepositoryImpl implements ReplyRepository {
     private final JdbcTemplate jdbcTemplate;
     private final RowMapper<Reply> rowMapper;
@@ -29,6 +31,11 @@ public class ReplyRepositoryImpl implements ReplyRepository {
     public void update(Reply reply) {
         jdbcTemplate.update("update reply set userId = ?, postId = ?, contents = ? where id = ? ",
                 reply.getUserId(), reply.getPostId(), reply.getContents(), reply.getId());
+    }
+
+    @Override
+    public void delete(Reply reply) {
+        jdbcTemplate.update("delete from reply where id = ?", reply.getId());
     }
 
     @Override

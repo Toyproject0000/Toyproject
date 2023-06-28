@@ -3,9 +3,11 @@ package toyproject.demo.repositoryImpl;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
 import toyproject.demo.domain.ReplyLike;
 import toyproject.demo.repository.ReplyLikeRepository;
 
+@Repository
 public class ReplyLikeRepositoryImpl implements ReplyLikeRepository {
     private final JdbcTemplate jdbcTemplate;
     private final RowMapper rowMapper;

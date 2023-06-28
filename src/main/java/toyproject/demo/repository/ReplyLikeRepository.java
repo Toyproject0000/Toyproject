@@ -8,4 +8,5 @@ public interface ReplyLikeRepository {
     public void insert(ReplyLike replyLike);
     public void delete(ReplyLike replyLike);
 
+
 }

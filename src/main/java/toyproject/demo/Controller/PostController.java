@@ -1,6 +1,7 @@
 package toyproject.demo.Controller;
 
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import toyproject.demo.domain.Post;
 import toyproject.demo.domain.User;
@@ -8,7 +9,7 @@ import toyproject.demo.service.PostService;
 
 import java.time.LocalDate;
 
-@RestController("/")
+@RestController("/post")
 public class PostController {
     /*
     * 글쓰기
@@ -29,7 +30,7 @@ public class PostController {
     }
 
     @PostMapping("/submit")
-    public String submitPost(Post post){
+    public String submitPost(@RequestBody Post post){
         try {
             postService.submit(post);
             return "ok";
@@ -38,8 +39,8 @@ public class PostController {
         }
     }
 
-    @PostMapping("/edit-post")
-    public String edit(Post post){
+    @PostMapping("/edit")
+    public String edit(@RequestBody Post post){
         try {
             postService.modify(post);
             return "ok";
@@ -48,8 +49,8 @@ public class PostController {
         }
     }
 
-    @PostMapping("/delete-post")
-    public String delete(Post post){
+    @PostMapping("/delete")
+    public String delete(@RequestBody Post post){
         try {
             postService.delete(post);
             return "ok";
@@ -58,8 +59,8 @@ public class PostController {
         }
     }
 
-    @PostMapping("/find-post-bycontent")
-    public String findPostByContents(Post post){
+    @PostMapping("/find-bycontent")
+    public String findPostByContents(@RequestBody Post post){
         try {
             postService.findPostByContents(post);
             return "ok";
@@ -69,7 +70,7 @@ public class PostController {
     }
 
     @PostMapping("/find-mypost-bycontent")
-    public String findMyPostByContents(Post post, User user){
+    public String findMyPostByContents(@RequestBody Post post,@RequestBody User user){
         try {
             postService.findMyPostByContents(post, user);
             return "ok";
@@ -78,8 +79,8 @@ public class PostController {
         }
     }
 
-    @PostMapping("/find-post-byuser")
-    public String findPostByUser(User user){
+    @PostMapping("/find-byuser")
+    public String findPostByUser(@RequestBody User user){
         try {
             postService.findUserAllPost(user);
             return "ok";
@@ -88,8 +89,8 @@ public class PostController {
         }
     }
 
-    @PostMapping("/find-post-follower")
-    public String findPostOfFollower(User user){
+    @PostMapping("/find-follower")
+    public String findPostOfFollower(@RequestBody User user){
         try {
             postService.findPostByFollower(user);
             return "ok";
@@ -99,7 +100,7 @@ public class PostController {
     }
 
     @PostMapping("/find-likepost")
-    public String findLikePost(User user){
+    public String findLikePost(@RequestBody User user){
         try {
             postService.findAllLikePost(user);
             return "ok";
@@ -108,8 +109,8 @@ public class PostController {
         }
     }
 
-    @PostMapping("/find-post-specific")
-    public String findPostSpecificDate(LocalDate date){
+    @PostMapping("/find-specific")
+    public String findPostSpecificDate(@RequestBody LocalDate date){
         try {
             postService.findPostBySpecificDate(date);
             return "ok";
@@ -117,8 +118,8 @@ public class PostController {
             return "에러 발생"; // 작성했던 글 내용 그대로 다시 쓸수있는지 아니면 내가 다시 보내줘야되는지 물어보자
         }
     }
-    @PostMapping("/find-post-after")
-    public String findPostAfterDate(LocalDate date){
+    @PostMapping("/find-after")
+    public String findPostAfterDate(@RequestBody LocalDate date){
         try {
             postService.findPostAfterDate(date);
             return "ok";

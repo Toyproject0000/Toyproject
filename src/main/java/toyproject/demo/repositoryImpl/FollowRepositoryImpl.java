@@ -5,7 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import toyproject.demo.domain.Follow;
-import toyproject.demo.domain.Post;
+import toyproject.demo.domain.User;
 import toyproject.demo.repository.FollowRepository;
 
 
@@ -32,12 +32,12 @@ public class FollowRepositoryImpl implements FollowRepository {
     }
 
     @Override
-    public List<Follow> findAllFollower(String userId) {
-        return jdbcTemplate.query("select * from follow where followedUserId = ?", rowMapper,userId);
+    public List<User> findAllFollower(String userId) {
+        return jdbcTemplate.query("SELECT u.* FROM user u JOIN follow f ON u.userId = f.followerId WHERE f.followedUserId = ?", rowMapper,userId);
     }
 
     @Override
-    public List<Follow> findAllFollowing(String userId) {
-        return jdbcTemplate.query("select * from follow where followingUserId = ?", rowMapper,userId);
+    public List<User> findAllFollowing(String userId) {
+        return jdbcTemplate.query("SELECT u.* FROM user u JOIN follow f ON u.userId = f.followerId WHERE f.followingUserId = ?", rowMapper,userId);
     }
 }

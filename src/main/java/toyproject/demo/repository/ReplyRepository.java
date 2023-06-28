@@ -9,6 +9,7 @@ import java.util.List;
 public interface ReplyRepository {
     public void insert(Reply reply);
     public void update(Reply reply);
+    public void delete(Reply reply);
     public List<Reply> findAll();
     public List<Reply> findReplyOfPost(Post post);
     public List<Reply> findReplyOfUser(User user);
