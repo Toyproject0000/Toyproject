@@ -32,6 +32,11 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public void delete(User user) {
+        jdbcTemplate.update("delete from user where id = ?", user.getId());
+    }
+
+    @Override
     public List<User> findAll() {
         return jdbcTemplate.query("select * from user", rowMapper);
     }
@@ -49,5 +54,14 @@ public class UserRepositoryImpl implements UserRepository {
     public List<User> findFollower(String userId) {
         return jdbcTemplate.query("select * from follows where followed_user_id = ?", rowMapper, userId);
     }
-    //다시 짜야됨.
+
+    @Override
+    public List<User> findUserByNameAndPhone(User user) {
+        return jdbcTemplate.query("select * from user where name = ? And phoneNumber = ?", rowMapper, user.getName(), user.getPhoneNumber());
+    }
+
+    @Override
+    public List<User> findUserByNameAndPhoneAndId(User user) {
+        return jdbcTemplate.query("select * from user where name = ? And phoneNumber = ? AND id = ?", rowMapper, user.getName(), user.getPhoneNumber(), user.getId());
+    }
 }

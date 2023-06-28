@@ -9,6 +9,7 @@ import toyproject.demo.domain.Reply;
 import toyproject.demo.domain.User;
 import toyproject.demo.repository.PostRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 @Repository
 
@@ -53,6 +54,11 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
+    public List<Post> findMyPostByContents(String contents, User user) {
+        return jdbcTemplate.query("SELECT * FROM post WHERE userId = ? And contents LIKE ? ", rowMapper,user.getId(), "%" + contents + "%");
+    }
+
+    @Override
     public List<Post> findPostOfFollower(User user) {
         String sql = "SELECT p.* FROM post p INNER JOIN follower f ON p.userId = f.followedUserId WHERE f.followerUserId = ?";
         return jdbcTemplate.query(sql, rowMapper, user.getId());
@@ -60,5 +66,15 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public List<Post> findAllLikePost(User user) {
         return jdbcTemplate.query("SELECT * FROM post WHERE id IN (SELECT postId FROM postLike WHERE userId = ?)", rowMapper, user.getId());
+    }
+
+    @Override
+    public List<Post> findPostBySpecificDate(LocalDate date) {
+        return jdbcTemplate.query("select * from post where date = ?", rowMapper, date);
+    }
+
+    @Override
+    public List<Post> findPostAfterSpecificDate(LocalDate date) {
+        return jdbcTemplate.query("select * from post where date >= ?", rowMapper, date);
     }
 }

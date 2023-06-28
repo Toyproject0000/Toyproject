@@ -16,6 +16,16 @@ import java.security.NoSuchAlgorithmException;
 
 @RestController("/")
 public class UserController {
+
+    /*
+    * 회원가입
+    * 로그인
+    * SMS 인증
+    * 아이디찾기
+    * 비번 찾기
+    * 회원정보수정
+    * 회원 탈퇴
+    * */
     private final UserService userService;
     private final SmsService smsService;
 
@@ -31,21 +41,32 @@ public class UserController {
 
     @PostMapping("/login")
     public String login(@RequestBody User user){
-
-        if (userService.loginId(user.getId()).equals("ID가 틀림")){
-            return "ID가 틀림";
-        }
-
-        if (userService.loginPassword(user.getPassword()).equals("비번이 틀림")){
-            return "비번이 틀림";
-        }
-
-        return "ok";
+        return userService.login(user);
     }
 
-    @PostMapping("/edit")
+    @PostMapping("/findId")
+    public String findId(@RequestBody User user){
+        return userService.findId(user);
+    }
+
+    @PostMapping("/findPassword")
+    public String findPassword(@RequestBody User user){
+        return userService.findPassword(user);
+    }
+
+    @PostMapping("/edit-user")
     public String edit(@RequestBody User user){
         return userService.edit(user);
+    }
+
+    @PostMapping("/remove")
+    public String delete(@RequestBody User user){
+        try {
+            userService.delete(user);
+            return "ok";
+        }catch (Exception e){
+            return "에러발생";
+        }
     }
 
     @GetMapping("/authentication ")
@@ -55,9 +76,4 @@ public class UserController {
 
         return "ok";
     }
-
-
-
-
-
 }

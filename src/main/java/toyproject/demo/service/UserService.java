@@ -26,21 +26,29 @@ public class UserService {
         }
     }
 
-    public String loginId(String id){
-        List<User> result = userRepository.findById(id);
-        if (result.size()==0) return "ID가 틀림";
-        else return "ok";
+    public String findId(User user){
+        List<User> result = userRepository.findUserByNameAndPhone(user);
+        if (result.size()==0) return "가입되어 있지않음";
+        else return result.get(0).getId();
     }
 
-    public String loginPassword(String password){
-        List<User> result = userRepository.findByPassword(password);
-        if (result.size()==0) return "비번이 틀림";
-        else return "ok";
+    public String findPassword(User user){
+        List<User> result = userRepository.findUserByNameAndPhoneAndId(user);
+        if (result.size()==0) return "정보가 틀림";
+        else return result.get(0).getPassword();
     }
-    /*
-    * 로그인 메소드 따로 만들고
-    * 아이디찾기, 비번찾기용으로 바꾸기
-    * */
+
+
+    public String login(User user){
+        List<User> findUser = userRepository.findById(user.getId());
+        if(findUser.size()!=1){
+            return "id 오류";
+        }
+        if (findUser.get(0).getPassword()!=user.getPassword()){
+            return "비번 오류";
+        }
+        return "ok";
+    }
 
 
     public String edit(User user){
@@ -51,6 +59,10 @@ public class UserService {
         catch (Exception e){
             return "cancel";
         }
+    }
+
+    public void delete(User user){
+        userRepository.delete(user);
     }
 
 

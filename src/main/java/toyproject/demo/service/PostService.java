@@ -5,6 +5,9 @@ import toyproject.demo.domain.Post;
 import toyproject.demo.domain.User;
 import toyproject.demo.repository.PostRepository;
 
+import java.time.LocalDate;
+import java.util.List;
+
 @Service
 public class PostService {
     private final PostRepository postRepository;
@@ -25,16 +28,32 @@ public class PostService {
         postRepository.update(post);
     }
 
-    public void findUserAllPost(User user){
-        postRepository.findByUser(user);
+    public List<Post> findUserAllPost(User user){
+        return postRepository.findByUser(user);
     }
 
-    /*
-    * 날짜로 찾기 -> repository도 써야됨
-    * 내가 쓴 글 내용 검색
-    * 내용으로 글 검색
-    * 팔로워 글 찾기
-    * 좋아요한 글 보기
-    * */
+    public List<Post> findPostBySpecificDate(LocalDate date){
+        return postRepository.findPostBySpecificDate(date);
+    }
+
+    public List<Post> findPostAfterDate(LocalDate date){
+        return postRepository.findPostAfterSpecificDate(date);
+    }
+
+    public List<Post> findPostByContents(Post post){
+        return postRepository.findByContents(post.getContents());
+    }
+
+    public List<Post> findMyPostByContents(Post post, User user){
+        return postRepository.findMyPostByContents(post.getContents(), user);
+    }
+
+    public List<Post> findPostByFollower(User user){
+        return postRepository.findPostOfFollower(user);
+    }
+
+    public List<Post> findAllLikePost(User user){
+        return postRepository.findAllLikePost(user);
+    }
 
 }
