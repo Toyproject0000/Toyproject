@@ -64,6 +64,15 @@ flutter:
   assets:
    - image/book.jpg
    - image/line1.png
+   - image/align-right.png
+   - image/bold.png
+   - image/format.png
+   - image/italic.png
+   - image/left-align.png
+   - image/text.png
+   - image/underline.png
+   - image/font.png
+   - image/strikethrough.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
