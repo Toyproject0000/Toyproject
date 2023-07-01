@@ -51,22 +51,12 @@ class UserControllerTest {
         user1.setId("test1");
         user1.setPassword("test");
         String login1 = userController.login(user1);
-        assertThat(login1).isEqualTo("ID가 틀림");
+        assertThat(login1).isEqualTo("ID 오류");
 
         User user2 = new User();
         user2.setId("test");
         user2.setPassword("test1");
         String login2 = userController.login(user2);
-        assertThat(login2).isEqualTo("비번이 틀림");
+        assertThat(login2).isEqualTo("비번 오류");
     }
 }
-
-/*
-* curl --location 'localhost:8080/join' \
---header 'Content-Type: application/json' \
---data '{
-    "id": "test",
-    "password": "test"
-}'
-*
-* */

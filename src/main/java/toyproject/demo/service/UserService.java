@@ -41,10 +41,10 @@ public class UserService {
 
     public String login(User user){
         List<User> findUser = userRepository.findById(user.getId());
-        if(findUser.size()!=1){
+        if(findUser.size()!=1||!findUser.get(0).getId().equals(user.getId())){
             return "id 오류";
         }
-        if (findUser.get(0).getPassword()!=user.getPassword()){
+        if (!findUser.get(0).getPassword().equals(user.getPassword())){
             return "비번 오류";
         }
         return "ok";
