@@ -38,6 +38,14 @@ public class UserService {
         else return result.get(0).getPassword();
     }
 
+    public String duplicateNick(User user){
+        List<User> users = userRepository.findNickname(user);
+        if(users.size()!=0){
+            return "cancel";
+        }
+        return "ok";
+    }
+
 
     public String login(User user){
         List<User> findUser = userRepository.findById(user.getId());

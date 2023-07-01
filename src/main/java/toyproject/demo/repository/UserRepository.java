@@ -17,4 +17,5 @@ public interface UserRepository {
     public List<User> findFollower(String userId);
     public List<User> findUserByNameAndPhone(User user);
     public List<User> findUserByNameAndPhoneAndId(User user);
+    public List<User> findNickname(User user);
 }

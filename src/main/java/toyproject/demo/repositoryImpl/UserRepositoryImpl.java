@@ -64,4 +64,9 @@ public class UserRepositoryImpl implements UserRepository {
     public List<User> findUserByNameAndPhoneAndId(User user) {
         return jdbcTemplate.query("select * from user where name = ? And phoneNumber = ? AND id = ?", rowMapper, user.getName(), user.getPhoneNumber(), user.getId());
     }
+
+    @Override
+    public List<User> findNickname(User user) {
+        return jdbcTemplate.query("select * from user where nickname = ?", rowMapper, user.getNickname());
+    }
 }

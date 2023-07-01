@@ -66,6 +66,10 @@ public class UserController {
             return "에러발생";
         }
     }
+    @PostMapping("/nickname")
+    public String duplicateNickname(User user){
+        return userService.duplicateNick(user);
+    }
 
     @GetMapping("/authentication ")
     public String authentication(@RequestBody String phoneNumber) throws UnsupportedEncodingException, NoSuchAlgorithmException, URISyntaxException, InvalidKeyException, JsonProcessingException {
