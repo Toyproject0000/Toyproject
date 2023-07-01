@@ -14,40 +14,130 @@ class WritingPage extends StatefulWidget {
   State<WritingPage> createState() => _WritingPageState();
 }
 
-class _WritingPageState extends State<WritingPage>{
-
+class _WritingPageState extends State<WritingPage> {
   ScrollController _scrollController = ScrollController();
   quill.QuillController _controller = quill.QuillController.basic();
   FocusNode _focusNode1 = FocusNode();
   final custom1Notifier = ValueNotifier<String>("0");
+  TextEditingController bodyController = TextEditingController();
+  FocusNode _focusNode = FocusNode();
+  TextStyle basicFont = TextStyle(
+    fontSize: 15, color: Colors.black,
+  );
+  List<Widget> toolbar = [];
 
-  final GlobalKey _widgetKey = GlobalKey();
 
-  List<Widget> everyThing = [];
+  @override
+  void initState() {
+    super.initState();
+    toolbar = [
+      SizedBox(
+        width: 20,
+      ),
+      GestureDetector(
+        onTap: () {},
+        child: Text('글꼴'),
+      ),
+      SizedBox(
+        width: 20,
+      ),
+      GestureDetector(
+        onTap: () {},
+        child: Text(basicFont.fontSize.toString()),
+      ),
+      SizedBox(
+        width: 10,
+      ),
+      IconButton(
+        tooltip: '굵기',
+        onPressed: () {
+          int index = 4;
+        },
+        icon: Icon(
+          Icons.format_bold,
+          size: 35,
+        ),
+      ),
+      IconButton(
+        tooltip: '기울임',
+        onPressed: () {
+          int index = 4;
+        },
+        icon: Icon(
+          Icons.format_italic,
+          size: 35,
+        ),
+      ),
+      TextButton(
+        onPressed: () {},
+        child: Image.asset('image/underline.png',
+          width: 25, height: 25,
+        ),
+      ),
+      TextButton(
+        onPressed: () {},
+        child: Image.asset('image/strikethrough.png',
+          width: 30, height: 30,
+        ),
+      ),
+      TextButton(
+        onPressed: () {},
+        child: Image.asset('image/font.png',
+          width: 30, height: 30,
+        ),
+      ),
+      TextButton(
+        onPressed: () {},
+        child: Image.asset('image/text.png',
+          width: 30, height: 30,
+        ),
+      ),
+      Container(
+        decoration: BoxDecoration(
+          border: Border(
+              left: BorderSide(
+                color: Colors.grey,
+                width: 1,
+              )),
+        ),
+        child: TextButton(
+          onPressed: () {
+          },
+          child: Image.asset('image/left-align.png',
+            width: 30, height: 30,
+          ),
+        ),
+      ),
+    ];
+  }
+
+  KeyboardActionsConfig _buildKeyboardActionsConfig(BuildContext context) {
+    return KeyboardActionsConfig(
+      keyboardActionsPlatform: KeyboardActionsPlatform.ALL,
+      keyboardBarColor: Colors.grey,
+      actions: [
+        KeyboardActionsItem(
+          focusNode: _focusNode1,
+        ),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    everyThing = [
-      Container(
-        decoration: BoxDecoration(
-          border: Border.symmetric(
-            horizontal: BorderSide(color: Colors.grey),
+
+    return Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          leading:  IconButton(
+            onPressed: () {},
+            icon: Icon(
+              Icons.cancel_outlined,
+              size: 40,
+            ),
           ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.cancel_outlined,
-                size: 40,
-              ),
-            ),
-            Text(
-              '새 게시물',
-              style: TextStyle(fontSize: 20),
-            ),
+          title: Text('새 게시물'),
+          actions: [
             TextButton(
               onPressed: () {},
               child: Text(
@@ -56,79 +146,96 @@ class _WritingPageState extends State<WritingPage>{
               ),
             ),
           ],
+          automaticallyImplyLeading: false,
         ),
-      ),
-      Container(
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        decoration: BoxDecoration(
-          border: Border.symmetric(
-            horizontal: BorderSide(color: Colors.grey),
-          ),
-        ),
-        child: TextFormField(
-          focusNode: _focusNode1,
-          keyboardType: TextInputType.text,
-          maxLength: 20,
-          decoration: InputDecoration(
-            hintText: '제목',
-            focusedBorder: InputBorder.none,
-            counterText: '',
-            enabledBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: Colors.transparent),
+        body: CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                decoration: BoxDecoration(
+                  border: Border.symmetric(
+                    horizontal: BorderSide(color: Colors.grey),
+                  ),
+                ),
+                child: TextFormField(
+                  focusNode: _focusNode1,
+                  keyboardType: TextInputType.text,
+                  maxLength: 20,
+                  decoration: InputDecoration(
+                    hintText: '제목',
+                    focusedBorder: InputBorder.none,
+                    counterText: '',
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.transparent),
+                    ),
+                  ),
+                ),
+              ),
             ),
-          ),
-        ),
-      ),
-      Container(
-        padding: EdgeInsets.symmetric(vertical: 3),
-        decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(
-              color: Colors.grey,
-              width: 1
-            )
-          )
-        ),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: quill.QuillToolbar.basic(
-            controller: _controller,
-            toolbarIconSize: 23,
-            iconTheme: quill.QuillIconTheme(
-              iconSelectedFillColor: Colors.lightBlue,
-              iconSelectedColor: Colors.white,
+            SliverPersistentHeader(
+              pinned: true,
+              delegate: SampleHeaderDelegate(
+                widget:  Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(vertical: 3),
+                  decoration: BoxDecoration(
+                      border: Border(bottom: BorderSide(color: Colors.grey, width: 1)),
+                    color: Colors.white,
+                  ),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: toolbar,
+                    )
+                  ),
+                ),
+              ),
             ),
-          ),
-        ),
-      ),
-      Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: quill.QuillEditor.basic(
-          controller: _controller,
-          readOnly: false,
-        ),
-      ),
-      SizedBox(
-        height: 50,
-      ),
-    ];
-
-    return Scaffold(
-      body: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).unfocus();
-        },
-        child: Container(
-          child: ListView.builder(
-              controller: _scrollController,
-              physics: AlwaysScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: everyThing.length,
-              itemBuilder: (BuildContext context, int index) {
-                return everyThing[index];
-              }),
-        ),
+            SliverToBoxAdapter(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: EditableText(
+                    controller: bodyController,
+                    focusNode: _focusNode,
+                    style: basicFont,
+                    cursorColor: Colors.black,
+                    backgroundCursorColor: Colors.black,
+                    maxLines: null,
+                  ),
+                ),
+              ),
+            ),
+        ],
       ),
     );
+  }
+}
+
+class SampleHeaderDelegate extends SliverPersistentHeaderDelegate {
+  SampleHeaderDelegate({required this.widget});
+
+  Widget widget;
+
+
+  @override
+  Widget build(
+    BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return Align(child: widget);
+
+  }
+
+  @override
+  double get maxExtent => 50;
+
+  @override
+  double get minExtent => 50;
+
+
+
+  @override
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
+    return false;
   }
 }

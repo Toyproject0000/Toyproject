@@ -18,12 +18,24 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   String userEmail = '';
   String userPassword = '';
+  bool loginError = true;
 
   void _tryValidation() {
     final isValid = _formKey.currentState!.validate();
     if (isValid) {
       _formKey.currentState!.save();
+      var data = {
+        'id' : userEmail,
+        'password' : userPassword,
+      };
+      loginSendData(data, context, loginCheck);
     }
+  }
+
+  void loginCheck(){
+    setState(() {
+      loginError = false;
+    });
   }
 
   @override
@@ -80,10 +92,10 @@ class _LoginScreenState extends State<LoginScreen> {
                               TextFormField(
                                 validator: (value) {
                                   if (value!.isEmpty) {
-                                    return '아이디를 입력하시오';
+                                    loginError = false;
                                   }
                                   else if (!value.contains('@')){
-                                    return '이메일 형식을 입력하시오';
+                                    loginError = false;
                                   }
                                   return null;
                                 },
@@ -104,7 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               TextFormField(
                                 validator: (value) {
                                   if (value!.isEmpty) {
-                                    return '비밀번호를 입력하시오';
+                                    loginError = false;
                                   }
                                   return null;
                                 },
@@ -137,12 +149,23 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ],
                                 ),
                               ),
+                              if(loginError == false)
+                              Padding(
+                                padding: EdgeInsets.only(bottom: 10),
+                                child: Text(
+                                  '아이디(로그인 전용 아이디) 또는 비밀번호를 잘못 입력했습니다.'
+                                      '입력하신 내용을 다시 확인해주세요.',
+                                  style: TextStyle(
+                                    color: Colors.red
+                                  ),
+                                ),
+                              ),
                               // 로그인 버튼
                               ElevatedButton(
                                 onPressed: () {
+                                  Navigator.pushNamed(context, SetPage.routeName);
                                   _tryValidation();
-                                  // sendData();
-                                  Navigator.pushNamed(context ,SetPage.routeName);
+
                                 },
                                 child: Text(
                                   '로그인',

@@ -29,24 +29,35 @@ class _JoinmembershipState extends State<Joinmembership> {
   String dateofBirth = '';
 
 
-  // RegExp regex = RegExp(r'^[a-zA-Z0-9]+$');
   String? perfectPassWord;
   bool manButton = false;
   bool womanButton = false;
-
-  void _profile(context) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return NickName();
-        }
-      );
-  }
 
   void _tryValidation() {
     final isValid = _formKey.currentState!.validate();
     if (isValid) {
       _formKey.currentState!.save();
+      try{
+        var data = {
+          'id' : userEmail,
+          'password' : userPassword,
+          'name' : userName,
+          'gender' : manButton,
+        };
+        ServerConnection server = ServerConnection(context);
+        server.sendData(data);
+      }catch(e){
+        print(e);
+        if(mounted){
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                  'Please check your email and password'),
+              backgroundColor: Colors.blue,
+            ),
+          );
+        }
+      }
     }
   }
   void _NumberValidation(){
@@ -117,9 +128,9 @@ class _JoinmembershipState extends State<Joinmembership> {
                       if (value!.isEmpty || value.length < 8) {
                         return '8글자 이상을 입력하시오';
                       }
-                      // else if (value == regex){
-                      //   return '비멀번호는 숫자,문자,특수기호를 포함한 형식으로 작성해주세요';
-                      // }
+                      else if (!value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))){
+                        return '비멀번호는 숫자,문자,특수기호를 포함한 형식으로 작성해주세요';
+                      }
                       perfectPassWord = value; // 수정해야햄
                       return null;
                     },
@@ -147,7 +158,6 @@ class _JoinmembershipState extends State<Joinmembership> {
                     onSaved: (value) {
                       userPassword = value!;
                     },
-
                     obscureText: true,
                     decoration: InputDecoration(
                         prefixIcon: Icon(Icons.lock),
@@ -181,9 +191,6 @@ class _JoinmembershipState extends State<Joinmembership> {
                   ),
                   TextFormField(
                     keyboardType: TextInputType.number,
-                    // inputFormatters: [
-                    //   FilteringTextInputFormatter.digitsOnly,
-                    // ],
                     validator: (value) {
                       if (value!.isEmpty || value.length < 8) {
                         return '생년월일 8자리를 입력하시오';
@@ -197,11 +204,11 @@ class _JoinmembershipState extends State<Joinmembership> {
                       dateofBirth = value;
                     },
                     decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.calendar_month),
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                        hintText: '생년월일(8자리)'),
+                      prefixIcon: Icon(Icons.calendar_month),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey),
+                      ),
+                      hintText: '생년월일(8자리)'),
                   ),
                   Container(
                     height: 60,
@@ -272,7 +279,7 @@ class _JoinmembershipState extends State<Joinmembership> {
                           child: Form(
                             key: _numberKey,
                             child: TextFormField(
-                              // keyboardType: TextInputType.number,
+                              keyboardType: TextInputType.number,
                               inputFormatters: [
                                 FilteringTextInputFormatter.digitsOnly,
                               ],
@@ -367,20 +374,27 @@ class _JoinmembershipState extends State<Joinmembership> {
                       ),
                     onPressed: () {
                       _tryValidation();
-                      try{
-                        _profile(context);
-                      }catch(e){
-                        print(e);
-                        if(mounted){
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                  'Please check your email and password'),
-                              backgroundColor: Colors.blue,
-                            ),
-                          );
-                        }
-                      }
+                      // try{
+                      //   var data = {
+                      //     'email' : userEmail,
+                      //     'password' : userPassword,
+                      //     'name' : userName,
+                      //     'gender' : manButton,
+                      //   };
+                      //   ServerConnection server = ServerConnection(profile, context);
+                      //   server.sendData(data);
+                      // }catch(e){
+                      //   print(e);
+                      //   if(mounted){
+                      //     ScaffoldMessenger.of(context).showSnackBar(
+                      //       SnackBar(
+                      //         content: Text(
+                      //             'Please check your email and password'),
+                      //         backgroundColor: Colors.blue,
+                      //       ),
+                      //     );
+                      //   }
+                      // }
                     }
                   ),
                 ],
