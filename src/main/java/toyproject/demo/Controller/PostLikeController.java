@@ -1,11 +1,13 @@
 package toyproject.demo.Controller;
 
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import toyproject.demo.domain.PostLike;
 import toyproject.demo.service.PostLikeService;
 
-@RestController("/post-like")
+@RestController
+@RequestMapping("/post-like")
 public class PostLikeController {
     /*
      * 좋아요 추가

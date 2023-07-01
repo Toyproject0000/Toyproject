@@ -1,12 +1,14 @@
 package toyproject.demo.Controller;
 
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import toyproject.demo.domain.Follow;
 import toyproject.demo.domain.User;
 import toyproject.demo.service.FollowService;
 
-@RestController("/follow")
+@RestController
+@RequestMapping("/follow")
 public class FollowController {
 
     /*

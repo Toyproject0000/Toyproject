@@ -1,10 +1,7 @@
 package toyproject.demo.Controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import toyproject.demo.domain.User;
 import toyproject.demo.service.SmsService;
 import toyproject.demo.service.UserService;
@@ -14,7 +11,8 @@ import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
-@RestController("/")
+@RestController
+@RequestMapping("/")
 public class UserController {
 
     /*

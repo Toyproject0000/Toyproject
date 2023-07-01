@@ -1,12 +1,13 @@
 package toyproject.demo.Controller;
 
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import toyproject.demo.domain.PostLike;
 import toyproject.demo.domain.ReplyLike;
 import toyproject.demo.service.ReplyLikeService;
 
-@RestController("/Reply-like")
+@RestController
+@RequestMapping("/reply-like")
 public class ReplyLikeController {
 
     /*
