@@ -15,8 +15,6 @@ class WritingPage extends StatefulWidget {
 }
 
 class _WritingPageState extends State<WritingPage> {
-  ScrollController _scrollController = ScrollController();
-  quill.QuillController _controller = quill.QuillController.basic();
   FocusNode _focusNode1 = FocusNode();
   final custom1Notifier = ValueNotifier<String>("0");
   TextEditingController bodyController = TextEditingController();
@@ -25,6 +23,7 @@ class _WritingPageState extends State<WritingPage> {
     fontSize: 15, color: Colors.black,
   );
   List<Widget> toolbar = [];
+  bool keyboardActivation = false;
 
 
   @override
@@ -111,20 +110,23 @@ class _WritingPageState extends State<WritingPage> {
     ];
   }
 
-  KeyboardActionsConfig _buildKeyboardActionsConfig(BuildContext context) {
-    return KeyboardActionsConfig(
-      keyboardActionsPlatform: KeyboardActionsPlatform.ALL,
-      keyboardBarColor: Colors.grey,
-      actions: [
-        KeyboardActionsItem(
-          focusNode: _focusNode1,
-        ),
-      ],
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
+
+    FocusScope.of(context).addListener(() {
+      if (_focusNode1.hasFocus || _focusNode.hasFocus) {
+        // KeyPad가 나타날 때 실행할 코드
+        setState(() {
+          keyboardActivation = true;
+        });
+      } else {
+        // KeyPad가 사라질 때 실행할 코드
+        setState(() {
+          keyboardActivation = false;
+        });
+      }
+    });
 
     return Scaffold(
         appBar: AppBar(
@@ -148,67 +150,109 @@ class _WritingPageState extends State<WritingPage> {
           ],
           automaticallyImplyLeading: false,
         ),
-        body: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                decoration: BoxDecoration(
-                  border: Border.symmetric(
-                    horizontal: BorderSide(color: Colors.grey),
-                  ),
-                ),
-                child: TextFormField(
-                  focusNode: _focusNode1,
-                  keyboardType: TextInputType.text,
-                  maxLength: 20,
-                  decoration: InputDecoration(
-                    hintText: '제목',
-                    focusedBorder: InputBorder.none,
-                    counterText: '',
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.transparent),
+        body: Column(
+          children: [
+            Expanded(
+              child: CustomScrollView(
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      decoration: BoxDecoration(
+                        border: Border.symmetric(
+                          horizontal: BorderSide(color: Colors.grey),
+                        ),
+                      ),
+                      child: TextFormField(
+                        focusNode: _focusNode1,
+                        keyboardType: TextInputType.text,
+                        maxLength: 20,
+                        decoration: InputDecoration(
+                          hintText: '제목',
+                          focusedBorder: InputBorder.none,
+                          counterText: '',
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.transparent),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                  SliverPersistentHeader(
+                    pinned: true,
+                    delegate: SampleHeaderDelegate(
+                      widget:  Container(
+                        width: double.infinity,
+                        padding: EdgeInsets.symmetric(vertical: 3),
+                        decoration: BoxDecoration(
+                            border: Border(bottom: BorderSide(color: Colors.grey, width: 1)),
+                          color: Colors.white,
+                        ),
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: toolbar,
+                          )
+                        ),
+                      ),
+                    ),
+                  ),
+                  SliverToBoxAdapter(
+                    child: SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: EditableText(
+                          controller: bodyController,
+                          focusNode: _focusNode,
+                          style: basicFont,
+                          cursorColor: Colors.black,
+                          backgroundCursorColor: Colors.black,
+                          maxLines: null,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+               ),
+            ),
+            if(keyboardActivation == true)
+            Container(
+              color: Colors.grey[200],
+              height: 40,
+              width: double.infinity,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      SizedBox(width: 10,),
+                      GestureDetector(
+                        onTap: (){
+                          if (!_focusNode1.hasFocus) {
+                            FocusScope.of(context).requestFocus(_focusNode1);
+                          }
+                        },
+                        child: Icon(Icons.arrow_upward_rounded, color: Colors.blue,)),
+                      SizedBox(width: 10,),
+                      GestureDetector(
+                          onTap: (){
+                            if (!_focusNode.hasFocus) {
+                              FocusScope.of(context).requestFocus(_focusNode);
+                            }
+                          },
+                          child: Icon(Icons.arrow_downward, color: Colors.blue)),
+                    ],
+                  ),
+                  TextButton(
+                      onPressed: (){
+                        FocusScope.of(context).unfocus();
+                      },
+                      child: Text('완료', style: TextStyle(color: Colors.blue),))
+                ],
               ),
             ),
-            SliverPersistentHeader(
-              pinned: true,
-              delegate: SampleHeaderDelegate(
-                widget:  Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.symmetric(vertical: 3),
-                  decoration: BoxDecoration(
-                      border: Border(bottom: BorderSide(color: Colors.grey, width: 1)),
-                    color: Colors.white,
-                  ),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: toolbar,
-                    )
-                  ),
-                ),
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: EditableText(
-                    controller: bodyController,
-                    focusNode: _focusNode,
-                    style: basicFont,
-                    cursorColor: Colors.black,
-                    backgroundCursorColor: Colors.black,
-                    maxLines: null,
-                  ),
-                ),
-              ),
-            ),
-        ],
-      ),
+          ],
+        ),
     );
   }
 }
