@@ -16,19 +16,28 @@ class WritingPage extends StatefulWidget {
 
 class _WritingPageState extends State<WritingPage> {
   FocusNode _focusNode1 = FocusNode();
-  final custom1Notifier = ValueNotifier<String>("0");
   TextEditingController bodyController = TextEditingController();
   FocusNode _focusNode = FocusNode();
+  TextSelectionControls? selectionControls;
+  bool editText = false;
+
   TextStyle basicFont = TextStyle(
-    fontSize: 15, color: Colors.black,
+    fontSize: 15,
+    color: Colors.black,
   );
   List<Widget> toolbar = [];
   bool keyboardActivation = false;
 
+  void changeFontSize() {
+    TextSelection selection = bodyController.selection;
+    print('Selection Start: ${selection.start}');
+    print('Selection End: ${selection.end}');
+  }
 
   @override
   void initState() {
     super.initState();
+
     toolbar = [
       SizedBox(
         width: 20,
@@ -41,7 +50,9 @@ class _WritingPageState extends State<WritingPage> {
         width: 20,
       ),
       GestureDetector(
-        onTap: () {},
+        onTap: () {
+          changeFontSize();
+        },
         child: Text(basicFont.fontSize.toString()),
       ),
       SizedBox(
@@ -51,6 +62,7 @@ class _WritingPageState extends State<WritingPage> {
         tooltip: '굵기',
         onPressed: () {
           int index = 4;
+          // print('굵기');
         },
         icon: Icon(
           Icons.format_bold,
@@ -69,51 +81,58 @@ class _WritingPageState extends State<WritingPage> {
       ),
       TextButton(
         onPressed: () {},
-        child: Image.asset('image/underline.png',
-          width: 25, height: 25,
+        child: Image.asset(
+          'image/underline.png',
+          width: 25,
+          height: 25,
         ),
       ),
       TextButton(
         onPressed: () {},
-        child: Image.asset('image/strikethrough.png',
-          width: 30, height: 30,
+        child: Image.asset(
+          'image/strikethrough.png',
+          width: 30,
+          height: 30,
         ),
       ),
       TextButton(
         onPressed: () {},
-        child: Image.asset('image/font.png',
-          width: 30, height: 30,
+        child: Image.asset(
+          'image/font.png',
+          width: 30,
+          height: 30,
         ),
       ),
       TextButton(
         onPressed: () {},
-        child: Image.asset('image/text.png',
-          width: 30, height: 30,
+        child: Image.asset(
+          'image/text.png',
+          width: 30,
+          height: 30,
         ),
       ),
       Container(
         decoration: BoxDecoration(
           border: Border(
               left: BorderSide(
-                color: Colors.grey,
-                width: 1,
-              )),
+            color: Colors.grey,
+            width: 1,
+          )),
         ),
         child: TextButton(
-          onPressed: () {
-          },
-          child: Image.asset('image/left-align.png',
-            width: 30, height: 30,
+          onPressed: () {},
+          child: Image.asset(
+            'image/left-align.png',
+            width: 30,
+            height: 30,
           ),
         ),
       ),
     ];
   }
 
-
   @override
   Widget build(BuildContext context) {
-
     FocusScope.of(context).addListener(() {
       if (_focusNode1.hasFocus || _focusNode.hasFocus) {
         // KeyPad가 나타날 때 실행할 코드
@@ -129,93 +148,104 @@ class _WritingPageState extends State<WritingPage> {
     });
 
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          leading:  IconButton(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        leading: IconButton(
+          onPressed: () {},
+          icon: Icon(
+            Icons.cancel_outlined,
+            size: 40,
+          ),
+        ),
+        // title: Text('새 게시물'),
+        title: SelectableText('새 게시물'),
+        actions: [
+          TextButton(
             onPressed: () {},
-            icon: Icon(
-              Icons.cancel_outlined,
-              size: 40,
+            child: Text(
+              '다음',
+              style: TextStyle(color: Colors.blue, fontSize: 20),
             ),
           ),
-          title: Text('새 게시물'),
-          actions: [
-            TextButton(
-              onPressed: () {},
-              child: Text(
-                '다음',
-                style: TextStyle(color: Colors.blue, fontSize: 20),
-              ),
-            ),
-          ],
-          automaticallyImplyLeading: false,
-        ),
-        body: Column(
-          children: [
-            Expanded(
-              child: CustomScrollView(
-                slivers: [
-                  SliverToBoxAdapter(
-                    child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                      decoration: BoxDecoration(
-                        border: Border.symmetric(
-                          horizontal: BorderSide(color: Colors.grey),
-                        ),
+        ],
+        automaticallyImplyLeading: false,
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: CustomScrollView(
+              slivers: [
+                SliverToBoxAdapter(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                      border: Border.symmetric(
+                        horizontal: BorderSide(color: Colors.grey),
                       ),
-                      child: TextFormField(
-                        focusNode: _focusNode1,
-                        keyboardType: TextInputType.text,
-                        maxLength: 20,
-                        decoration: InputDecoration(
-                          hintText: '제목',
-                          focusedBorder: InputBorder.none,
-                          counterText: '',
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.transparent),
-                          ),
+                    ),
+                    child: TextFormField(
+                      focusNode: _focusNode1,
+                      keyboardType: TextInputType.text,
+                      maxLength: 20,
+                      decoration: InputDecoration(
+                        hintText: '제목',
+                        focusedBorder: InputBorder.none,
+                        counterText: '',
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.transparent),
                         ),
                       ),
                     ),
                   ),
-                  SliverPersistentHeader(
-                    pinned: true,
-                    delegate: SampleHeaderDelegate(
-                      widget:  Container(
-                        width: double.infinity,
-                        padding: EdgeInsets.symmetric(vertical: 3),
-                        decoration: BoxDecoration(
-                            border: Border(bottom: BorderSide(color: Colors.grey, width: 1)),
-                          color: Colors.white,
-                        ),
-                        child: SingleChildScrollView(
+                ),
+                SliverPersistentHeader(
+                  pinned: true,
+                  delegate: SampleHeaderDelegate(
+                    widget: Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.symmetric(vertical: 3),
+                      decoration: BoxDecoration(
+                        border: Border(
+                            bottom: BorderSide(color: Colors.grey, width: 1)),
+                        color: Colors.white,
+                      ),
+                      child: SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
                           child: Row(
                             children: toolbar,
-                          )
+                          )),
+                    ),
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: EditableText(
+                        toolbarOptions: ToolbarOptions(
+                          copy: false,
+                          cut: false,
+                          paste: false,
+                          selectAll: false,
                         ),
+                        selectionControls: MaterialTextSelectionControls(),
+                        selectionColor: Color(0xFFffceab),
+                        controller: bodyController,
+                        focusNode: _focusNode,
+                        style: basicFont,
+                        cursorColor: Colors.blue,
+                        backgroundCursorColor: Colors.black,
+                        maxLines: null,
+                        showSelectionHandles: true,
+                        showCursor: true,
                       ),
                     ),
                   ),
-                  SliverToBoxAdapter(
-                    child: SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: EditableText(
-                          controller: bodyController,
-                          focusNode: _focusNode,
-                          style: basicFont,
-                          cursorColor: Colors.black,
-                          backgroundCursorColor: Colors.black,
-                          maxLines: null,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-               ),
+                ),
+              ],
             ),
-            if(keyboardActivation == true)
+          ),
+          if (keyboardActivation == true)
             Container(
               color: Colors.grey[200],
               height: 40,
@@ -225,34 +255,45 @@ class _WritingPageState extends State<WritingPage> {
                 children: [
                   Row(
                     children: [
-                      SizedBox(width: 10,),
+                      SizedBox(
+                        width: 10,
+                      ),
                       GestureDetector(
-                        onTap: (){
-                          if (!_focusNode1.hasFocus) {
-                            FocusScope.of(context).requestFocus(_focusNode1);
-                          }
-                        },
-                        child: Icon(Icons.arrow_upward_rounded, color: Colors.blue,)),
-                      SizedBox(width: 10,),
+                          onTap: () {
+                            if (!_focusNode1.hasFocus) {
+                              FocusScope.of(context).requestFocus(_focusNode1);
+                            }
+                          },
+                          child: Icon(
+                            Icons.arrow_upward_rounded,
+                            color: Colors.blue,
+                          )),
+                      SizedBox(
+                        width: 10,
+                      ),
                       GestureDetector(
-                          onTap: (){
+                          onTap: () {
                             if (!_focusNode.hasFocus) {
                               FocusScope.of(context).requestFocus(_focusNode);
                             }
                           },
-                          child: Icon(Icons.arrow_downward, color: Colors.blue)),
+                          child:
+                              Icon(Icons.arrow_downward, color: Colors.blue)),
                     ],
                   ),
                   TextButton(
-                      onPressed: (){
+                      onPressed: () {
                         FocusScope.of(context).unfocus();
                       },
-                      child: Text('완료', style: TextStyle(color: Colors.blue),))
+                      child: Text(
+                        '완료',
+                        style: TextStyle(color: Colors.blue),
+                      ))
                 ],
               ),
             ),
-          ],
-        ),
+        ],
+      ),
     );
   }
 }
@@ -262,12 +303,10 @@ class SampleHeaderDelegate extends SliverPersistentHeaderDelegate {
 
   Widget widget;
 
-
   @override
   Widget build(
-    BuildContext context, double shrinkOffset, bool overlapsContent) {
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Align(child: widget);
-
   }
 
   @override
@@ -275,8 +314,6 @@ class SampleHeaderDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   double get minExtent => 50;
-
-
 
   @override
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
