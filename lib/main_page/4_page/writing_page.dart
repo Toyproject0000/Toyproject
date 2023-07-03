@@ -1,11 +1,9 @@
-import 'dart:io';
+// import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:flutter_quill/flutter_quill.dart' as quill;
-import 'package:keyboard_actions/keyboard_actions.dart';
 
 class WritingPage extends StatefulWidget {
   const WritingPage({Key? key}) : super(key: key);
@@ -19,7 +17,9 @@ class _WritingPageState extends State<WritingPage> {
   TextEditingController bodyController = TextEditingController();
   FocusNode _focusNode = FocusNode();
   TextSelectionControls? selectionControls;
-  bool editText = false;
+  String selectionText = '';
+  // RichText? combinationText;
+  SelectableText? combinationText;
 
   TextStyle basicFont = TextStyle(
     fontSize: 15,
@@ -28,15 +28,63 @@ class _WritingPageState extends State<WritingPage> {
   List<Widget> toolbar = [];
   bool keyboardActivation = false;
 
+  void changeSeletion(text) {
+    setState(() {
+      selectionText = text;
+      combinationText = SelectableText.rich(TextSpan(children: <TextSpan>[
+        TextSpan(text: selectionText, style: basicFont)
+      ]));
+    });
+  }
+
   void changeFontSize() {
-    TextSelection selection = bodyController.selection;
-    print('Selection Start: ${selection.start}');
-    print('Selection End: ${selection.end}');
+    final TextSelection selection = bodyController.selection;
+
+    if (selection.baseOffset == selection.extentOffset) {
+      print('cursor 시작');
+    }
+    if (selection.baseOffset < selection.extentOffset) {
+      print('범위 지정');
+      TextStyle newStyle = TextStyle(
+        color: Colors.red,
+        fontSize: 25,
+      );
+
+      setState(() {
+        final SelectableText newText = SelectableText.rich(
+          TextSpan(
+            children: <TextSpan>[
+              TextSpan(
+                  text: selectionText.substring(0, selection.baseOffset),
+                  style: basicFont),
+              TextSpan(
+                  text: selectionText.substring(
+                      selection.baseOffset, selection.extentOffset),
+                  style: newStyle),
+              TextSpan(
+                  text: selectionText.substring(
+                      selection.extentOffset, bodyController.text.length),
+                  style: basicFont),
+            ],
+          ),
+        );
+        combinationText = newText;
+      });
+    }
   }
 
   @override
   void initState() {
     super.initState();
+
+    combinationText = SelectableText.rich(
+        onSelectionChanged: (selection, cause) {
+      print('선택된 텍스트 범위: ${selection.start} ~ ${selection.end}');
+      print('선택된 텍스트 원인: $cause');
+    },
+        TextSpan(children: <TextSpan>[
+          TextSpan(text: 'selectionText', style: basicFont)
+        ]));
 
     toolbar = [
       SizedBox(
@@ -62,7 +110,7 @@ class _WritingPageState extends State<WritingPage> {
         tooltip: '굵기',
         onPressed: () {
           int index = 4;
-          // print('굵기');
+          print('굵기');
         },
         icon: Icon(
           Icons.format_bold,
@@ -228,6 +276,9 @@ class _WritingPageState extends State<WritingPage> {
                           paste: false,
                           selectAll: false,
                         ),
+                        onChanged: (text) {
+                          changeSeletion(text);
+                        },
                         selectionControls: MaterialTextSelectionControls(),
                         selectionColor: Color(0xFFffceab),
                         controller: bodyController,
@@ -240,6 +291,13 @@ class _WritingPageState extends State<WritingPage> {
                         showCursor: true,
                       ),
                     ),
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: SingleChildScrollView(
+                    child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: combinationText),
                   ),
                 ),
               ],
