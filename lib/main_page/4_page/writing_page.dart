@@ -18,8 +18,9 @@ class _WritingPageState extends State<WritingPage> {
   FocusNode _focusNode = FocusNode();
   TextSelectionControls? selectionControls;
   String selectionText = '';
-  // RichText? combinationText;
   SelectableText? combinationText;
+  SelectableText? newText;
+  List<TextSpan> textSpanCollection = [];
 
   TextStyle basicFont = TextStyle(
     fontSize: 15,
@@ -29,11 +30,14 @@ class _WritingPageState extends State<WritingPage> {
   bool keyboardActivation = false;
 
   void changeSeletion(text) {
+    selectionText = text;
+    final TextSpan newTextSpan =
+        TextSpan(text: selectionText, style: basicFont);
+    textSpanCollection.add(newTextSpan);
+
     setState(() {
-      selectionText = text;
-      combinationText = SelectableText.rich(TextSpan(children: <TextSpan>[
-        TextSpan(text: selectionText, style: basicFont)
-      ]));
+      combinationText =
+          SelectableText.rich(TextSpan(children: textSpanCollection));
     });
   }
 
@@ -51,7 +55,7 @@ class _WritingPageState extends State<WritingPage> {
       );
 
       setState(() {
-        final SelectableText newText = SelectableText.rich(
+        newText = SelectableText.rich(
           TextSpan(
             children: <TextSpan>[
               TextSpan(
@@ -77,14 +81,8 @@ class _WritingPageState extends State<WritingPage> {
   void initState() {
     super.initState();
 
-    combinationText = SelectableText.rich(
-        onSelectionChanged: (selection, cause) {
-      print('선택된 텍스트 범위: ${selection.start} ~ ${selection.end}');
-      print('선택된 텍스트 원인: $cause');
-    },
-        TextSpan(children: <TextSpan>[
-          TextSpan(text: 'selectionText', style: basicFont)
-        ]));
+    combinationText =
+        SelectableText.rich(TextSpan(children: textSpanCollection));
 
     toolbar = [
       SizedBox(

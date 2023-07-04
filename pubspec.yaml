@@ -75,6 +75,7 @@ flutter:
    - image/underline.png
    - image/font.png
    - image/strikethrough.png
+   - image/personicon.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
