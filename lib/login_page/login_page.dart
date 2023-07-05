@@ -5,6 +5,8 @@ import 'package:smart_dongne/login_page/find_password.dart';
 import 'package:smart_dongne/login_page/join_membership_page.dart';
 import 'package:smart_dongne/main_page/setpage.dart';
 
+import 'find_id.dart';
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
   static const routeName = '/';
@@ -14,7 +16,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-
   final _formKey = GlobalKey<FormState>();
   String userEmail = '';
   String userPassword = '';
@@ -25,14 +26,14 @@ class _LoginScreenState extends State<LoginScreen> {
     if (isValid) {
       _formKey.currentState!.save();
       var data = {
-        'id' : userEmail,
-        'password' : userPassword,
+        'id': userEmail,
+        'password': userPassword,
       };
       loginSendData(data, context, loginCheck);
     }
   }
 
-  void loginCheck(){
+  void loginCheck() {
     setState(() {
       loginError = false;
     });
@@ -85,7 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       child: Form(
-                        key : _formKey,
+                        key: _formKey,
                         child: SingleChildScrollView(
                           child: Column(
                             children: [
@@ -93,8 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 validator: (value) {
                                   if (value!.isEmpty) {
                                     loginError = false;
-                                  }
-                                  else if (!value.contains('@')){
+                                  } else if (!value.contains('@')) {
                                     loginError = false;
                                   }
                                   return null;
@@ -106,11 +106,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                   userEmail = value;
                                 },
                                 decoration: InputDecoration(
-                                    prefixIcon: Icon(Icons.email),
-                                    border: OutlineInputBorder(
-                                      borderSide: BorderSide(color: Colors.grey),
-                                    ),
-                                    hintText: '아이디',
+                                  prefixIcon: Icon(Icons.email),
+                                  border: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.grey),
+                                  ),
+                                  hintText: '아이디',
                                 ),
                               ),
                               TextFormField(
@@ -130,7 +130,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                 decoration: InputDecoration(
                                     prefixIcon: Icon(Icons.lock),
                                     border: OutlineInputBorder(
-                                      borderSide: BorderSide(color: Colors.grey),
+                                      borderSide:
+                                          BorderSide(color: Colors.grey),
                                     ),
                                     hintText: '비밀번호'),
                               ),
@@ -149,24 +150,22 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ],
                                 ),
                               ),
-                              if(loginError == false)
-                              Padding(
-                                padding: EdgeInsets.only(bottom: 10),
-                                child: Text(
-                                  '아이디(로그인 전용 아이디) 또는 비밀번호를 잘못 입력했습니다.'
-                                      '입력하신 내용을 다시 확인해주세요.',
-                                  style: TextStyle(
-                                    color: Colors.red
+                              if (loginError == false)
+                                Padding(
+                                  padding: EdgeInsets.only(bottom: 10),
+                                  child: Text(
+                                    '아이디(로그인 전용 아이디) 또는 비밀번호를 잘못 입력했습니다.'
+                                    '입력하신 내용을 다시 확인해주세요.',
+                                    style: TextStyle(color: Colors.red),
                                   ),
                                 ),
-                              ),
                               // 로그인 버튼
                               ElevatedButton(
                                 onPressed: () {
-                                  Navigator.pushNamed(context, SetPage.routeName);
+                                  Navigator.pushNamed(
+                                      context, SetPage.routeName);
                                   // 서버 연걸
                                   // _tryValidation();
-
                                 },
                                 child: Text(
                                   '로그인',
@@ -190,7 +189,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pushNamed(context, FindId.routeName);
+                        },
                         child: Text(
                           '아이디 찾기',
                           style: TextStyle(
@@ -211,7 +212,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       TextButton(
                         onPressed: () {
-                          Navigator.pushNamed(context, Joinmembership.routeName);
+                          Navigator.pushNamed(
+                              context, Joinmembership.routeName);
                         },
                         child: Text(
                           '회원가입',

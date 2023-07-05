@@ -196,14 +196,6 @@ class _WritingPageState extends State<WritingPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        leading: IconButton(
-          onPressed: () {},
-          icon: Icon(
-            Icons.cancel_outlined,
-            size: 40,
-          ),
-        ),
-        // title: Text('새 게시물'),
         title: SelectableText('새 게시물'),
         actions: [
           TextButton(
