@@ -224,7 +224,7 @@ class _WritingPageState extends State<WritingPage> {
                     child: TextFormField(
                       focusNode: _focusNode1,
                       keyboardType: TextInputType.text,
-                      maxLength: 20,
+                      maxLength: 60,
                       decoration: InputDecoration(
                         hintText: '제목',
                         focusedBorder: InputBorder.none,

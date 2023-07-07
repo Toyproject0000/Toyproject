@@ -35,100 +35,86 @@ class _ProfileEditState extends State<ProfileEdit> {
           alignment: Alignment.bottomCenter,
           child: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
               color: Colors.grey[300],
             ),
             margin: EdgeInsets.only(bottom: 50.0),
-            height: MediaQuery.of(context).size.height * 0.24,
-            width: MediaQuery.of(context).size.width - 20,
+            height: MediaQuery.of(context).size.height * 0.18,
+            width: MediaQuery.of(context).size.width,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(
-                  height: 40,
-                  decoration: BoxDecoration(
+                Expanded(
+                    child: GestureDetector(
+                  onTap: () {
+                    pickImage();
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(10.0),
+                    decoration: BoxDecoration(
                       border: Border(
-                          bottom: BorderSide(width: 1, color: Colors.grey))),
-                  width: double.infinity,
-                  child: Center(
-                    child: Text(
-                      '프로필 사진 설정',
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: Colors.grey,
-                        decoration: TextDecoration.none,
+                        bottom: BorderSide(color: Colors.grey, width: 1.0),
                       ),
                     ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.photo_camera_rounded),
+                        SizedBox(width: 18),
+                        Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('Camera',
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    color: Colors.black,
+                                    decoration: TextDecoration.none,
+                                  )),
+                              Text('카메라로 사진찍기',
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    color: Colors.grey,
+                                    decoration: TextDecoration.none,
+                                  ))
+                            ]),
+                      ],
+                    ),
                   ),
-                ),
+                )),
                 Expanded(
-                  child: GestureDetector(
-                    onTap: () {},
-                    child: Container(
-                      decoration: BoxDecoration(
-                          border: Border(
-                              bottom:
-                                  BorderSide(width: 1, color: Colors.grey))),
-                      width: double.infinity,
-                      child: Center(
-                        child: Text(
-                          '앨범에서 사진 선택',
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.blue,
-                            decoration: TextDecoration.none,
-                          ),
-                        ),
+                    child: GestureDetector(
+                  onTap: () {},
+                  child: Container(
+                    padding: EdgeInsets.all(10.0),
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(color: Colors.grey, width: 1.0),
                       ),
                     ),
-                  ),
-                ),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      pickImage();
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                          border: Border(
-                              bottom:
-                                  BorderSide(width: 1, color: Colors.grey))),
-                      width: double.infinity,
-                      child: Center(
-                        child: Text(
-                          '카메라로 사진 찍기',
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.blue,
-                            decoration: TextDecoration.none,
-                          ),
-                        ),
-                      ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Icon(Icons.image),
+                        SizedBox(width: 20),
+                        Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('Gallery',
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    color: Colors.black,
+                                    decoration: TextDecoration.none,
+                                  )),
+                              Text('갤러리에서 사진 가져오기',
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    color: Colors.grey,
+                                    decoration: TextDecoration.none,
+                                  ))
+                            ]),
+                      ],
                     ),
                   ),
-                ),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {},
-                    child: Container(
-                      decoration: BoxDecoration(
-                          border: Border(
-                              bottom:
-                                  BorderSide(width: 1, color: Colors.grey))),
-                      width: double.infinity,
-                      child: Center(
-                        child: Text(
-                          '취소',
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.blue,
-                            decoration: TextDecoration.none,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                )),
               ],
             ),
           ),
@@ -164,20 +150,11 @@ class _ProfileEditState extends State<ProfileEdit> {
   Future<void> pickImage() async {
     final imagePicker = ImagePicker();
     final cameraFile = await imagePicker.pickImage(source: ImageSource.camera);
-    final galleryFile =
-        await imagePicker.pickImage(source: ImageSource.gallery);
-
     if (cameraFile != null) {
       setState(() {
         imagePath = File(cameraFile.path);
       });
     }
-    if (galleryFile != null) {
-      setState(() {
-        imagePath = File(galleryFile.path);
-      });
-    }
-    // widget.addImageFunc(File(imagePath!));
   }
 
   @override
