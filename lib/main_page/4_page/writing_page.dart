@@ -235,20 +235,20 @@ class _WritingPageState extends State<WritingPage> {
       ),
       body: Column(
         children: [
-          Container(
-            width: double.infinity,
-            height: 50,
-            decoration: BoxDecoration(
-                border: Border.all(
-              color: Colors.grey,
-              width: 1,
-            )),
-            child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: toolbar,
-                )),
-          ),
+          // Container(
+          //   width: double.infinity,
+          //   height: 50,
+          //   decoration: BoxDecoration(
+          //       border: Border.all(
+          //     color: Colors.grey,
+          //     width: 1,
+          //   )),
+          //   child: SingleChildScrollView(
+          //       scrollDirection: Axis.horizontal,
+          //       child: Row(
+          //         children: toolbar,
+          //       )),
+          // ),
           Expanded(
             child: InAppWebView(
               initialFile: filePath,
