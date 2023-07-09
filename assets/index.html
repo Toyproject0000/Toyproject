@@ -8,6 +8,23 @@
     <script src="https://kit.fontawesome.com/f73de49b57.js" crossorigin="anonymous"></script>
 </head>
 <body>
+    <p id="javaScriptSubject">안녕하세요 적당히 바람이 쉬원해 기분이 너무 좋아요</p>
     <textarea type="text" name="textAreaField" id="user_input", placeholder="내용을 입력해주세요", select></textarea>
+    <script>
+        window.addEventListener("flutterInAppWebViewPlatformReady", function(event) {
+            window.flutter_inappwebview.callHandler('myHandler')
+            .then(function(result) {
+                console.log(JSON.stringify(result));
+            });
+        });
+
+        // var textarea = document.getElementById("user_input");
+        // var pElement = document.getElementById('textareaText');
+        // textarea.addEventListener('input', function(){
+        //     var text = textarea.value;
+        //     pElement.textContent = text;
+        // });
+
+    </script>
 </body>
 </html>

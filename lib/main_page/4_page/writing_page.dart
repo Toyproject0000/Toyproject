@@ -1,10 +1,11 @@
 // import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 class WritingPage extends StatefulWidget {
   const WritingPage({Key? key}) : super(key: key);
@@ -22,9 +23,10 @@ class _WritingPageState extends State<WritingPage> {
   SelectableText? combinationText;
   SelectableText? newText;
   List<TextSpan> textSpanCollection = [];
-  WebViewController? _controller;
   int? dropDownValue;
   Text? fontFamilyValue;
+  late InAppWebViewController _webViewController;
+  final String filePath = 'assets/index.html';
 
   final List<int> fontSizeList = <int>[11, 13, 15, 16, 19, 24, 28, 30, 34, 38];
   final List<Text> fontfamilyList = [
@@ -50,6 +52,29 @@ class _WritingPageState extends State<WritingPage> {
     ),
   ];
 
+  void changeColor() async {
+    if (_webViewController != null) {
+      String? selectedText = await _webViewController.getSelectedText();
+      String newText = '''
+        var start = window.getSelection().getRangeAt(0).startOffset;
+        var end = window.getSelection().getRangeAt(0).endOffset;
+        var selectedText = window.getSelection().toString();
+        var newText =
+          document.body.innerHTML.substring(0, start) +
+          '<span style="background-color: yellow;">' +
+          selectedText +
+          '</span>' +
+          document.body.innerHTML.substring(end);
+        document.body.innerHTML = newText;
+      ''';
+      await _webViewController.evaluateJavascript(source: newText);
+    }
+  }
+
+  void printText(args) {
+    print(args);
+  }
+
   TextStyle basicFont = TextStyle(
     fontSize: 15,
     color: Colors.black,
@@ -59,9 +84,6 @@ class _WritingPageState extends State<WritingPage> {
 
   @override
   void initState() {
-    _controller = WebViewController()
-      ..loadFlutterAsset('assets/index.html')
-      ..setJavaScriptMode(JavaScriptMode.unrestricted);
     super.initState();
     dropDownValue = fontSizeList[3];
     fontFamilyValue = fontfamilyList[0];
@@ -158,7 +180,9 @@ class _WritingPageState extends State<WritingPage> {
               ),
             ),
             TextButton(
-              onPressed: () {},
+              onPressed: () {
+                changeColor();
+              },
               child: Image.asset(
                 'image/font.png',
                 width: 30,
@@ -194,20 +218,6 @@ class _WritingPageState extends State<WritingPage> {
       ),
     ];
 
-    FocusScope.of(context).addListener(() {
-      if (_focusNode1.hasFocus || _focusNode.hasFocus) {
-        // KeyPad가 나타날 때 실행할 코드
-        setState(() {
-          keyboardActivation = true;
-        });
-      } else {
-        // KeyPad가 사라질 때 실행할 코드
-        setState(() {
-          keyboardActivation = false;
-        });
-      }
-    });
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -240,8 +250,17 @@ class _WritingPageState extends State<WritingPage> {
                 )),
           ),
           Expanded(
-            child: WebViewWidget(
-              controller: _controller!,
+            child: InAppWebView(
+              initialFile: filePath,
+              onWebViewCreated: (controller) {
+                _webViewController = controller;
+                _webViewController!.addJavaScriptHandler(
+                    handlerName: 'myHandler',
+                    callback: (args) {
+                      print(args);
+                      return {'bar': 'bar_value', 'baz': 'baz_value'};
+                    });
+              },
             ),
           ),
         ],
