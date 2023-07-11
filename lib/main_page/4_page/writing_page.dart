@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_summernote/flutter_summernote.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
@@ -15,18 +16,8 @@ class WritingPage extends StatefulWidget {
 }
 
 class _WritingPageState extends State<WritingPage> {
-  FocusNode _focusNode1 = FocusNode();
-  TextEditingController bodyController = TextEditingController();
-  FocusNode _focusNode = FocusNode();
-  TextSelectionControls? selectionControls;
-  String selectionText = '';
-  SelectableText? combinationText;
-  SelectableText? newText;
-  List<TextSpan> textSpanCollection = [];
-  int? dropDownValue;
-  Text? fontFamilyValue;
-  late InAppWebViewController _webViewController;
-  final String filePath = 'assets/index.html';
+  GlobalKey<FlutterSummernoteState> _keyEditor = GlobalKey();
+  String result = '';
 
   TextStyle basicFont = TextStyle(
     fontSize: 15,
@@ -34,12 +25,6 @@ class _WritingPageState extends State<WritingPage> {
   );
   List<Widget> toolbar = [];
   bool keyboardActivation = false;
-
-  Future<dynamic> saveText() async {
-    dynamic hello =
-        await _webViewController.evaluateJavascript(source: 'saveContent();');
-    return hello;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,10 +34,12 @@ class _WritingPageState extends State<WritingPage> {
         title: SelectableText('새 게시물'),
         actions: [
           TextButton(
-            onPressed: () {
-              saveText().then((hello) {
-                print(hello);
-              });
+            onPressed: () async {
+              final value = (await _keyEditor.currentState?.getText());
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                duration: Duration(seconds: 5),
+                content: Text(value ?? '-'),
+              ));
             },
             child: Text(
               '다음',
@@ -62,17 +49,17 @@ class _WritingPageState extends State<WritingPage> {
         ],
         automaticallyImplyLeading: false,
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: InAppWebView(
-              initialFile: filePath,
-              onWebViewCreated: (controller) {
-                _webViewController = controller;
-              },
-            ),
-          ),
-        ],
+      body: FlutterSummernote(
+        key: _keyEditor,
+        hint: "내용을 입력하시오....",
+        showBottomToolbar: false,
+        customToolbar: """
+				[
+					['style', ['bold','italic','underline','clear']],
+					['font', ['fontsize']],
+					['para', ['paragraph']],
+				]
+				""",
       ),
     );
   }
