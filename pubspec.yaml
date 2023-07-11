@@ -81,6 +81,8 @@ flutter:
    - assets/style.css
    - image/list.png
    - image/numberlist.png
+   - assets/build/ckeditor.js
+   - assets/script.js
 
 
 

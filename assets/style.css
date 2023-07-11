@@ -6,22 +6,16 @@ font-family: 'Nanum Gothic', sans-serif;
 font-family: 'Noto Sans KR', sans-serif;
 font-family: 'Song Myung', serif; */
 
+#SaveButton {
+    height: 40;
+}
+
 body{
     margin: 0px;
 }
 
-#user_input {
-    font-family: 'Noto Sans KR', sans-serif;
-    margin: 15px 10px;
-    flex: 1;
-    padding: 0;
-    width: 100vh;
-    height: 100vh;
-    border: none;
-    outline: none;
-    font-size: 16;
-    overflow-x: hidden;
-    resize: none;
-}
+.ck-editor__editable { height: 100vh; }
+
+
 
 

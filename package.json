@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@ckeditor/ckeditor5-alignment": "^38.1.0"
+  }
+}

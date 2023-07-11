@@ -5,25 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>tutorial</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://kit.fontawesome.com/f73de49b57.js" crossorigin="anonymous"></script>
+
+ 
 </head>
 <body>
-    <textarea type="text" name="textAreaField" id="user_input", placeholder="내용을 입력해주세요", select></textarea>
-    <script>
-        window.addEventListener("flutterInAppWebViewPlatformReady", function(event) {
-            window.flutter_inappwebview.callHandler('myHandler')
-            .then(function(result) {
-                console.log(JSON.stringify(result));
-            });
-        });
-    </script>
+    <script src="build/ckeditor.js"></script>
+    <form action="" method="POST">
+        <textarea id="user_input" placeholder="내용을 입력해주세요"></textarea>
+    </form>
+    <Button id="SaveButton">SaveButton</Button>
 
-    <script src="https://cdn.ckeditor.com/ckeditor5/38.1.0/classic/ckeditor.js"></script>
-    <script src="https://cdn.ckeditor.com/ckeditor5/34.0.0/classic/translations/ko.js"></script>
-    <script>
-        ClassicEditor.create( document.querySelector( '#user_input' ) , {
-            language: "ko"
-        });
-    </script>
+    <script src="script.js"></script>   
 </body>
 </html>
