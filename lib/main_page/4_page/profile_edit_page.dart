@@ -23,7 +23,6 @@ class _ProfileEditState extends State<ProfileEdit> {
   File? imagePath;
 
   void showMenuOfPicture(context) {
-    print('showMenuOfpicture 실행');
     showGeneralDialog(
       context: context,
       barrierDismissible: true,

@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_summernote/flutter_summernote.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:smart_dongne/main_page/4_page/writing_page_final.dart';
 
 class WritingPage extends StatefulWidget {
   const WritingPage({Key? key}) : super(key: key);
@@ -17,14 +18,37 @@ class WritingPage extends StatefulWidget {
 
 class _WritingPageState extends State<WritingPage> {
   GlobalKey<FlutterSummernoteState> _keyEditor = GlobalKey();
-  String result = '';
 
   TextStyle basicFont = TextStyle(
     fontSize: 15,
     color: Colors.black,
   );
-  List<Widget> toolbar = [];
   bool keyboardActivation = false;
+
+  Future<String?> saveText() async {
+    final value = await _keyEditor.currentState?.getText();
+    final value1 = await _keyEditor.currentState?.getText();
+
+    if (value1 != null && value1.isNotEmpty) {
+      // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      //   duration: Duration(seconds: 5),
+      //   content: Text(value1),
+      // ));
+
+      return value1;
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        duration: Duration(seconds: 5),
+        content: Text(
+          '내용을 입력해주세요',
+          style: TextStyle(fontSize: 14),
+        ),
+        backgroundColor: Colors.blue[400],
+      ));
+    }
+
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,12 +58,16 @@ class _WritingPageState extends State<WritingPage> {
         title: SelectableText('새 게시물'),
         actions: [
           TextButton(
-            onPressed: () async {
-              final value = (await _keyEditor.currentState?.getText());
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                duration: Duration(seconds: 5),
-                content: Text(value ?? '-'),
-              ));
+            onPressed: () {
+              saveText().then((value) {
+                if (value != null) {
+                  Navigator.pushNamed(
+                    context,
+                    LastSetting.routeName,
+                  );
+                  FocusScope.of(context).unfocus();
+                }
+              });
             },
             child: Text(
               '다음',
