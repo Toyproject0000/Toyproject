@@ -65,7 +65,6 @@ class _WritingPageState extends State<WritingPage> {
                     context,
                     LastSetting.routeName,
                   );
-                  FocusScope.of(context).unfocus();
                 }
               });
             },

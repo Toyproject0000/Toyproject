@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:smart_dongne/main_page/4_page/cover.dart';
 import 'package:smart_dongne/main_page/4_page/writing_page.dart';
 
 class LastSetting extends StatefulWidget {
@@ -63,7 +64,10 @@ class _LastSettingState extends State<LastSetting> {
     )
   ];
 
-  void gotoCoverPage(String imagePath) {}
+  void gotoCoverPage(String imagePath) {
+    Navigator.pushNamed(context, CoverPage.routeName,
+        arguments: ScreenArguments(imagePath));
+  }
 
   Future<void> cameraImage() async {
     final imagePicker = ImagePicker();

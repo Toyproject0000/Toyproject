@@ -37,6 +37,8 @@ dependencies:
   keyboard_actions: ^4.2.0
   flutter_inappwebview: ^5.7.2+3
   flutter_summernote: ^1.1.1
+  text_editor: ^0.7.0
+  permission_handler: ^10.4.2
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
