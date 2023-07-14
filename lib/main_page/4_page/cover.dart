@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:text_editor/text_editor.dart';
+import 'package:image_cropper/image_cropper.dart';
 
 class CoverPage extends StatefulWidget {
   const CoverPage({super.key});
@@ -17,15 +18,26 @@ class _CoverPageState extends State<CoverPage> {
   Widget? addTextCover;
   bool EditAppBar = false;
   Text EditText = Text('');
+  String _text = 'Sample Text';
+  TextStyle _textStyle = TextStyle(
+      fontSize: 50, fontWeight: FontWeight.bold, color: Colors.blue[300]);
+  TextAlign _textAlign = TextAlign.center;
+
+  String imagePath = '';
+  bool argumentSend = false;
 
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments as ScreenArguments;
-    String imagePath = args.imagePath;
-    String _text = 'Sample Text';
-    TextStyle _textStyle = TextStyle(
-        fontSize: 50, fontWeight: FontWeight.bold, color: Colors.blue[300]);
-    TextAlign _textAlign = TextAlign.center;
+    if (ModalRoute.of(context)!.settings.arguments != null) {
+      setState(() {
+        argumentSend = true;
+      });
+
+      final args =
+          ModalRoute.of(context)!.settings.arguments as ScreenArguments;
+
+      imagePath = args.imagePath;
+    }
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -46,7 +58,10 @@ class _CoverPageState extends State<CoverPage> {
                   )),
               actions: [
                 TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      // 서버에 데이터 전달하는 코드
+                      Navigator.pop(context);
+                    },
                     child: Text(
                       '다음',
                       style: TextStyle(color: Colors.blue),
@@ -58,8 +73,17 @@ class _CoverPageState extends State<CoverPage> {
         child: Stack(
           children: [
             Center(
-              child: Image(
-                image: FileImage(File(imagePath)),
+              child: AspectRatio(
+                aspectRatio: 4 / 5,
+                child: Container(
+                  width: double.infinity,
+                  child: argumentSend == true
+                      ? Image.file(File(imagePath), fit: BoxFit.cover)
+                      : Image(
+                          image: AssetImage('image/basiccover.jpg'),
+                          fit: BoxFit.cover,
+                        ),
+                ),
               ),
             ),
             if (EditAppBar == true)
@@ -101,4 +125,10 @@ class ScreenArguments {
   final String imagePath;
 
   ScreenArguments(this.imagePath);
+}
+
+class BasicCover {
+  final Image basicCover;
+
+  BasicCover(this.basicCover);
 }

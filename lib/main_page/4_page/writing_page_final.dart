@@ -1,6 +1,6 @@
 import 'dart:ffi';
+import 'dart:io';
 import 'dart:ui';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -18,19 +18,21 @@ class LastSetting extends StatefulWidget {
 }
 
 class _LastSettingState extends State<LastSetting> {
-  GlobalKey _formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
   TextEditingController _controller = TextEditingController();
   List<bool> ButtonColorList = [];
   Color backGroundColor = Color(0xFF98DFFF);
+  String title = '';
 
   bool buttonColor1 = false;
   bool buttonColor2 = false;
   bool buttonColor3 = false;
   bool buttonColor4 = false;
   Row? dropDownValue;
-
   bool commentvalue = false;
   bool numberoflike = false;
+
+  bool selectCover = false;
 
   String? imagePath;
 
@@ -64,32 +66,67 @@ class _LastSettingState extends State<LastSetting> {
     )
   ];
 
-  void gotoCoverPage(String imagePath) {
-    Navigator.pushNamed(context, CoverPage.routeName,
-        arguments: ScreenArguments(imagePath));
+  String? _tryValidation() {
+    final isValid = _formKey.currentState!.validate();
+    if (isValid) {
+      _formKey.currentState!.save();
+      return title;
+    }
+    return null;
   }
 
   Future<void> cameraImage() async {
+    Navigator.pop(context);
     final imagePicker = ImagePicker();
     final pickerFile = await imagePicker.pickImage(source: ImageSource.camera);
+
     if (pickerFile != null) {
       setState(() {
         imagePath = pickerFile.path;
+        selectCover = true;
       });
+      Navigator.pushNamed(context, CoverPage.routeName,
+          arguments: ScreenArguments(imagePath!));
+    }
+  }
 
-      gotoCoverPage(imagePath!);
+  void sendDateServer() {
+    final titleString = _tryValidation();
+
+    if (titleString == null) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        duration: Duration(seconds: 5),
+        content: Text('제목을 입력해주세요.'),
+      ));
+    } else if (selectCover == false) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        duration: Duration(seconds: 5),
+        content: Text('표지를 선택해 주세요.'),
+      ));
+    } else if (buttonColor1 == false &&
+        buttonColor2 == false &&
+        buttonColor3 == false &&
+        buttonColor4 == false) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        duration: Duration(seconds: 5),
+        content: Text('주제를 선택해주세요.'),
+      ));
     }
   }
 
   Future<void> galleryImage() async {
+    Navigator.pop(context);
+
     final imagePicker = ImagePicker();
     final pickerFile = await imagePicker.pickImage(source: ImageSource.gallery);
     if (pickerFile != null) {
       setState(() {
         imagePath = pickerFile.path;
+        selectCover = true;
       });
 
-      gotoCoverPage(imagePath!);
+      Navigator.pushNamed(context, CoverPage.routeName,
+          arguments: ScreenArguments(imagePath!));
     }
   }
 
@@ -188,23 +225,30 @@ class _LastSettingState extends State<LastSetting> {
                   ),
                 )),
                 Expanded(
-                  child: Container(
-                    padding: EdgeInsets.all(10.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Icon(Icons.person),
-                        SizedBox(width: 20),
-                        Text(
-                          '기본제공 사진 설정',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: Colors.grey,
-                            decoration: TextDecoration.none,
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                      selectCover = true;
+                      Navigator.pushNamed(context, CoverPage.routeName);
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(10.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Icon(Icons.person),
+                          SizedBox(width: 20),
+                          Text(
+                            '기본제공 사진 설정',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: Colors.grey,
+                              decoration: TextDecoration.none,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 )
@@ -238,7 +282,9 @@ class _LastSettingState extends State<LastSetting> {
         ),
         actions: [
           TextButton(
-            onPressed: () {},
+            onPressed: () {
+              sendDateServer();
+            },
             child: Text(
               '완료',
               style: TextStyle(
@@ -260,6 +306,17 @@ class _LastSettingState extends State<LastSetting> {
             child: Form(
               key: _formKey,
               child: TextFormField(
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return '제목을 입력해주세요';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  setState(() {
+                    title = value!;
+                  });
+                },
                 maxLength: 40,
                 controller: _controller,
                 maxLines: null,
