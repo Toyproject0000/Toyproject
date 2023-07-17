@@ -37,6 +37,11 @@ public class UserService {
         if (result.size()==0) return "정보가 틀림";
         else return result.get(0).getPassword();
     }
+    public Boolean findEmail(User user){
+        List<User> result = userRepository.findEmail(user);
+        if (result.size()==0) return false;
+        return true;
+    }
 
     public String duplicateNick(User user){
         List<User> users = userRepository.findNickname(user);

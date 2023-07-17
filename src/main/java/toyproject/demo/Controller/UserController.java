@@ -53,6 +53,11 @@ public class UserController {
         return userService.findId(user);
     }
 
+    @PostMapping("/findPassword/email")
+    public Boolean findPasswordEmail(@RequestBody User user){
+        return userService.findEmail(user);
+    }
+
     @PostMapping("/findPassword")
     public String findPassword(@RequestBody User user){
         return userService.findPassword(user);
@@ -80,7 +85,6 @@ public class UserController {
     @PostMapping("/authentication")
     public String authentication(@RequestBody User user) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException{
         String phoneNumber = user.getPhoneNumber();
-        System.out.println("phoneNumber = " + phoneNumber);
         Random random = new Random();
         String num = String.valueOf(random.nextInt(100000, 1000000));
         String number = makeCertificationNumber.makeNumber(num);
