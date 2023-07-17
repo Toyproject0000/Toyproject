@@ -26,6 +26,7 @@ class FindIdState extends State<FindId> {
 
   void _tryNumberValidation() {
     final isValid = _numberKey.currentState!.validate();
+
     if (isValid) {
       _numberKey.currentState!.save();
     }

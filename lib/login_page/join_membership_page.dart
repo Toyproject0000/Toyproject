@@ -19,7 +19,6 @@ class _JoinmembershipState extends State<Joinmembership> {
   final _numberKey = GlobalKey<FormState>();
   final _numberKey2 = GlobalKey<FormState>();
 
-
   TextEditingController textController = TextEditingController();
 
   String userEmail = '';
@@ -27,7 +26,6 @@ class _JoinmembershipState extends State<Joinmembership> {
   String userName = '';
   String phoneNumber = '';
   String dateofBirth = '';
-
 
   String? perfectPassWord;
   bool manButton = false;
@@ -37,22 +35,21 @@ class _JoinmembershipState extends State<Joinmembership> {
     final isValid = _formKey.currentState!.validate();
     if (isValid) {
       _formKey.currentState!.save();
-      try{
+      try {
         var data = {
-          'id' : userEmail,
-          'password' : userPassword,
-          'name' : userName,
-          'gender' : manButton,
+          'id': userEmail,
+          'password': userPassword,
+          'name': userName,
+          'gender': manButton,
         };
         ServerConnection server = ServerConnection(context);
         server.sendData(data);
-      }catch(e){
+      } catch (e) {
         print(e);
-        if(mounted){
+        if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(
-                  'Please check your email and password'),
+              content: Text('Please check your email and password'),
               backgroundColor: Colors.blue,
             ),
           );
@@ -60,14 +57,15 @@ class _JoinmembershipState extends State<Joinmembership> {
       }
     }
   }
-  void _NumberValidation(){
+
+  void _NumberValidation() {
     final NumberValid = _numberKey.currentState!.validate();
     if (NumberValid) {
       _numberKey.currentState!.save();
     }
   }
 
-  void _NumberValidation2(){
+  void _NumberValidation2() {
     final NUmberVaild2 = _numberKey2.currentState!.validate();
     _numberKey2.currentState!.save();
   }
@@ -127,8 +125,8 @@ class _JoinmembershipState extends State<Joinmembership> {
                     validator: (value) {
                       if (value!.isEmpty || value.length < 8) {
                         return '8글자 이상을 입력하시오';
-                      }
-                      else if (!value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))){
+                      } else if (!value
+                          .contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
                         return '비멀번호는 숫자,문자,특수기호를 포함한 형식으로 작성해주세요';
                       }
                       perfectPassWord = value; // 수정해야햄
@@ -147,7 +145,7 @@ class _JoinmembershipState extends State<Joinmembership> {
                   ),
                   TextFormField(
                     validator: (value) {
-                      if(value != perfectPassWord){
+                      if (value != perfectPassWord) {
                         return '비밀번호가 일치하지 않습니다';
                       }
                       return null;
@@ -204,11 +202,11 @@ class _JoinmembershipState extends State<Joinmembership> {
                       dateofBirth = value;
                     },
                     decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.calendar_month),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey),
-                      ),
-                      hintText: '생년월일(8자리)'),
+                        prefixIcon: Icon(Icons.calendar_month),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                        hintText: '생년월일(8자리)'),
                   ),
                   Container(
                     height: 60,
@@ -231,7 +229,8 @@ class _JoinmembershipState extends State<Joinmembership> {
                               });
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: manButton ? Colors.blue : Colors.white,
+                              backgroundColor:
+                                  manButton ? Colors.blue : Colors.white,
                             ),
                             child: Text(
                               '남성',
@@ -250,8 +249,8 @@ class _JoinmembershipState extends State<Joinmembership> {
                               });
                             },
                             style: ElevatedButton.styleFrom(
-                                backgroundColor: womanButton ? Colors.blue : Colors.white
-                            ),
+                                backgroundColor:
+                                    womanButton ? Colors.blue : Colors.white),
                             child: Text(
                               '여성',
                               style: TextStyle(
@@ -263,7 +262,9 @@ class _JoinmembershipState extends State<Joinmembership> {
                       ],
                     ),
                   ),
-                  SizedBox(height: 25,),
+                  SizedBox(
+                    height: 25,
+                  ),
                   Container(
                     height: 60,
                     padding: EdgeInsets.all(10.0),
@@ -296,8 +297,7 @@ class _JoinmembershipState extends State<Joinmembership> {
                                 phoneNumber = value;
                               },
                               decoration: InputDecoration(
-                                border: InputBorder.none,
-                                  hintText: '전화번호'),
+                                  border: InputBorder.none, hintText: '전화번호'),
                             ),
                           ),
                         ),
@@ -307,9 +307,7 @@ class _JoinmembershipState extends State<Joinmembership> {
                           },
                           child: Text(
                             '인증번호 요청',
-                            style: TextStyle(
-                                color: Colors.blue
-                            ),
+                            style: TextStyle(color: Colors.blue),
                           ),
                         ),
                       ],
@@ -336,8 +334,7 @@ class _JoinmembershipState extends State<Joinmembership> {
                                 ],
                                 decoration: InputDecoration(
                                     border: InputBorder.none,
-                                    hintText: '인증번호입력하기'
-                                ),
+                                    hintText: '인증번호입력하기'),
                               ),
                             ),
                           ),
@@ -350,9 +347,7 @@ class _JoinmembershipState extends State<Joinmembership> {
                             },
                             child: Text(
                               '인증번호확인',
-                              style: TextStyle(
-                                  color: Colors.blue
-                              ),
+                              style: TextStyle(color: Colors.blue),
                             ),
                           ),
                         ],
@@ -361,42 +356,41 @@ class _JoinmembershipState extends State<Joinmembership> {
                     height: 20,
                   ),
                   ElevatedButton(
-                   style: ElevatedButton.styleFrom(
+                      style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.blue,
                         minimumSize: Size(double.infinity, 48),
                       ),
-                    child: Text(
-                      '회원 가입하기',
-                      style: TextStyle(
-                        fontSize: 25,
-                        color: Colors.white,
+                      child: Text(
+                        '회원 가입하기',
+                        style: TextStyle(
+                          fontSize: 25,
+                          color: Colors.white,
                         ),
                       ),
-                    onPressed: () {
-                      _tryValidation();
-                      // try{
-                      //   var data = {
-                      //     'email' : userEmail,
-                      //     'password' : userPassword,
-                      //     'name' : userName,
-                      //     'gender' : manButton,
-                      //   };
-                      //   ServerConnection server = ServerConnection(profile, context);
-                      //   server.sendData(data);
-                      // }catch(e){
-                      //   print(e);
-                      //   if(mounted){
-                      //     ScaffoldMessenger.of(context).showSnackBar(
-                      //       SnackBar(
-                      //         content: Text(
-                      //             'Please check your email and password'),
-                      //         backgroundColor: Colors.blue,
-                      //       ),
-                      //     );
-                      //   }
-                      // }
-                    }
-                  ),
+                      onPressed: () {
+                        _tryValidation();
+                        // try{
+                        //   var data = {
+                        //     'email' : userEmail,
+                        //     'password' : userPassword,
+                        //     'name' : userName,
+                        //     'gender' : manButton,
+                        //   };
+                        //   ServerConnection server = ServerConnection(profile, context);
+                        //   server.sendData(data);
+                        // }catch(e){
+                        //   print(e);
+                        //   if(mounted){
+                        //     ScaffoldMessenger.of(context).showSnackBar(
+                        //       SnackBar(
+                        //         content: Text(
+                        //             'Please check your email and password'),
+                        //         backgroundColor: Colors.blue,
+                        //       ),
+                        //     );
+                        //   }
+                        // }
+                      }),
                 ],
               ),
             ),

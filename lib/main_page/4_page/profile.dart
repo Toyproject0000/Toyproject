@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_dongne/main_page/4_page/profile_edit_page.dart';
@@ -10,6 +12,26 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  File? imagePath;
+
+  Widget imageSetting() {
+    if (imagePath != null) {
+      return CircleAvatar(radius: 80, backgroundImage: FileImage(imagePath!));
+    } else {
+      return CircleAvatar(
+        radius: 80,
+        backgroundColor: Colors.grey,
+        child: Image.asset(
+          'image/basicprofile.png',
+          width: 100, // 이미지의 가로 크기 조절
+          height: 100, // 이미지의 세로 크기 조절
+          fit: BoxFit
+              .cover, // 이미지의 크기를 조절하여 CircleAvatar에 맞게 맞출지 결정 (필요에 따라 변경 가능)
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,25 +50,37 @@ class _ProfilePageState extends State<ProfilePage> {
       body: ListView(
         children: [
           Padding(
-              padding: EdgeInsets.all(10),
-              child: CircleAvatar(
-                radius: 150,
-                backgroundImage: AssetImage('image/personicon.png'),
-              )),
-          Padding(
-            padding: EdgeInsets.all(10),
-            child: Text(
-              'NickName',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Text(
-              "Hello my name is minwung-kim I'm from korea. I'm 17 years old. I wanna many money",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 15, color: Colors.black87),
+            padding: EdgeInsets.all(20),
+            child: Row(
+              children: [
+                imageSetting(),
+                SizedBox(
+                  width: 20,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'NickName',
+                      textAlign: TextAlign.center,
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.4,
+                      child: Text(
+                        "Hello my name is minwung-kim I'm from korea. I'm 17 years old. I wanna many money",
+                        maxLines: null,
+                        textAlign: TextAlign.start,
+                        style: TextStyle(fontSize: 15, color: Colors.black87),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
           Padding(

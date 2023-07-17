@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smart_dongne/login_page/find_password.dart';
+import 'package:smart_dongne/login_page/find_password_2.dart';
 import 'package:smart_dongne/login_page/join_membership_page.dart';
 import 'package:smart_dongne/login_page/login_page.dart';
 import 'package:smart_dongne/login_page/setnickname.dart';
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
         FindId.routeName: (context) => FindId(),
         LastSetting.routeName: (context) => LastSetting(),
         CoverPage.routeName: (context) => CoverPage(),
+        NewPassWord.routeName: (context) => NewPassWord(),
       },
     );
   }

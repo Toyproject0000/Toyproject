@@ -31,40 +31,17 @@ class _LastSettingState extends State<LastSetting> {
   Row? dropDownValue;
   bool commentvalue = false;
   bool numberoflike = false;
+  int disclosureindex = 0;
+
+  List<String> settingRange = [
+    '모두 공개',
+    '독자만 공개',
+    '비공개',
+  ];
 
   bool selectCover = false;
 
   String? imagePath;
-
-  List<Row> disclosureList = [
-    Row(
-      children: [
-        Icon(Icons.public),
-        SizedBox(
-          width: 15,
-        ),
-        Text('모두 공개'),
-      ],
-    ),
-    Row(
-      children: [
-        Icon(Icons.group_sharp),
-        SizedBox(
-          width: 15,
-        ),
-        Text('독자만 공개'),
-      ],
-    ),
-    Row(
-      children: [
-        Icon(Icons.lock),
-        SizedBox(
-          width: 15,
-        ),
-        Text('비공개'),
-      ],
-    )
-  ];
 
   String? _tryValidation() {
     final isValid = _formKey.currentState!.validate();
@@ -111,6 +88,8 @@ class _LastSettingState extends State<LastSetting> {
         duration: Duration(seconds: 5),
         content: Text('주제를 선택해주세요.'),
       ));
+    } else {
+      // 서버에 데이터 보내기
     }
   }
 
@@ -259,6 +238,36 @@ class _LastSettingState extends State<LastSetting> {
       },
     );
   }
+
+  List<Row> disclosureList = [
+    Row(
+      children: [
+        Icon(Icons.public),
+        SizedBox(
+          width: 15,
+        ),
+        Text('모두공개'),
+      ],
+    ),
+    Row(
+      children: [
+        Icon(Icons.group_sharp),
+        SizedBox(
+          width: 15,
+        ),
+        Text('독자만 공개'),
+      ],
+    ),
+    Row(
+      children: [
+        Icon(Icons.lock),
+        SizedBox(
+          width: 15,
+        ),
+        Text('비공개'),
+      ],
+    )
+  ];
 
   @override
   void initState() {
@@ -505,7 +514,9 @@ class _LastSettingState extends State<LastSetting> {
                     }).toList(),
                     onChanged: (Row? newValue) {
                       setState(() {
+                        disclosureindex = disclosureList.indexOf(newValue!);
                         dropDownValue = newValue;
+                        print(settingRange[disclosureindex]);
                       });
                     }),
               ],
