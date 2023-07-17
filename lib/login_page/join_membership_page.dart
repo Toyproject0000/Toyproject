@@ -24,9 +24,10 @@ class _JoinmembershipState extends State<Joinmembership> {
   String userEmail = '';
   String userPassword = '';
   String userName = '';
-  String phoneNumber = '';
+  String? phoneNumber;
   String dateofBirth = '';
 
+  String? authenticationNumber;
   String? perfectPassWord;
   bool manButton = false;
   bool womanButton = false;
@@ -62,12 +63,17 @@ class _JoinmembershipState extends State<Joinmembership> {
     final NumberValid = _numberKey.currentState!.validate();
     if (NumberValid) {
       _numberKey.currentState!.save();
+      final data = {'phoneNumber': phoneNumber};
+      final authentication = numberAuthentiaction();
+      authentication.sendPhoneNumber(data);
     }
   }
 
   void _NumberValidation2() {
-    final NUmberVaild2 = _numberKey2.currentState!.validate();
     _numberKey2.currentState!.save();
+
+    final authentication = numberAuthentiaction();
+    authentication.authenticationNumberCheck(authenticationNumber);
   }
 
   @override
@@ -181,8 +187,11 @@ class _JoinmembershipState extends State<Joinmembership> {
                       userName = value;
                     },
                     decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.lock),
+                        prefixIcon: Icon(Icons.person),
                         border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                        focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey),
                         ),
                         hintText: '이름'),
@@ -328,13 +337,16 @@ class _JoinmembershipState extends State<Joinmembership> {
                             child: Form(
                               key: _numberKey2,
                               child: TextFormField(
+                                onSaved: (value) {
+                                  authenticationNumber = value!;
+                                },
                                 keyboardType: TextInputType.number,
                                 inputFormatters: [
                                   FilteringTextInputFormatter.digitsOnly,
                                 ],
                                 decoration: InputDecoration(
                                     border: InputBorder.none,
-                                    hintText: '인증번호입력하기'),
+                                    hintText: '인증번호 입력하기'),
                               ),
                             ),
                           ),
@@ -343,10 +355,14 @@ class _JoinmembershipState extends State<Joinmembership> {
                           ),
                           TextButton(
                             onPressed: () {
-                              _NumberValidation2();
+                              if (phoneNumber != null) {
+                                _NumberValidation2();
+                              } else {
+                                // 스낵바로 전화번호 입력하라고 하기
+                              }
                             },
                             child: Text(
-                              '인증번호확인',
+                              '인증번호 확인',
                               style: TextStyle(color: Colors.blue),
                             ),
                           ),
@@ -369,27 +385,6 @@ class _JoinmembershipState extends State<Joinmembership> {
                       ),
                       onPressed: () {
                         _tryValidation();
-                        // try{
-                        //   var data = {
-                        //     'email' : userEmail,
-                        //     'password' : userPassword,
-                        //     'name' : userName,
-                        //     'gender' : manButton,
-                        //   };
-                        //   ServerConnection server = ServerConnection(profile, context);
-                        //   server.sendData(data);
-                        // }catch(e){
-                        //   print(e);
-                        //   if(mounted){
-                        //     ScaffoldMessenger.of(context).showSnackBar(
-                        //       SnackBar(
-                        //         content: Text(
-                        //             'Please check your email and password'),
-                        //         backgroundColor: Colors.blue,
-                        //       ),
-                        //     );
-                        //   }
-                        // }
                       }),
                 ],
               ),

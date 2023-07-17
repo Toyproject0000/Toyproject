@@ -1,9 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'dart:io';
-
 import 'package:image_picker/image_picker.dart';
+
+// top snackbar
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+// import 'package:top_snackbar_flutter/safe_area_values.dart';
+// import 'package:top_snackbar_flutter/tap_bounce_container.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class ProfileEdit extends StatefulWidget {
   const ProfileEdit({super.key});
@@ -143,9 +149,10 @@ class _ProfileEditState extends State<ProfileEdit> {
     final galleryFile =
         await imagePicker.pickImage(source: ImageSource.gallery);
     if (galleryFile != null) {
+      final img = await _cropImage(imageFile: File(galleryFile.path));
       Navigator.pop(context);
       setState(() {
-        imagePath = File(galleryFile.path);
+        imagePath = img;
       });
     }
   }
@@ -153,10 +160,14 @@ class _ProfileEditState extends State<ProfileEdit> {
   Future<void> pickImageOfCamera() async {
     final imagePicker = ImagePicker();
     final cameraFile = await imagePicker.pickImage(source: ImageSource.camera);
+
     if (cameraFile != null) {
+      final img = await _cropImage(imageFile: File(cameraFile.path));
+
       Navigator.pop(context);
       setState(() {
-        imagePath = File(cameraFile.path);
+        // imagePath = File(cameraFile.path);
+        imagePath = img;
       });
     }
   }
@@ -179,6 +190,13 @@ class _ProfileEditState extends State<ProfileEdit> {
     }
   }
 
+  Future<File?> _cropImage({required File imageFile}) async {
+    CroppedFile? croppedImage =
+        await ImageCropper().cropImage(sourcePath: imageFile.path);
+    if (croppedImage == null) return null;
+    return File(croppedImage.path);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -197,7 +215,14 @@ class _ProfileEditState extends State<ProfileEdit> {
           TextButton(
             child:
                 Text('완료', style: TextStyle(color: Colors.blue, fontSize: 16)),
-            onPressed: () {},
+            onPressed: () {
+              if (imagePath != null) {
+                Navigator.pop(context);
+              } else {
+                showTopSnackBar(Overlay.of(context),
+                    CustomSnackBar.info(message: '변경사항을 입력해주세요.'));
+              }
+            },
           ),
         ],
       ),

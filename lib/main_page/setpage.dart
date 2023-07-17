@@ -24,6 +24,8 @@ class SetPageState extends State<SetPage> {
     ProfilePage(),
   ];
 
+  void changeClass() {}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
