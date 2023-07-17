@@ -9,6 +9,7 @@ import toyproject.demo.domain.User;
 import toyproject.demo.service.PostService;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/post")
@@ -37,7 +38,7 @@ public class PostController {
             postService.submit(post);
             return "ok";
         }catch (Exception e){
-            return "에러 발생"; // 작성했던 글 내용 그대로 다시 쓸수있는지 아니면 내가 다시 보내줘야되는지 물어보자
+            return "에러 발생";
         }
     }
 
@@ -47,7 +48,7 @@ public class PostController {
             postService.modify(post);
             return "ok";
         }catch (Exception e){
-            return "에러 발생"; // 작성했던 글 내용 그대로 다시 쓸수있는지 아니면 내가 다시 보내줘야되는지 물어보자
+            return "에러 발생";
         }
     }
 
@@ -61,30 +62,15 @@ public class PostController {
         }
     }
 
-    @PostMapping("/find-bycontent")
-    public String findPostByContents(@RequestBody Post post){
-        try {
-            postService.findPostByContents(post);
-            return "ok";
-        }catch (Exception e){
-            return "에러 발생"; // 작성했던 글 내용 그대로 다시 쓸수있는지 아니면 내가 다시 보내줘야되는지 물어보자
-        }
+    @PostMapping("/search")
+    public List<Post> search(@RequestBody User user, @RequestBody Post post, @RequestBody LocalDate formerDate, @RequestBody LocalDate afterDate){
+        return postService.search(user, post, formerDate, afterDate);
     }
 
     @PostMapping("/find-mypost-bycontent")
     public String findMyPostByContents(@RequestBody Post post,@RequestBody User user){
         try {
             postService.findMyPostByContents(post, user);
-            return "ok";
-        }catch (Exception e){
-            return "에러 발생"; // 작성했던 글 내용 그대로 다시 쓸수있는지 아니면 내가 다시 보내줘야되는지 물어보자
-        }
-    }
-
-    @PostMapping("/find-byuser")
-    public String findPostByUser(@RequestBody User user){
-        try {
-            postService.findUserAllPost(user);
             return "ok";
         }catch (Exception e){
             return "에러 발생"; // 작성했던 글 내용 그대로 다시 쓸수있는지 아니면 내가 다시 보내줘야되는지 물어보자
@@ -105,25 +91,6 @@ public class PostController {
     public String findLikePost(@RequestBody User user){
         try {
             postService.findAllLikePost(user);
-            return "ok";
-        }catch (Exception e){
-            return "에러 발생"; // 작성했던 글 내용 그대로 다시 쓸수있는지 아니면 내가 다시 보내줘야되는지 물어보자
-        }
-    }
-
-    @PostMapping("/find-specific")
-    public String findPostSpecificDate(@RequestBody LocalDate date){
-        try {
-            postService.findPostBySpecificDate(date);
-            return "ok";
-        }catch (Exception e){
-            return "에러 발생"; // 작성했던 글 내용 그대로 다시 쓸수있는지 아니면 내가 다시 보내줘야되는지 물어보자
-        }
-    }
-    @PostMapping("/find-after")
-    public String findPostAfterDate(@RequestBody LocalDate date){
-        try {
-            postService.findPostAfterDate(date);
             return "ok";
         }catch (Exception e){
             return "에러 발생"; // 작성했던 글 내용 그대로 다시 쓸수있는지 아니면 내가 다시 보내줘야되는지 물어보자

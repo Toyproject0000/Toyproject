@@ -3,6 +3,7 @@ package toyproject.demo.Controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.web.bind.annotation.*;
 import toyproject.demo.domain.User;
+import toyproject.demo.service.MakeCertificationNumber;
 import toyproject.demo.service.SmsService;
 import toyproject.demo.service.UserService;
 
@@ -10,6 +11,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
+import java.util.Random;
 
 @RestController
 @RequestMapping("/")
@@ -26,10 +29,12 @@ public class UserController {
     * */
     private final UserService userService;
     private final SmsService smsService;
+    private final MakeCertificationNumber makeCertificationNumber;
 
-    public UserController(UserService userService, SmsService smsService) {
+    public UserController(UserService userService, SmsService smsService, MakeCertificationNumber makeCertificationNumber) {
         this.userService = userService;
         this.smsService = smsService;
+        this.makeCertificationNumber = makeCertificationNumber;
     }
 
     @PostMapping("/join")
@@ -67,15 +72,23 @@ public class UserController {
         }
     }
     @PostMapping("/nickname")
-    public String duplicateNickname(User user){
+    public String duplicateNickname(@RequestBody User user){
         return userService.duplicateNick(user);
     }
 
-    @GetMapping("/authentication ")
+    @PostMapping("/authentication")
     public String authentication(@RequestBody String phoneNumber) throws UnsupportedEncodingException, NoSuchAlgorithmException, URISyntaxException, InvalidKeyException, JsonProcessingException {
+        Random random = new Random();
+        String num = String.valueOf(random.nextInt(100000, 1000000));
+        String number = makeCertificationNumber.makeNumber(num);
 
-        smsService.sendSms(phoneNumber);
+        smsService.sendSms(phoneNumber, num);
 
-        return "ok";
+        return "number";
+    }
+
+    @PostMapping("/authentication-check")
+    public Boolean check(@RequestBody String rawNum, String num){
+        return makeCertificationNumber.match(rawNum, num);
     }
 }

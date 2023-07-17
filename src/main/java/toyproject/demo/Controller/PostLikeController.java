@@ -1,6 +1,7 @@
 package toyproject.demo.Controller;
 
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import toyproject.demo.domain.PostLike;
@@ -21,7 +22,7 @@ public class PostLikeController {
     }
 
     @PostMapping("/add")
-    public String add(PostLike postLike){
+    public String add(@RequestBody PostLike postLike){
         try {
             postLikeService.add(postLike);
             return "ok";
@@ -31,7 +32,7 @@ public class PostLikeController {
     }
 
     @PostMapping("/remove")
-    public String remove(PostLike postLike){
+    public String remove(@RequestBody PostLike postLike){
         try {
             postLikeService.remove(postLike);
             return "ok";

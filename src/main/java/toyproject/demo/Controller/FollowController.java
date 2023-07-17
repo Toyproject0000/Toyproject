@@ -1,6 +1,7 @@
 package toyproject.demo.Controller;
 
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import toyproject.demo.domain.Follow;
@@ -24,21 +25,21 @@ public class FollowController {
     }
 
     @PostMapping("/add")
-    public void add(Follow follow){
+    public void add(@RequestBody Follow follow){
         followService.add(follow);
     }
 
     @PostMapping("/remove")
-    public void remove(Follow follow){
+    public void remove(@RequestBody Follow follow){
         followService.remove(follow);
     }
 
     @PostMapping("/find-follower")
-    public void findFollower(User user){
+    public void findFollower(@RequestBody User user){
         followService.findFollower(user);
     }
     @PostMapping("/find-following")
-    public void findFollowing(User user){
+    public void findFollowing(@RequestBody User user){
         followService.findFollowing(user);
     }
 }

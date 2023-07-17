@@ -1,6 +1,7 @@
 package toyproject.demo.Controller;
 
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import toyproject.demo.domain.Follow;
@@ -27,7 +28,7 @@ public class ReplyController {
     }
 
     @PostMapping("/add")
-    public String add(Reply reply){
+    public String add(@RequestBody Reply reply){
         try {
             replyService.add(reply);
             return "ok";
@@ -37,7 +38,7 @@ public class ReplyController {
     }
 
     @PostMapping("/delete")
-    public String delete(Reply reply){
+    public String delete(@RequestBody Reply reply){
         try {
             replyService.delete(reply);
             return "ok";
@@ -46,7 +47,7 @@ public class ReplyController {
         }
     }
     @PostMapping("/edit")
-    public String edit(Reply reply){
+    public String edit(@RequestBody Reply reply){
         try {
             replyService.edit(reply);
             return "ok";
@@ -56,7 +57,7 @@ public class ReplyController {
     }
 
     @PostMapping("/find-post")
-    public String findPost(Post post){
+    public String findPost(@RequestBody Post post){
         try {
             replyService.findReplyOfPost(post);
             return "ok";
@@ -66,7 +67,7 @@ public class ReplyController {
     }
 
     @PostMapping("/find-user")
-    public String findUser(User user){
+    public String findUser(@RequestBody User user){
         try {
             replyService.findReplyOfUser(user);
             return "ok";

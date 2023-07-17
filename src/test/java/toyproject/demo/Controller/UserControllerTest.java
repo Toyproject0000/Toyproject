@@ -1,6 +1,5 @@
 package toyproject.demo.Controller;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,15 +7,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import toyproject.demo.domain.User;
 import toyproject.demo.repository.UserRepository;
-import toyproject.demo.service.SmsService;
-import toyproject.demo.service.UserService;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@Transactional
 class UserControllerTest {
 
     User user = new User();
@@ -26,6 +23,7 @@ class UserControllerTest {
         user.setName("test");
         user.setPassword("test");
         user.setNickname("test");
+        user.setPhoneNumber(123);
         user.setGender(true);
     }
 
@@ -51,7 +49,7 @@ class UserControllerTest {
         user1.setId("test1");
         user1.setPassword("test");
         String login1 = userController.login(user1);
-        assertThat(login1).isEqualTo("ID 오류");
+        assertThat(login1).isEqualTo("id 오류");
 
         User user2 = new User();
         user2.setId("test");
@@ -59,4 +57,44 @@ class UserControllerTest {
         String login2 = userController.login(user2);
         assertThat(login2).isEqualTo("비번 오류");
     }
+
+    @Test
+    void findId(){
+        userController.join(user);
+
+        String findId = userController.findId(user);
+
+        assertThat(findId).isEqualTo("test");
+    }
+
+    @Test
+    void findPassword(){
+        userController.join(user);
+
+        String password = userController.findPassword(user);
+
+        assertThat(password).isEqualTo("test");
+    }
+
+    @Test
+    void edit(){
+        userController.join(user);
+        user.setPassword("test1");
+
+        userController.edit(user);
+        String password = userController.findPassword(user);
+
+        assertThat(password).isEqualTo("test1");
+    }
+
+    @Test
+    void delete(){
+        userController.join(user);
+        userController.delete(user);
+
+        String id = userController.findId(user);
+
+        assertThat(id).isEqualTo("가입되어 있지않음");
+    }
+
 }

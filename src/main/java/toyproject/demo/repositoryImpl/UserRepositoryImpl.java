@@ -27,8 +27,8 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public void update(User user) {
-        jdbcTemplate.update("UPDATE user SET password = ?, name = ?, phoneNumber = ?, nickname = ?, gender = ? WHERE id = ?",
-                user.getPassword(), user.getName(), user.getPhoneNumber(), user.getNickname(), user.getGender(), user.getId());
+        jdbcTemplate.update("UPDATE user SET password = ?, name = ?, phoneNumber = ?, nickname = ?, gender = ?, info = ?  WHERE id = ?",
+                user.getPassword(), user.getName(), user.getPhoneNumber(), user.getNickname(), user.getGender(), user.getInfo() ,user.getId());
     }
 
     @Override

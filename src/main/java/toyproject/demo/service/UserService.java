@@ -74,13 +74,5 @@ public class UserService {
     }
 
 
-    public String authentication(String phoneNumber){
-
-        return "ok";
-    }
-
-
-
-
 
 }
