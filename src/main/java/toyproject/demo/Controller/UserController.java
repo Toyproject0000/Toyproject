@@ -12,6 +12,7 @@ import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 @RestController
@@ -77,14 +78,16 @@ public class UserController {
     }
 
     @PostMapping("/authentication")
-    public String authentication(@RequestBody String phoneNumber) throws UnsupportedEncodingException, NoSuchAlgorithmException, URISyntaxException, InvalidKeyException, JsonProcessingException {
+    public String authentication(@RequestBody User user) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException{
+        String phoneNumber = user.getPhoneNumber();
+        System.out.println("phoneNumber = " + phoneNumber);
         Random random = new Random();
         String num = String.valueOf(random.nextInt(100000, 1000000));
         String number = makeCertificationNumber.makeNumber(num);
 
         smsService.sendSms(phoneNumber, num);
 
-        return "number";
+        return number;
     }
 
     @PostMapping("/authentication-check")

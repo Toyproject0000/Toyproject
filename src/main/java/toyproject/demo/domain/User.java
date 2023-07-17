@@ -10,7 +10,7 @@ public class User {
     String password;
     String name;
     String info;
-    Integer phoneNumber;
+    String phoneNumber;
     String nickname;
     Boolean gender;
 
