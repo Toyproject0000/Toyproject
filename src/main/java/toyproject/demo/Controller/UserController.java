@@ -91,7 +91,9 @@ public class UserController {
     }
 
     @PostMapping("/authentication-check")
-    public Boolean check(@RequestBody String rawNum, String num){
+    public Boolean check(@RequestBody Map<String, String> request){
+        String rawNum = request.get("rawNum");
+        String num = request.get("num");
         return makeCertificationNumber.match(rawNum, num);
     }
 }
