@@ -24,8 +24,8 @@ public class PostRepositoryImpl implements PostRepository {
     }
     @Override
     public void insert(Post post) {
-        String sql = "INSERT INTO post (user_id, contents, title, category, disclosure, date) VALUES (?, ?, ?, ?, ?, ?)";
-        jdbcTemplate.update(sql, post.getUserId(), post.getContents(), post.getTitle(), post.getCategory(), post.getDisclosure(), post.getDate());
+        String sql = "INSERT INTO post (user_id, contents, title, category, disclosure, date, img_location) VALUES (?, ?, ?, ?, ?, ?,?)";
+        jdbcTemplate.update(sql, post.getUserId(), post.getContents(), post.getTitle(), post.getCategory(), post.getDisclosure(), post.getDate(), post.getImgLocation());
     }
 
     @Override
@@ -60,29 +60,21 @@ public class PostRepositoryImpl implements PostRepository {
         return jdbcTemplate.query("SELECT * FROM post WHERE id IN (SELECT postId FROM postLike WHERE userId = ?)", rowMapper, user.getId());
     }
 
-//    @Override
-//    public List<Post> findPostBySpecificDate(LocalDate date) {
-//        return jdbcTemplate.query("select * from post where date = ?", rowMapper, date);
-//    }
-//
-//    @Override
-//    public List<Post> findPostAfterSpecificDate(LocalDate date) {
-//        return jdbcTemplate.query("select * from post where date >= ?", rowMapper, date);
-//    }
-@Override
-public List<Post> search(User user, Post post, LocalDate formerDate, LocalDate afterDate) {
-    List<Object> parameters = new ArrayList<>();
-    StringBuilder queryBuilder = new StringBuilder("SELECT * FROM post WHERE ");
 
-    if (user != null) {
-        queryBuilder.append("user_id = ?");
-        parameters.add(user.getId());
-    }
+    @Override
+    public List<Post> search(User user, Post post, LocalDate formerDate, LocalDate afterDate) {
+        List<Object> parameters = new ArrayList<>();
+        StringBuilder queryBuilder = new StringBuilder("SELECT * FROM post WHERE ");
 
-    if (post != null) {
         if (user != null) {
-            queryBuilder.append(" AND ");
+            queryBuilder.append("user_id = ?");
+            parameters.add(user.getId());
         }
+
+        if (post != null) {
+            if (user != null) {
+                queryBuilder.append(" AND ");
+            }
 
         if (post.getTitle() != null && !post.getTitle().isEmpty()) {
             queryBuilder.append("title LIKE ?");
@@ -94,11 +86,11 @@ public List<Post> search(User user, Post post, LocalDate formerDate, LocalDate a
             if (post.getTitle() != null && !post.getTitle().isEmpty()) {
                 queryBuilder.append(" AND ");
             }
-            queryBuilder.append("contents LIKE ?");
-            String likePattern = "%" + post.getContents() + "%";
-            parameters.add(likePattern);
+                queryBuilder.append("contents LIKE ?");
+                String likePattern = "%" + post.getContents() + "%";
+                parameters.add(likePattern);
         }
-    }
+        }
 
     if (formerDate != null) {
         if (user != null || (post != null && (post.getTitle() != null || post.getContents() != null))) {
@@ -121,5 +113,10 @@ public List<Post> search(User user, Post post, LocalDate formerDate, LocalDate a
 
     return jdbcTemplate.query(query, params, rowMapper);
 }
+
+    @Override
+    public List<Post> findPost(Post post) {
+        return jdbcTemplate.query("select * from post where id = ?", rowMapper, post.getId());
+    }
 
 }

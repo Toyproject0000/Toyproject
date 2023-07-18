@@ -19,6 +19,5 @@ public class MakeCertificationNumber {
 
     public Boolean match(String rawNum, String certificatedNum){
         return encoder.matches(rawNum, certificatedNum);
-
     }
 }

@@ -6,6 +6,7 @@ import toyproject.demo.domain.User;
 import toyproject.demo.repository.PostRepository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -17,7 +18,12 @@ public class PostService {
     }
 
     public void submit(Post post){
+        post.setDate(LocalDateTime.now());
         postRepository.insert(post);
+    }
+
+    public List<Post> findPost(Post post){
+        return postRepository.findPost(post);
     }
 
     public void delete(Post post){
@@ -28,21 +34,6 @@ public class PostService {
         postRepository.update(post);
     }
 
-//    public List<Post> findUserAllPost(User user){
-//        return postRepository.search(user);
-//    }
-//
-//    public List<Post> findPostBySpecificDate(LocalDate date){
-//        return postRepository.findPostBySpecificDate(date);
-//    }
-//
-//    public List<Post> findPostAfterDate(LocalDate date){
-//        return postRepository.findPostAfterSpecificDate(date);
-//    }
-//
-//    public List<Post> findPostByContents(Post post){
-//        return postRepository.findByContents(post.getContents());
-//    }
 
     public List<Post> search(User user, Post post, LocalDate formerDate, LocalDate afterDate){
         return postRepository.search(user, post, formerDate, afterDate);

@@ -19,4 +19,6 @@ public interface UserRepository {
     public List<User> findUserByNameAndPhoneAndId(User user);
     public List<User> findNickname(User user);
     public List<User> findEmail(User user);
+    public void setPassword(User user);
+    public List<User> findUser(User user);
 }

@@ -34,8 +34,8 @@ public class UserService {
 
     public String findPassword(User user){
         List<User> result = userRepository.findUserByNameAndPhoneAndId(user);
-        if (result.size()==0) return "정보가 틀림";
-        else return result.get(0).getPassword();
+        if (result.size()==0) return "cancel";
+        else return "ok";
     }
     public Boolean findEmail(User user){
         List<User> result = userRepository.findEmail(user);
@@ -49,6 +49,20 @@ public class UserService {
             return "cancel";
         }
         return "ok";
+    }
+
+    public String setPassword(User user){
+        try {
+            userRepository.setPassword(user);
+            return "ok";
+        }
+        catch (Exception e){
+            return "cancel";
+        }
+    }
+
+    public List<User> findUser(User user){
+        return userRepository.findUser(user);
     }
 
 

@@ -1,13 +1,21 @@
 package toyproject.demo.Controller;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import toyproject.demo.domain.Post;
 import toyproject.demo.domain.User;
+import toyproject.demo.service.ImgUploadService;
 import toyproject.demo.service.PostService;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -27,29 +35,65 @@ public class PostController {
     * 특정날짜이후로 쓴 글 검색
     * */
     private final PostService postService;
+    private final ImgUploadService imgUploadService;
 
-    public PostController(PostService postService) {
+    public PostController(PostService postService, ImgUploadService imgUploadService) {
         this.postService = postService;
+        this.imgUploadService = imgUploadService;
     }
 
     @PostMapping("/submit")
-    public String submitPost(@RequestBody Post post){
+    public String submitPost(@RequestParam("file") MultipartFile file, @RequestParam("data") String jsonData){
         try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            Post post = objectMapper.readValue(jsonData, Post.class);
+            String imgLocation = imgUploadService.PostImgUpload(file, post.getUserId());
+            post.setImgLocation(imgLocation);
+
             postService.submit(post);
+
             return "ok";
         }catch (Exception e){
             return "에러 발생";
         }
     }
 
-    @PostMapping("/edit")
-    public String edit(@RequestBody Post post){
+    @PostMapping("/read/img")
+    public ResponseEntity<byte[]> readImg(@RequestBody Post post) throws IOException {
+        String imgLocation = postService.findPost(post).get(0).getImgLocation();
+
+        Path imagePath = Paths.get(imgLocation);
+        byte[] imageBytes = Files.readAllBytes(imagePath);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.IMAGE_JPEG); // 이미지 타입에 맞게 설정
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(imageBytes);
+    }
+    @PostMapping("/read")
+    public String read(@RequestBody Post post) throws JsonProcessingException {
+        List<Post> readPost = postService.findPost(post);
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.writeValueAsString(readPost);
+    }
+
+    @PostMapping("edit")
+    public String editConfirm(@RequestParam("file") MultipartFile file, @RequestParam("data") String jsonData){
         try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            Post post = objectMapper.readValue(jsonData, Post.class);
+            String imgLocation = imgUploadService.PostImgUpload(file, post.getUserId());
+            post.setImgLocation(imgLocation);
+
             postService.modify(post);
+
             return "ok";
         }catch (Exception e){
             return "에러 발생";
         }
+
     }
 
     @PostMapping("/delete")
@@ -58,7 +102,7 @@ public class PostController {
             postService.delete(post);
             return "ok";
         }catch (Exception e){
-            return "에러 발생"; // 작성했던 글 내용 그대로 다시 쓸수있는지 아니면 내가 다시 보내줘야되는지 물어보자
+            return "에러 발생";
         }
     }
 
@@ -73,7 +117,7 @@ public class PostController {
             postService.findMyPostByContents(post, user);
             return "ok";
         }catch (Exception e){
-            return "에러 발생"; // 작성했던 글 내용 그대로 다시 쓸수있는지 아니면 내가 다시 보내줘야되는지 물어보자
+            return "에러 발생"; 
         }
     }
 
@@ -83,7 +127,7 @@ public class PostController {
             postService.findPostByFollower(user);
             return "ok";
         }catch (Exception e){
-            return "에러 발생"; // 작성했던 글 내용 그대로 다시 쓸수있는지 아니면 내가 다시 보내줘야되는지 물어보자
+            return "에러 발생"; 
         }
     }
 
@@ -93,7 +137,7 @@ public class PostController {
             postService.findAllLikePost(user);
             return "ok";
         }catch (Exception e){
-            return "에러 발생"; // 작성했던 글 내용 그대로 다시 쓸수있는지 아니면 내가 다시 보내줘야되는지 물어보자
+            return "에러 발생"; 
         }
     }
 

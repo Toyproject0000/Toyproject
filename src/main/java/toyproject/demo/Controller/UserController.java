@@ -1,6 +1,7 @@
 package toyproject.demo.Controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.bind.annotation.*;
 import toyproject.demo.domain.User;
 import toyproject.demo.service.MakeCertificationNumber;
@@ -38,37 +39,47 @@ public class UserController {
         this.makeCertificationNumber = makeCertificationNumber;
     }
 
-    @PostMapping("/join")
+    @PostMapping(value = "/join", consumes = "application/json")
     public String join(@RequestBody User user){
         return userService.join(user);
     }
 
-    @PostMapping("/login")
+    @PostMapping(value = "/login", consumes = "application/json")
     public String login(@RequestBody User user){
         return userService.login(user);
     }
 
-    @PostMapping("/findId")
+    @PostMapping(value = "/findId", consumes = "application/json")
     public String findId(@RequestBody User user){
         return userService.findId(user);
     }
 
-    @PostMapping("/findPassword/email")
+    @PostMapping(value = "/findPassword/email", consumes = "application/json")
     public Boolean findPasswordEmail(@RequestBody User user){
         return userService.findEmail(user);
     }
 
-    @PostMapping("/findPassword/check")
+    @PostMapping(value = "/findPassword/check", consumes = "application/json")
     public String findPassword(@RequestBody User user){
         return userService.findPassword(user);
     }
 
-    @PostMapping("/edit-user")
-    public String edit(@RequestBody User user){
-        return userService.edit(user);
+    @PostMapping(value = "/setPassword", consumes = "application/json")
+    public String setPassword(@RequestBody User user){
+        return userService.setPassword(user);
     }
 
-    @PostMapping("/remove")
+    @PostMapping(value = "/edit-user/confirm", consumes = "application/json")
+    public String editConfirm(@RequestBody User user){
+        return userService.edit(user);
+    }
+    @PostMapping(value = "/edit-user", consumes = "application/json")
+    public String edit(@RequestBody User user) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.writeValueAsString(userService.findUser(user));
+    }
+
+    @PostMapping(value = "/remove", consumes = "application/json")
     public String delete(@RequestBody User user){
         try {
             userService.delete(user);
@@ -77,12 +88,12 @@ public class UserController {
             return "에러발생";
         }
     }
-    @PostMapping("/nickname")
+    @PostMapping(value = "/nickname", consumes = "application/json")
     public String duplicateNickname(@RequestBody User user){
         return userService.duplicateNick(user);
     }
 
-    @PostMapping("/authentication")
+    @PostMapping(value = "/authentication", consumes = "application/json")
     public String authentication(@RequestBody User user) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException{
         String phoneNumber = user.getPhoneNumber();
         Random random = new Random();
@@ -94,7 +105,7 @@ public class UserController {
         return number;
     }
 
-    @PostMapping("/authentication-check")
+    @PostMapping(value = "/authentication-check", consumes = "application/json")
     public Boolean check(@RequestBody Map<String, String> request){
         String rawNum = request.get("rawNum");
         String num = request.get("num");

@@ -74,4 +74,14 @@ public class UserRepositoryImpl implements UserRepository {
     public List<User> findEmail(User user) {
         return jdbcTemplate.query("select * from user where id = ?", rowMapper, user.getId());
     }
+
+    @Override
+    public void setPassword(User user) {
+        jdbcTemplate.query("UPDATE user SET password = ?  WHERE id = ?", rowMapper, user.getPassword());
+    }
+
+    @Override
+    public List<User> findUser(User user) {
+        return jdbcTemplate.query("select * from user where id = ?", rowMapper, user.getId());
+    }
 }
