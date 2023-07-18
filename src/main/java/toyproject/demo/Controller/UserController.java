@@ -58,7 +58,7 @@ public class UserController {
         return userService.findEmail(user);
     }
 
-    @PostMapping("/findPassword")
+    @PostMapping("/findPassword/check")
     public String findPassword(@RequestBody User user){
         return userService.findPassword(user);
     }
