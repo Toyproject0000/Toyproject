@@ -2,10 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '4_page/home_page.dart';
-import '4_page/profile.dart';
-import '4_page/search_page.dart';
-import '4_page/writing_page.dart';
+import 'home_page/home_page.dart';
+import 'profile_page/profile.dart';
+import 'search_page/search_page.dart';
+import 'writing_page/writing_page.dart';
 
 class SetPage extends StatefulWidget {
   const SetPage({Key? key}) : super(key: key);

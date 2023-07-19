@@ -1,6 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_dongne/login_page/find_password_2.dart';
+
+import '../server/Server.dart';
 
 class FindPassword extends StatefulWidget {
   const FindPassword({Key? key}) : super(key: key);
@@ -17,25 +21,75 @@ class _FindPasswordState extends State<FindPassword> {
   final _formKey2 = GlobalKey<FormState>();
   final _numberKey = GlobalKey<FormState>();
 
+  // Server로 보내는 값들
+  String userAuthticationNumber = '';
   String userName = '';
   String userNumber = '';
+  String encryption = '';
+
+  void changeScreen() {
+    setState(() {
+      iDpass = true;
+    });
+  }
 
   void _tryValidation() {
     final isValid = _formkey.currentState!.validate();
     if (isValid) {
       _formkey.currentState!.save();
-      setState(() {
-        iDpass = true;
-      });
+      var data = {'id': userEmail};
+
+      FindPasswordServer server = FindPasswordServer();
+      server.sendEmail(data, changeScreen);
     }
   }
 
-  void _tryValidationOfname() {}
+  void _tryValidationOfname() async {
+    final isValid = _formKey2.currentState!.validate();
+    if (isValid) {
+      _formKey2.currentState!.save();
+      var data = {'name': userName, 'phoneNumber': userNumber, 'id': userEmail};
+      var authenticationData = {
+        'rawNum': userAuthticationNumber,
+        'num': encryption
+      };
+
+      FindPasswordServer server = FindPasswordServer();
+
+      final checkJsonData = await server.checkdata(data);
+      final authenticationJsonData =
+          await authenticationNumberCheck(authenticationData);
+      print(checkJsonData);
+      print(authenticationJsonData);
+
+      // null 을 통해 위쪽으로 스낵바
+
+      // if (checkJsonData == null) {
+      //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      //     duration: Duration(seconds: 5),
+      //     content: Text('입력하신 내용이 맞지 않습니다.'),
+      //   ));
+      // }
+      if (authenticationJsonData == null) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          duration: Duration(seconds: 5),
+          content: Text('인증번호가 맞지 않습니다.'),
+        ));
+      } else if (checkJsonData != null && authenticationJsonData != null) {
+        Navigator.pushNamed(context, NewPassWord.routeName);
+      }
+    }
+  }
 
   void authenticationNumber() {
     final isValid = _numberKey.currentState!.validate();
     if (isValid) {
       _numberKey.currentState!.save();
+      var data = {'phoneNumber': userNumber};
+      final authentication = numberAuthentiaction();
+      authentication.sendPhoneNumber(data).then((value) {
+        encryption = authentication.AuthenticationNumber!;
+      });
     }
   }
 
@@ -150,8 +204,11 @@ class _FindPasswordState extends State<FindPassword> {
                           }
                           return null;
                         },
+                        onSaved: (value) {
+                          userName = value!;
+                        },
                         decoration: InputDecoration(
-                            hintText: '이름 입력하시오',
+                            hintText: '이름을 입력하시오',
                             border: UnderlineInputBorder(
                                 borderSide:
                                     BorderSide(color: Colors.grey, width: 1.0)),
@@ -199,6 +256,14 @@ class _FindPasswordState extends State<FindPassword> {
                         ),
                       ),
                       TextFormField(
+                        validator: (value) {
+                          if (value!.length < 6) {
+                            return '인증번호를 바르게 입력하시오';
+                          }
+                        },
+                        onSaved: (value) {
+                          userAuthticationNumber = value!;
+                        },
                         decoration: InputDecoration(
                             hintText: '인증번호를 입력하시오',
                             border: UnderlineInputBorder(
@@ -212,8 +277,10 @@ class _FindPasswordState extends State<FindPassword> {
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () {
+                            _tryValidationOfname();
+
                             // 임시
-                            Navigator.pushNamed(context, NewPassWord.routeName);
+                            // Navigator.pushNamed(context, NewPassWord.routeName);
                           },
                           child: Text('다음'),
                           style: ElevatedButton.styleFrom(

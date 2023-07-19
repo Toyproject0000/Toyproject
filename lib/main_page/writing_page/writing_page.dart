@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_summernote/flutter_summernote.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:smart_dongne/main_page/4_page/writing_page_final.dart';
+import 'package:smart_dongne/main_page/writing_page/writing_page_final.dart';
 
 class WritingPage extends StatefulWidget {
   const WritingPage({Key? key}) : super(key: key);

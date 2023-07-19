@@ -4,9 +4,9 @@ import 'package:smart_dongne/login_page/find_password_2.dart';
 import 'package:smart_dongne/login_page/join_membership_page.dart';
 import 'package:smart_dongne/login_page/login_page.dart';
 import 'package:smart_dongne/login_page/setnickname.dart';
-import 'package:smart_dongne/main_page/4_page/cover.dart';
-import 'package:smart_dongne/main_page/4_page/profile_edit_page.dart';
-import 'package:smart_dongne/main_page/4_page/writing_page_final.dart';
+import 'package:smart_dongne/main_page/writing_page/cover.dart';
+import 'package:smart_dongne/main_page/profile_page/profile_edit_page.dart';
+import 'package:smart_dongne/main_page/writing_page/writing_page_final.dart';
 import 'package:smart_dongne/main_page/setpage.dart';
 
 import 'login_page/find_id.dart';

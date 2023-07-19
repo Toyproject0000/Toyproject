@@ -1,9 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:smart_dongne/login_page/setnickname.dart';
 
-import '../Server.dart';
+import '../server/Server.dart';
 
 class Joinmembership extends StatefulWidget {
   const Joinmembership({Key? key}) : super(key: key);
@@ -17,7 +19,6 @@ class Joinmembership extends StatefulWidget {
 class _JoinmembershipState extends State<Joinmembership> {
   final _formKey = GlobalKey<FormState>();
   final _numberKey = GlobalKey<FormState>();
-  final _numberKey2 = GlobalKey<FormState>();
 
   TextEditingController textController = TextEditingController();
 
@@ -31,20 +32,36 @@ class _JoinmembershipState extends State<Joinmembership> {
   String? perfectPassWord;
   bool manButton = false;
   bool womanButton = false;
+  String encryptionNumber = '';
 
   void _tryValidation() {
     final isValid = _formKey.currentState!.validate();
     if (isValid) {
       _formKey.currentState!.save();
       try {
+        print(userEmail);
+        print(userPassword);
+        print(userName);
+        print(manButton);
+        print(phoneNumber);
+
         var data = {
           'id': userEmail,
           'password': userPassword,
           'name': userName,
           'gender': manButton,
+          'phoneNumber': phoneNumber,
+          'nickname': 'helloworld'
         };
-        ServerConnection server = ServerConnection(context);
-        server.sendData(data);
+
+        var authenticationdata = {
+          'rawNum': authenticationNumber,
+          'num': encryptionNumber,
+        };
+
+        JoinMemdership server = JoinMemdership();
+        server.sendData(data, context);
+        server.authenticationNumberCheck(authenticationdata, context);
       } catch (e) {
         print(e);
         if (mounted) {
@@ -65,15 +82,12 @@ class _JoinmembershipState extends State<Joinmembership> {
       _numberKey.currentState!.save();
       final data = {'phoneNumber': phoneNumber};
       final authentication = numberAuthentiaction();
-      authentication.sendPhoneNumber(data);
+      authentication.sendPhoneNumber(data).then((value) {
+        setState(() {
+          encryptionNumber = authentication.AuthenticationNumber!;
+        });
+      });
     }
-  }
-
-  void _NumberValidation2() {
-    _numberKey2.currentState!.save();
-
-    final authentication = numberAuthentiaction();
-    authentication.authenticationNumberCheck(authenticationNumber);
   }
 
   @override
@@ -322,52 +336,23 @@ class _JoinmembershipState extends State<Joinmembership> {
                       ],
                     ),
                   ),
-                  Container(
-                      height: 60,
-                      padding: EdgeInsets.all(10.0),
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Colors.grey,
-                          width: 1.0,
-                        ),
+                  TextFormField(
+                    validator: (value) {
+                      if (value!.length < 6) {
+                        return '인증번호를 정확히 입력하시오';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) {
+                      authenticationNumber = value!;
+                    },
+                    decoration: InputDecoration(
+                      hintText: '인증번호 6자리를 입력해주세요.',
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey),
                       ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Form(
-                              key: _numberKey2,
-                              child: TextFormField(
-                                onSaved: (value) {
-                                  authenticationNumber = value!;
-                                },
-                                keyboardType: TextInputType.number,
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.digitsOnly,
-                                ],
-                                decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    hintText: '인증번호 입력하기'),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              if (phoneNumber != null) {
-                                _NumberValidation2();
-                              } else {
-                                // 스낵바로 전화번호 입력하라고 하기
-                              }
-                            },
-                            child: Text(
-                              '인증번호 확인',
-                              style: TextStyle(color: Colors.blue),
-                            ),
-                          ),
-                        ],
-                      )),
+                    ),
+                  ),
                   SizedBox(
                     height: 20,
                   ),
