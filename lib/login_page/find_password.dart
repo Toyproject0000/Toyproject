@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_dongne/login_page/find_password_2.dart';
@@ -27,57 +26,64 @@ class _FindPasswordState extends State<FindPassword> {
   String userNumber = '';
   String encryption = '';
 
+  TextEditingController emailController = TextEditingController();
+  TextEditingController nameControllet = TextEditingController();
+  TextEditingController numberController = TextEditingController();
+  TextEditingController authenticationController = TextEditingController();
+
+  bool emailError = false;
+  bool userCheckError = false;
+
   void changeScreen() {
     setState(() {
       iDpass = true;
     });
   }
 
-  void _tryValidation() {
+  void _tryValidation() async {
     final isValid = _formkey.currentState!.validate();
-    if (isValid) {
-      _formkey.currentState!.save();
-      var data = {'id': userEmail};
 
-      FindPasswordServer server = FindPasswordServer();
-      server.sendEmail(data, changeScreen);
+    _formkey.currentState!.save();
+    var data = {'id': userEmail};
+
+    FindPasswordServer server = FindPasswordServer();
+    final jsonData = await server.sendEmail(data, changeScreen);
+    if (jsonData == null) {
+      emailController.clear();
+      setState(() {
+        emailError = true;
+      });
     }
   }
 
   void _tryValidationOfname() async {
-    final isValid = _formKey2.currentState!.validate();
-    if (isValid) {
-      _formKey2.currentState!.save();
-      var data = {'name': userName, 'phoneNumber': userNumber, 'id': userEmail};
-      var authenticationData = {
-        'rawNum': userAuthticationNumber,
-        'num': encryption
-      };
+    _formKey2.currentState!.save();
+    var data = {'name': userName, 'phoneNumber': userNumber, 'id': userEmail};
+    var authenticationData = {
+      'rawNum': userAuthticationNumber,
+      'num': encryption
+    };
 
-      FindPasswordServer server = FindPasswordServer();
+    FindPasswordServer server = FindPasswordServer();
 
-      final checkJsonData = await server.checkdata(data);
-      final authenticationJsonData =
-          await authenticationNumberCheck(authenticationData);
-      print(checkJsonData);
-      print(authenticationJsonData);
+    final checkJsonData = await server.checkdata(data);
+    final authenticationJsonData =
+        await authenticationNumberCheck(authenticationData);
 
-      // null 을 통해 위쪽으로 스낵바
+    // null 을 통해 위쪽으로 스낵바
 
-      // if (checkJsonData == null) {
-      //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      //     duration: Duration(seconds: 5),
-      //     content: Text('입력하신 내용이 맞지 않습니다.'),
-      //   ));
-      // }
-      if (authenticationJsonData == null) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          duration: Duration(seconds: 5),
-          content: Text('인증번호가 맞지 않습니다.'),
-        ));
-      } else if (checkJsonData != null && authenticationJsonData != null) {
-        Navigator.pushNamed(context, NewPassWord.routeName);
-      }
+    if (checkJsonData == null) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        duration: Duration(seconds: 5),
+        content: Text('입력하신 내용이 맞지 않습니다.'),
+      ));
+    } else if (authenticationJsonData == null) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        duration: Duration(seconds: 5),
+        content: Text('인증번호가 맞지 않습니다.'),
+      ));
+    } else if (checkJsonData != null && authenticationJsonData != null) {
+      Navigator.pushNamed(context, NewPassWord.routeName);
     }
   }
 
@@ -137,13 +143,9 @@ class _FindPasswordState extends State<FindPassword> {
                         ),
                         SizedBox(height: 20),
                         TextFormField(
+                          controller: emailController,
                           key: ValueKey(1),
                           validator: (value) {
-                            if (value!.isEmpty) {
-                              return '이메일을 작성해주세요';
-                            } else if (!value.contains('@')) {
-                              return '이메일 형식으로 작성해주세요';
-                            }
                             return null;
                           },
                           onSaved: (value) {
@@ -164,6 +166,14 @@ class _FindPasswordState extends State<FindPassword> {
                         SizedBox(
                           height: 7,
                         ),
+                        if (emailError == true)
+                          Padding(
+                            padding: EdgeInsets.symmetric(vertical: 7),
+                            child: Text(
+                              '입력하신 이메일이 정보가 틀렸습니다. 입력 하신 내용을 다시 확인해주세요',
+                              style: TextStyle(color: Colors.red, fontSize: 13),
+                            ),
+                          ),
                         ElevatedButton(
                           onPressed: () {
                             _tryValidation();
@@ -198,15 +208,10 @@ class _FindPasswordState extends State<FindPassword> {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       TextFormField(
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return '이름을 입력해주세요';
-                          }
-                          return null;
-                        },
                         onSaved: (value) {
                           userName = value!;
                         },
+                        controller: nameControllet,
                         decoration: InputDecoration(
                             hintText: '이름을 입력하시오',
                             border: UnderlineInputBorder(
@@ -223,6 +228,7 @@ class _FindPasswordState extends State<FindPassword> {
                               child: Form(
                                 key: _numberKey,
                                 child: TextFormField(
+                                  controller: numberController,
                                   validator: (value) {
                                     if (value!.isEmpty || value.length > 11) {
                                       return '번호를 올바르게 입력하시오';
@@ -256,11 +262,7 @@ class _FindPasswordState extends State<FindPassword> {
                         ),
                       ),
                       TextFormField(
-                        validator: (value) {
-                          if (value!.length < 6) {
-                            return '인증번호를 바르게 입력하시오';
-                          }
-                        },
+                        controller: authenticationController,
                         onSaved: (value) {
                           userAuthticationNumber = value!;
                         },
@@ -273,14 +275,19 @@ class _FindPasswordState extends State<FindPassword> {
                                 borderSide: BorderSide(
                                     color: Colors.grey, width: 1.0))),
                       ),
+                      if (userCheckError)
+                        Padding(
+                          padding: EdgeInsets.symmetric(vertical: 10),
+                          child: Text(
+                            '입력하신 이메일이 정보가 틀렸습니다. 입력 하신 내용을 다시 확인해주세요',
+                            style: TextStyle(color: Colors.red, fontSize: 13),
+                          ),
+                        ),
                       Container(
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () {
                             _tryValidationOfname();
-
-                            // 임시
-                            // Navigator.pushNamed(context, NewPassWord.routeName);
                           },
                           child: Text('다음'),
                           style: ElevatedButton.styleFrom(

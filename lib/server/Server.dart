@@ -8,7 +8,7 @@ import '../main_page/setpage.dart';
 
 class JoinMemdership {
   Future<void> sendData(data, BuildContext context) async {
-    final url = Uri.parse('http://192.168.0.206:8080/join');
+    final url = Uri.parse('http://172.30.1.95:8080/join');
     final headers = {'Content-Type': 'application/json'};
     print(data);
 
@@ -42,7 +42,7 @@ class JoinMemdership {
   }
 
   Future<void> authenticationNumberCheck(data, context) async {
-    final url = Uri.parse('http://192.168.0.206:8080/authentication-check');
+    final url = Uri.parse('http://172.30.1.95:8080/authentication-check');
     final headers = {'Content-Type': 'application/json'};
 
     try {
@@ -68,7 +68,7 @@ class JoinMemdership {
 }
 
 Future<void> loginSendData(data, BuildContext context, loginCheck) async {
-  final url = Uri.parse('http://192.168.0.206:8080/login');
+  final url = Uri.parse('http://172.30.1.95:8080/login');
   final headers = {'Content-Type': 'application/json'};
 
   try {
@@ -98,7 +98,7 @@ class numberAuthentiaction {
   String? AuthenticationNumber;
 
   Future<void> sendPhoneNumber(number) async {
-    final url = Uri.parse('http://192.168.0.206:8080/authentication');
+    final url = Uri.parse('http://172.30.1.95:8080/authentication');
     final headers = {'Content-Type': 'application/json'};
 
     try {
@@ -123,7 +123,7 @@ class numberAuthentiaction {
 
 class ServerFindId {
   Future<void> sendFindId(data, context) async {
-    final url = Uri.parse('http://192.168.0.206:8080/findId');
+    final url = Uri.parse('http://172.30.1.95:8080/findId');
     final headers = {'Content-Type': 'application/json'};
 
     try {
@@ -144,7 +144,7 @@ class ServerFindId {
   }
 
   Future<void> authenticationNumberCheck(data, context) async {
-    final url = Uri.parse('http://192.168.0.206:8080/authentication-check');
+    final url = Uri.parse('http://172.30.1.95:8080/authentication-check');
     final headers = {'Content-Type': 'application/json'};
 
     try {
@@ -170,8 +170,8 @@ class ServerFindId {
 }
 
 class FindPasswordServer {
-  Future<void> sendEmail(email, Function changeScreen) async {
-    final url = Uri.parse('http://192.168.0.206:8080/findPassword/email');
+  Future<String?> sendEmail(email, Function changeScreen) async {
+    final url = Uri.parse('http://172.30.1.95:8080/findPassword/email');
     final headers = {'Content-Type': 'application/json'};
     try {
       final response =
@@ -182,6 +182,7 @@ class FindPasswordServer {
         print(jsonData);
         if (jsonData == 'true') {
           changeScreen();
+          return jsonData;
         }
       } else {
         // 요청이 실패하거나 오류가 발생함
@@ -193,7 +194,7 @@ class FindPasswordServer {
   }
 
   Future<String?> checkdata(data) async {
-    final url = Uri.parse('http://192.168.0.206:8080/findPassword/check');
+    final url = Uri.parse('http://172.30.1.95:8080/findPassword/check');
     final headers = {'Content-Type': 'application/json'};
     try {
       final response =
@@ -217,7 +218,7 @@ class FindPasswordServer {
 }
 
 Future<String?> authenticationNumberCheck(data) async {
-  final url = Uri.parse('http://192.168.0.206:8080/authentication-check');
+  final url = Uri.parse('http://172.30.1.95:8080/authentication-check');
   final headers = {'Content-Type': 'application/json'};
 
   try {
