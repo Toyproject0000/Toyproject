@@ -15,10 +15,13 @@ class FindPassword extends StatefulWidget {
 
 class _FindPasswordState extends State<FindPassword> {
   bool iDpass = false;
+
   final _formkey = GlobalKey<FormState>();
   String userEmail = '';
   final _formKey2 = GlobalKey<FormState>();
   final _numberKey = GlobalKey<FormState>();
+  FocusNode _focusNode = FocusNode();
+  FocusNode _focusNodeOfEmail = FocusNode();
 
   // Server로 보내는 값들
   String userAuthticationNumber = '';
@@ -49,7 +52,6 @@ class _FindPasswordState extends State<FindPassword> {
     FindPasswordServer server = FindPasswordServer();
     final jsonData = await server.sendEmail(data, changeScreen);
     if (jsonData == null) {
-      emailController.clear();
       setState(() {
         emailError = true;
       });
@@ -72,18 +74,12 @@ class _FindPasswordState extends State<FindPassword> {
 
     // null 을 통해 위쪽으로 스낵바
 
-    if (checkJsonData == null) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        duration: Duration(seconds: 5),
-        content: Text('입력하신 내용이 맞지 않습니다.'),
-      ));
-    } else if (authenticationJsonData == null) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        duration: Duration(seconds: 5),
-        content: Text('인증번호가 맞지 않습니다.'),
-      ));
+    if (checkJsonData == null || authenticationJsonData == null) {
+      setState(() {
+        userCheckError = true;
+      });
     } else if (checkJsonData != null && authenticationJsonData != null) {
-      Navigator.pushNamed(context, NewPassWord.routeName);
+      Navigator.pushNamed(context, NewPassWord.routeName, arguments: EmailArgument(userEmail));
     }
   }
 
@@ -97,6 +93,19 @@ class _FindPasswordState extends State<FindPassword> {
         encryption = authentication.AuthenticationNumber!;
       });
     }
+  }
+
+  void afterEmailErrorFocus(){
+    print('실행중 입니다');
+    if(_focusNodeOfEmail.hasFocus){
+      emailController.clear();
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _focusNodeOfEmail.addListener(afterEmailErrorFocus);
   }
 
   @override
@@ -143,6 +152,7 @@ class _FindPasswordState extends State<FindPassword> {
                         ),
                         SizedBox(height: 20),
                         TextFormField(
+                          focusNode: _focusNodeOfEmail,
                           controller: emailController,
                           key: ValueKey(1),
                           validator: (value) {
@@ -176,6 +186,7 @@ class _FindPasswordState extends State<FindPassword> {
                           ),
                         ElevatedButton(
                           onPressed: () {
+                            FocusScope.of(context).unfocus();
                             _tryValidation();
                           },
                           child: Text(
@@ -228,6 +239,7 @@ class _FindPasswordState extends State<FindPassword> {
                               child: Form(
                                 key: _numberKey,
                                 child: TextFormField(
+                                  keyboardType: TextInputType.number,
                                   controller: numberController,
                                   validator: (value) {
                                     if (value!.isEmpty || value.length > 11) {
@@ -252,6 +264,7 @@ class _FindPasswordState extends State<FindPassword> {
                             GestureDetector(
                               onTap: () {
                                 authenticationNumber();
+                                FocusScope.of(context).requestFocus(_focusNode);
                               },
                               child: Text(
                                 '인증번호 전송',
@@ -262,6 +275,8 @@ class _FindPasswordState extends State<FindPassword> {
                         ),
                       ),
                       TextFormField(
+                        focusNode: _focusNode,
+                        keyboardType: TextInputType.number,
                         controller: authenticationController,
                         onSaved: (value) {
                           userAuthticationNumber = value!;

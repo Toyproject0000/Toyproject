@@ -39,12 +39,6 @@ class _JoinmembershipState extends State<Joinmembership> {
     if (isValid) {
       _formKey.currentState!.save();
       try {
-        print(userEmail);
-        print(userPassword);
-        print(userName);
-        print(manButton);
-        print(phoneNumber);
-
         var data = {
           'id': userEmail,
           'password': userPassword,

@@ -61,7 +61,7 @@ class _WritingPageState extends State<WritingPage> {
               saveText().then((value) {
                 if (value != null) {
                   Navigator.pushNamed(
-                    context,
+                    context, 
                     LastSetting.routeName,
                   );
                 }

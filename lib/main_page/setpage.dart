@@ -59,6 +59,7 @@ class SetPageState extends State<SetPage> {
                 label: 'Search'),
             BottomNavigationBarItem(
                 icon: FaIcon(FontAwesomeIcons.pencil), label: 'write'),
+            // BottomNavigationBarItem(icon: Icon(Icons.))
             BottomNavigationBarItem(icon: Icon(Icons.person), label: 'profile'),
           ],
         ),

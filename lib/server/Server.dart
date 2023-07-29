@@ -8,7 +8,7 @@ import '../main_page/setpage.dart';
 
 class JoinMemdership {
   Future<void> sendData(data, BuildContext context) async {
-    final url = Uri.parse('http://172.30.1.95:8080/join');
+    final url = Uri.parse('http://172.30.1.20:8080/join');
     final headers = {'Content-Type': 'application/json'};
     print(data);
 
@@ -42,7 +42,7 @@ class JoinMemdership {
   }
 
   Future<void> authenticationNumberCheck(data, context) async {
-    final url = Uri.parse('http://172.30.1.95:8080/authentication-check');
+    final url = Uri.parse('http://172.30.1.20:8080/authentication-check');
     final headers = {'Content-Type': 'application/json'};
 
     try {
@@ -68,7 +68,7 @@ class JoinMemdership {
 }
 
 Future<void> loginSendData(data, BuildContext context, loginCheck) async {
-  final url = Uri.parse('http://172.30.1.95:8080/login');
+  final url = Uri.parse('http://172.30.1.20:8080/login');
   final headers = {'Content-Type': 'application/json'};
 
   try {
@@ -98,9 +98,8 @@ class numberAuthentiaction {
   String? AuthenticationNumber;
 
   Future<void> sendPhoneNumber(number) async {
-    final url = Uri.parse('http://172.30.1.95:8080/authentication');
+    final url = Uri.parse('http://172.30.1.20:8080/authentication');
     final headers = {'Content-Type': 'application/json'};
-
     try {
       final response =
           await http.post(url, headers: headers, body: jsonEncode(number));
@@ -123,7 +122,7 @@ class numberAuthentiaction {
 
 class ServerFindId {
   Future<void> sendFindId(data, context) async {
-    final url = Uri.parse('http://172.30.1.95:8080/findId');
+    final url = Uri.parse('http://172.30.1.20:8080/findId');
     final headers = {'Content-Type': 'application/json'};
 
     try {
@@ -144,7 +143,7 @@ class ServerFindId {
   }
 
   Future<void> authenticationNumberCheck(data, context) async {
-    final url = Uri.parse('http://172.30.1.95:8080/authentication-check');
+    final url = Uri.parse('http://172.30.1.20:8080/authentication-check');
     final headers = {'Content-Type': 'application/json'};
 
     try {
@@ -171,7 +170,7 @@ class ServerFindId {
 
 class FindPasswordServer {
   Future<String?> sendEmail(email, Function changeScreen) async {
-    final url = Uri.parse('http://172.30.1.95:8080/findPassword/email');
+    final url = Uri.parse('http://172.30.1.20:8080/findPassword/email');
     final headers = {'Content-Type': 'application/json'};
     try {
       final response =
@@ -194,7 +193,7 @@ class FindPasswordServer {
   }
 
   Future<String?> checkdata(data) async {
-    final url = Uri.parse('http://172.30.1.95:8080/findPassword/check');
+    final url = Uri.parse('http://172.30.1.20:8080/findPassword/check');
     final headers = {'Content-Type': 'application/json'};
     try {
       final response =
@@ -202,10 +201,32 @@ class FindPasswordServer {
       if (response.statusCode == 200) {
         var jsonData = response.body;
         print('요청 성공');
-        print(jsonData);
-        print("||이 부분");
-        if (jsonData == '1234qwer@') {
+        if (jsonData == 'ok') {
           return jsonData;
+        }
+      } else {
+        // 요청이 실패하거나 오류가 발생함
+        print('요청 실패: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('네트워크 에러: $e');
+    }
+  }
+
+  Future<String?> setupPassword(password) async {
+    final url = Uri.parse('http://172.30.1.20:8080/setPassword');
+    final headers = {'Content-Type': 'application/json'};
+    print(password);
+    try {
+      final response =
+          await http.post(url, headers: headers, body: jsonEncode(password));
+      if (response.statusCode == 200) {
+        var jsonData = response.body;
+        print('요청 성공');
+        print(jsonData);
+        if (jsonData == 'ok') {
+          
+          print(jsonData);
         }
       } else {
         // 요청이 실패하거나 오류가 발생함
@@ -218,7 +239,7 @@ class FindPasswordServer {
 }
 
 Future<String?> authenticationNumberCheck(data) async {
-  final url = Uri.parse('http://172.30.1.95:8080/authentication-check');
+  final url = Uri.parse('http://172.30.1.20:8080/authentication-check');
   final headers = {'Content-Type': 'application/json'};
 
   try {
