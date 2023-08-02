@@ -81,12 +81,15 @@ public class UserController {
 
     @PostMapping(value = "/remove", consumes = "application/json")
     public String delete(@RequestBody User user){
+        String login = userService.login(user);
+        if(login=="ok"){
         try {
             userService.delete(user);
             return "ok";
         }catch (Exception e){
             return "에러발생";
-        }
+        }}
+        else return login;
     }
     @PostMapping(value = "/nickname", consumes = "application/json")
     public String duplicateNickname(@RequestBody User user){
