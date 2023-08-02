@@ -111,4 +111,10 @@ public class UserController {
         String num = request.get("num");
         return makeCertificationNumber.match(rawNum, num);
     }
+
+
+    @PostMapping(value = "/profile/{userId}", consumes = "application/json")
+    public User profile(@PathVariable String userId){
+        return null;
+    }
 }

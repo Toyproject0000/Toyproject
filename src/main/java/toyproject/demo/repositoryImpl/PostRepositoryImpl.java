@@ -62,17 +62,17 @@ public class PostRepositoryImpl implements PostRepository {
 
 
     @Override
-    public List<Post> search(User user, Post post, LocalDate formerDate, LocalDate afterDate) {
+    public List<Post> search(Post post, LocalDate formerDate, LocalDate afterDate) {
         List<Object> parameters = new ArrayList<>();
         StringBuilder queryBuilder = new StringBuilder("SELECT * FROM post WHERE ");
 
-        if (user != null) {
+        if (post.getUserId() != null) {
             queryBuilder.append("user_id = ?");
-            parameters.add(user.getId());
+            parameters.add(post.getUserId());
         }
 
         if (post != null) {
-            if (user != null) {
+            if (post.getUserId() != null) {
                 queryBuilder.append(" AND ");
             }
 
@@ -93,7 +93,7 @@ public class PostRepositoryImpl implements PostRepository {
         }
 
     if (formerDate != null) {
-        if (user != null || (post != null && (post.getTitle() != null || post.getContents() != null))) {
+        if (post.getUserId() != null || (post != null && (post.getTitle() != null || post.getContents() != null))) {
             queryBuilder.append(" AND ");
         }
         queryBuilder.append("date >= ?");
@@ -101,7 +101,7 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     if (afterDate != null) {
-        if (user != null || (post != null && (post.getTitle() != null || post.getContents() != null)) || formerDate != null) {
+        if (post.getUserId() != null || (post != null && (post.getTitle() != null || post.getContents() != null)) || formerDate != null) {
             queryBuilder.append(" AND ");
         }
         queryBuilder.append("date <= ?");
@@ -118,5 +118,4 @@ public class PostRepositoryImpl implements PostRepository {
     public List<Post> findPost(Post post) {
         return jdbcTemplate.query("select * from post where id = ?", rowMapper, post.getId());
     }
-
 }

@@ -14,6 +14,6 @@ public interface PostRepository {
     public List<Post> findMyPostByContents(String contents, User user);
     public List<Post> findPostOfFollower(User user);
     public List<Post> findAllLikePost(User user);
-    public List<Post> search(User user, Post post, LocalDate formerDate, LocalDate afterDate);
+    public List<Post> search(Post post, LocalDate formerDate, LocalDate afterDate);
     public List<Post> findPost(Post post);
 }

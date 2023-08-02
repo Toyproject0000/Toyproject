@@ -5,8 +5,14 @@ import toyproject.demo.domain.Post;
 import toyproject.demo.domain.User;
 import toyproject.demo.repository.PostRepository;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Base64;
 import java.util.List;
 
 @Service
@@ -22,11 +28,21 @@ public class PostService {
         postRepository.insert(post);
     }
 
-    public List<Post> findPost(Post post){
-        return postRepository.findPost(post);
+    public Post findPost(Post post) throws IOException {
+        Post findPost = postRepository.findPost(post).get(0);
+        Path path = Paths.get(findPost.getImgLocation());
+        byte[] imageBytes = Files.readAllBytes(path);
+        String Image = Base64.getEncoder().encodeToString(imageBytes);
+        findPost.setImg(Image);
+
+        return findPost;
     }
 
     public void delete(Post post){
+        Post findPost = postRepository.findPost(post).get(0);
+        String imgLocation = findPost.getImgLocation();
+        new File(imgLocation).delete();
+
         postRepository.delete(post);
     }
 
@@ -35,20 +51,32 @@ public class PostService {
     }
 
 
-    public List<Post> search(User user, Post post, LocalDate formerDate, LocalDate afterDate){
-        return postRepository.search(user, post, formerDate, afterDate);
+    public List<Post> search(Post post, LocalDate formerDate, LocalDate afterDate) throws IOException {
+        List<Post> posts = postRepository.search(post, formerDate, afterDate);
+        setPostImg(posts);
+        return posts;
     }
 
-    public List<Post> findMyPostByContents(Post post, User user){
-        return postRepository.findMyPostByContents(post.getContents(), user);
+
+    public List<Post> findPostByFollower(User user) throws IOException {
+        List<Post> posts = postRepository.findPostOfFollower(user);
+        setPostImg(posts);
+        return posts;
     }
 
-    public List<Post> findPostByFollower(User user){
-        return postRepository.findPostOfFollower(user);
+    public List<Post> findAllLikePost(User user) throws IOException {
+        List<Post> posts = postRepository.findAllLikePost(user);
+        setPostImg(posts);
+        return posts;
     }
 
-    public List<Post> findAllLikePost(User user){
-        return postRepository.findAllLikePost(user);
-    }
 
+    private static void setPostImg(List<Post> posts) throws IOException {
+        for (Post findPost : posts) {
+            Path path = Paths.get(findPost.getImgLocation());
+            byte[] imageBytes = Files.readAllBytes(path);
+            String Image = Base64.getEncoder().encodeToString(imageBytes);
+            findPost.setImg(Image);
+        }
+    }
 }

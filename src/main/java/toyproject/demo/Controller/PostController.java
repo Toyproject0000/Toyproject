@@ -17,6 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.Base64;
 import java.util.List;
 
 @RestController
@@ -42,11 +43,9 @@ public class PostController {
         this.imgUploadService = imgUploadService;
     }
 
-    @PostMapping("/submit")
-    public String submitPost(@RequestParam("file") MultipartFile file, @RequestParam("data") String jsonData){
+    @PostMapping(value = "/submit")
+    public String submitPost(@RequestParam("file") MultipartFile file, @RequestBody Post post) {
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            Post post = objectMapper.readValue(jsonData, Post.class);
             String imgLocation = imgUploadService.PostImgUpload(file, post.getUserId());
             post.setImgLocation(imgLocation);
 
@@ -58,32 +57,14 @@ public class PostController {
         }
     }
 
-    @PostMapping("/read/img")
-    public ResponseEntity<byte[]> readImg(@RequestBody Post post) throws IOException {
-        String imgLocation = postService.findPost(post).get(0).getImgLocation();
-
-        Path imagePath = Paths.get(imgLocation);
-        byte[] imageBytes = Files.readAllBytes(imagePath);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.IMAGE_JPEG); // 이미지 타입에 맞게 설정
-
-        return ResponseEntity.ok()
-                .headers(headers)
-                .body(imageBytes);
-    }
-    @PostMapping("/read")
-    public String read(@RequestBody Post post) throws JsonProcessingException {
-        List<Post> readPost = postService.findPost(post);
-        ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.writeValueAsString(readPost);
+    @PostMapping(value = "/read")
+    public String read(@RequestBody Post post) throws IOException {
+        return postService.findPost(post).toString();
     }
 
-    @PostMapping("edit")
-    public String editConfirm(@RequestParam("file") MultipartFile file, @RequestParam("data") String jsonData){
+    @PatchMapping(value = "edit")
+    public String editConfirm(@RequestParam(value = "file", required = false) MultipartFile file, @RequestBody Post post){
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            Post post = objectMapper.readValue(jsonData, Post.class);
             String imgLocation = imgUploadService.PostImgUpload(file, post.getUserId());
             post.setImgLocation(imgLocation);
 
@@ -96,7 +77,7 @@ public class PostController {
 
     }
 
-    @PostMapping("/delete")
+    @PostMapping(value = "/delete")
     public String delete(@RequestBody Post post){
         try {
             postService.delete(post);
@@ -106,39 +87,19 @@ public class PostController {
         }
     }
 
-    @PostMapping("/search")
-    public List<Post> search(@RequestBody User user, @RequestBody Post post, @RequestBody LocalDate formerDate, @RequestBody LocalDate afterDate){
-        return postService.search(user, post, formerDate, afterDate);
+
+    @PostMapping(value = "/search")
+    public List<Post> search(@RequestBody(required = false) Post post, @RequestBody(required = false) LocalDate formerDate, @RequestBody(required = false) LocalDate afterDate) throws IOException {
+        return postService.search(post, formerDate, afterDate);
     }
 
-    @PostMapping("/find-mypost-bycontent")
-    public String findMyPostByContents(@RequestBody Post post,@RequestBody User user){
-        try {
-            postService.findMyPostByContents(post, user);
-            return "ok";
-        }catch (Exception e){
-            return "에러 발생"; 
-        }
+    @PostMapping(value = "/find-follower")
+    public List<Post> findPostOfFollower(@RequestBody User user) throws IOException {
+        return postService.findPostByFollower(user);
     }
 
-    @PostMapping("/find-follower")
-    public String findPostOfFollower(@RequestBody User user){
-        try {
-            postService.findPostByFollower(user);
-            return "ok";
-        }catch (Exception e){
-            return "에러 발생"; 
-        }
+    @PostMapping(value = "/find-likepost")
+    public List<Post> findLikePost(@RequestBody User user) throws IOException {
+        return postService.findAllLikePost(user);
     }
-
-    @PostMapping("/find-likepost")
-    public String findLikePost(@RequestBody User user){
-        try {
-            postService.findAllLikePost(user);
-            return "ok";
-        }catch (Exception e){
-            return "에러 발생"; 
-        }
-    }
-
 }

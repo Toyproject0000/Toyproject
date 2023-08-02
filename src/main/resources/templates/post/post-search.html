@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<p>요청 URL : http://localhost:8080/post/search</p>
+<br>
+<p>요청 형식 : {
+  "userId" : "찾고싶은 userId",
+  "title" : "제목",
+  "contents" : "내용",
+  "formerDate" : "yyyy-mm-dd",
+  "afterDate" : "yyyy-mm-dd"
+  }
+다 보낼 필요 없습니다.</p>
+<br>
+<p>조건에 맞는 글들 json형식으로
+ex) [
+  {
+  "userId": "user123",
+  "contents": "This is the first post.",
+  "title": "First Post",
+  "imgLocation": "/path/to/image1.jpg",
+  "category": "Sample Category",
+  "disclosure": true,
+  "date": "2023-07-31T14:30:00",
+  "img": "base64-encoded-image1"
+  },
+  {
+  "userId": "user456",
+  "contents": "This is the second post.",
+  "title": "Second Post",
+  "imgLocation": "/path/to/image2.jpg",
+  "category": "Another Category",
+  "disclosure": false,
+  "date": "2023-07-31T14:31:00",
+  "img": "base64-encoded-image2"
+  }
+  ]</p>
+</body>
+</html>
