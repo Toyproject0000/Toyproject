@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import 'chatting_page/chatting.dart';
 import 'home_page/home_page.dart';
 import 'profile_page/profile.dart';
 import 'search_page/search_page.dart';
@@ -21,6 +22,7 @@ class SetPageState extends State<SetPage> {
     HomePage(),
     SearchPage(),
     WritingPage(),
+    Chatting(),
     ProfilePage(),
   ];
 
@@ -59,7 +61,7 @@ class SetPageState extends State<SetPage> {
                 label: 'Search'),
             BottomNavigationBarItem(
                 icon: FaIcon(FontAwesomeIcons.pencil), label: 'write'),
-            // BottomNavigationBarItem(icon: Icon(Icons.))
+            BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'chat'),
             BottomNavigationBarItem(icon: Icon(Icons.person), label: 'profile'),
           ],
         ),

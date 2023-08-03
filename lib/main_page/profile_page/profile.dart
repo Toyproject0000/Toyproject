@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_dongne/main_page/profile_page/profile_edit_page.dart';
+import 'package:smart_dongne/main_page/profile_page/User_setting/setting_page.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -44,7 +45,15 @@ class _ProfilePageState extends State<ProfilePage> {
                 Navigator.pushNamed(context, ProfileEdit.routeName);
               },
               child: Text('편집',
-                  style: TextStyle(color: Colors.blue, fontSize: 16)))
+                  style: TextStyle(color: Colors.blue, fontSize: 16))),
+          IconButton(
+              onPressed: () {
+                Navigator.pushNamed(context, UserSetting.routeName);
+              },
+              icon: Icon(
+                Icons.settings,
+                color: Colors.grey[700],
+              ))
         ],
       ),
       body: ListView(

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_dongne/login_page/find_password_2.dart';
+import 'package:another_flushbar/flushbar.dart';
 
 import '../server/Server.dart';
 
@@ -21,7 +22,11 @@ class _FindPasswordState extends State<FindPassword> {
   final _formKey2 = GlobalKey<FormState>();
   final _numberKey = GlobalKey<FormState>();
   FocusNode _focusNode = FocusNode();
-  FocusNode _focusNodeOfEmail = FocusNode();
+
+  //cancel Button
+  bool emailCancel = false;
+  bool userNameCancel = false;
+  bool authenticationNumberCancel = false;
 
   // Server로 보내는 값들
   String userAuthticationNumber = '';
@@ -30,7 +35,7 @@ class _FindPasswordState extends State<FindPassword> {
   String encryption = '';
 
   TextEditingController emailController = TextEditingController();
-  TextEditingController nameControllet = TextEditingController();
+  TextEditingController nameController = TextEditingController();
   TextEditingController numberController = TextEditingController();
   TextEditingController authenticationController = TextEditingController();
 
@@ -82,7 +87,7 @@ class _FindPasswordState extends State<FindPassword> {
       Navigator.pushNamed(context, NewPassWord.routeName, arguments: EmailArgument(userEmail));
     }
   }
-
+      
   void authenticationNumber() {
     final isValid = _numberKey.currentState!.validate();
     if (isValid) {
@@ -91,21 +96,58 @@ class _FindPasswordState extends State<FindPassword> {
       final authentication = numberAuthentiaction();
       authentication.sendPhoneNumber(data).then((value) {
         encryption = authentication.AuthenticationNumber!;
+        // authenticaiton transform
+        Flushbar(
+          margin: EdgeInsets.symmetric(horizontal: 15),
+          flushbarPosition: FlushbarPosition.TOP,
+          duration: Duration(seconds: 2),
+          message: '인증번호를 전송했습니다.' ,
+          messageSize: 15,
+          borderRadius: BorderRadius.circular(4),
+          backgroundColor: Colors.white,
+          messageColor: Colors.black,
+          boxShadows: [
+            BoxShadow(color: Colors.black, blurRadius: 8)
+          ],
+        ).show(context);
+      });
+    }
+  }
+  
+  void checkEmailTextCancelButton(text){
+    if(text != ''){
+      setState(() {
+        emailCancel = true;
+      });
+    } else {
+      setState(() {
+        emailCancel = false;
       });
     }
   }
 
-  void afterEmailErrorFocus(){
-    print('실행중 입니다');
-    if(_focusNodeOfEmail.hasFocus){
-      emailController.clear();
+  void userNameTextCancelButton(text){
+    if(text != ''){
+      setState(() {
+        userNameCancel = true;
+      });
+    } else {
+      setState(() {
+        emailCancel = false;
+      });
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _focusNodeOfEmail.addListener(afterEmailErrorFocus);
+  void authenticationTextCancelButton(text){
+    if(text != ''){
+      setState(() {
+        authenticationNumberCancel = true;
+      });
+    } else {
+      setState(() {
+        authenticationNumberCancel = false;
+      });
+    }
   }
 
   @override
@@ -151,27 +193,55 @@ class _FindPasswordState extends State<FindPassword> {
                           ),
                         ),
                         SizedBox(height: 20),
-                        TextFormField(
-                          focusNode: _focusNodeOfEmail,
-                          controller: emailController,
-                          key: ValueKey(1),
-                          validator: (value) {
-                            return null;
-                          },
-                          onSaved: (value) {
-                            userEmail = value!;
-                          },
-                          decoration: InputDecoration(
-                              focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.blue)),
-                              prefixIcon: Icon(
-                                Icons.email,
-                                color: Colors.blue,
+                        Container(
+                          padding: EdgeInsets.symmetric(vertical: 4),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.blue,
+                              width: 1,
+                            ),
+                            borderRadius: BorderRadius.circular(4)
+                          ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: TextFormField(
+                                  controller: emailController,
+                                  key: ValueKey(1),
+                                  validator: (value) {
+                                    return null;
+                                  },
+                                  onSaved: (value) {
+                                    userEmail = value!;
+                                  },
+                                  onChanged: (text){
+                                    checkEmailTextCancelButton(text);
+                                  },
+                                  decoration: InputDecoration(
+
+                                      focusedBorder: InputBorder.none,
+                                      prefixIcon: Icon(
+                                        Icons.email,
+                                        color: Colors.blue,
+                                      ),
+                                      border: InputBorder.none,
+                                      hintText: '이메일'),
+                                ),
                               ),
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.grey),
-                              ),
-                              hintText: '이메일'),
+                              Visibility(
+                                visible: emailCancel,
+                                child: IconButton(
+                                  icon: Icon(Icons.cancel),
+                                  onPressed: (){
+                                    emailController.clear();
+                                    setState(() {
+                                      emailCancel = false;
+                                    });
+                                  },
+                                )
+                              )
+                            ],
+                          ),
                         ),
                         SizedBox(
                           height: 7,
@@ -218,19 +288,46 @@ class _FindPasswordState extends State<FindPassword> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      TextFormField(
-                        onSaved: (value) {
-                          userName = value!;
-                        },
-                        controller: nameControllet,
-                        decoration: InputDecoration(
-                            hintText: '이름을 입력하시오',
-                            border: UnderlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.grey, width: 1.0)),
-                            focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Colors.grey, width: 1.0))),
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(
+                              color: Colors.grey,
+                              width: 1
+                            )
+                          )
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: TextFormField(
+                                onSaved: (value) {
+                                  userName = value!;
+                                },
+                                onChanged: (text){
+                                  userNameTextCancelButton(text);
+                                },
+                                controller: nameController,
+                                decoration: InputDecoration(
+                                    hintText: '이름을 입력하시오',
+                                    border: InputBorder.none,
+                                    focusedBorder: InputBorder.none),
+                              ),
+                            ),
+                            Visibility(
+                              visible: userNameCancel,
+                              child: IconButton(
+                                icon: Icon(Icons.cancel),
+                                onPressed: (){
+                                  nameController.clear();
+                                  setState(() {
+                                    userNameCancel = false;
+                                  });
+                                },
+                              )
+                            )
+                          ],
+                        ),
                       ),
                       Container(
                         child: Row(
@@ -274,21 +371,48 @@ class _FindPasswordState extends State<FindPassword> {
                           ],
                         ),
                       ),
-                      TextFormField(
-                        focusNode: _focusNode,
-                        keyboardType: TextInputType.number,
-                        controller: authenticationController,
-                        onSaved: (value) {
-                          userAuthticationNumber = value!;
-                        },
-                        decoration: InputDecoration(
-                            hintText: '인증번호를 입력하시오',
-                            border: UnderlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.grey, width: 1.0)),
-                            focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Colors.grey, width: 1.0))),
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(
+                              color: Colors.grey,
+                              width: 1
+                            )
+                          )
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: TextFormField(
+                                focusNode: _focusNode,
+                                keyboardType: TextInputType.number,
+                                controller: authenticationController,
+                                onSaved: (value) {
+                                  userAuthticationNumber = value!;
+                                },
+                                onChanged: (text){
+                                  authenticationTextCancelButton(text);
+                                },
+                                decoration: InputDecoration(
+                                    hintText: '인증번호를 입력하시오',
+                                    border: InputBorder.none,
+                                    focusedBorder: InputBorder.none),
+                              ),
+                            ),
+                            Visibility(
+                              visible: authenticationNumberCancel,
+                              child: IconButton(
+                                icon: Icon(Icons.cancel),
+                                onPressed: (){
+                                  authenticationController.clear();
+                                  setState(() {
+                                    authenticationNumberCancel = false;
+                                  });
+                                },
+                              )
+                            )
+                          ],
+                        ),
                       ),
                       if (userCheckError)
                         Padding(

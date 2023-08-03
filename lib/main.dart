@@ -4,6 +4,15 @@ import 'package:smart_dongne/login_page/find_password_2.dart';
 import 'package:smart_dongne/login_page/join_membership_page.dart';
 import 'package:smart_dongne/login_page/login_page.dart';
 import 'package:smart_dongne/login_page/setnickname.dart';
+import 'package:smart_dongne/main_page/chatting_page/chatting_searchmode.dart';
+import 'package:smart_dongne/main_page/profile_page/User_setting/Account_management.dart';
+import 'package:smart_dongne/main_page/profile_page/User_setting/phoneNumberChange.dart';
+import 'package:smart_dongne/main_page/profile_page/User_setting/setting_page.dart';
+import 'package:smart_dongne/main_page/profile_page/User_setting/userName_change.dart';
+import 'package:smart_dongne/main_page/profile_page/User_setting/userWithdrawal.dart';
+import 'package:smart_dongne/main_page/profile_page/notification_page/likeandpost.dart';
+import 'package:smart_dongne/main_page/profile_page/notification_page/notification_page.dart';
+import 'package:smart_dongne/main_page/profile_page/notification_page/reader_page.dart';
 import 'package:smart_dongne/main_page/writing_page/cover.dart';
 import 'package:smart_dongne/main_page/profile_page/profile_edit_page.dart';
 import 'package:smart_dongne/main_page/writing_page/writing_page_final.dart';
@@ -35,6 +44,15 @@ class MyApp extends StatelessWidget {
         LastSetting.routeName: (context) => LastSetting(),
         CoverPage.routeName: (context) => CoverPage(),
         NewPassWord.routeName: (context) => NewPassWord(),
+        ChatSearchMode.routeName: (context) => ChatSearchMode(), 
+        UserSetting.routeName: (context) => UserSetting(),
+        AccountManagement.routeName: (context) => AccountManagement(),
+        UserNameChange.routeName: (context) => UserNameChange(),
+        UserWithDrawal.rotueName: (context) => UserWithDrawal(),
+        ChangePhoneNumber.routeName:(context) => ChangePhoneNumber(),
+        AccountNotification.routeName: (context) => AccountNotification(),
+        LikeAndPost.routeName: (context) => LikeAndPost(),
+        ReaderNotification.routeName: (context) => ReaderNotification(),
       },
     );
   }

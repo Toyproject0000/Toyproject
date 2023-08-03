@@ -1,5 +1,6 @@
 import 'dart:ffi';
 
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -23,8 +24,9 @@ class FindIdState extends State<FindId> {
   String encryptionNumber = '';
   String authenticationNumber = '';
   String name = '';
+  final _focusNode = FocusNode();
 
-  void _tryValidation() {
+  void _tryValidation() async {
     final isValid = _foromKey.currentState!.validate();
     if (isValid) {
       _foromKey.currentState!.save();
@@ -35,8 +37,57 @@ class FindIdState extends State<FindId> {
       };
 
       ServerFindId server = ServerFindId();
-      server.sendFindId(data, context);
-      server.authenticationNumberCheck(authenticationData, context);
+      final String? answer = await server.sendFindId(data, context);
+      final String? numberAnswer = await server.authenticationNumberCheck(authenticationData, context);
+      if(answer != null && numberAnswer == null){
+        showDialog(context: context, builder: (BuildContext context){
+          return AlertDialog(
+            contentPadding: EdgeInsets.fromLTRB(15, 15, 15, 0),
+            content: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Text('${name}님에 이메일은 ${answer} 입니다.'),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(onPressed: (){
+                Navigator.popUntil(context, ModalRoute.withName('/'));
+              }, child: Text('확인', style: TextStyle(
+                color: Colors.blue, fontSize: 18
+              ),))
+            ],
+          );
+        });
+      }else if (numberAnswer == 'no'){
+        Flushbar(
+          margin: EdgeInsets.symmetric(horizontal: 15),
+          flushbarPosition: FlushbarPosition.TOP,
+          duration: Duration(seconds: 2),
+          message: '인증번호가 맞지 않습니다.' ,
+          messageSize: 15,
+          borderRadius: BorderRadius.circular(4),
+          backgroundColor: Colors.white,
+          messageColor: Colors.red,
+          boxShadows: [
+            BoxShadow(color: Colors.black, blurRadius: 8)
+          ],
+        ).show(context);
+      } else {
+        Flushbar(
+          margin: EdgeInsets.symmetric(horizontal: 15),
+          flushbarPosition: FlushbarPosition.TOP,
+          duration: Duration(seconds: 2),
+          message: '가입되어 있지 않은 아이디 입니다.' ,
+          messageSize: 15,
+          borderRadius: BorderRadius.circular(4),
+          backgroundColor: Colors.white,
+          messageColor: Colors.red,
+          boxShadows: [
+            BoxShadow(color: Colors.black, blurRadius: 8)
+          ],
+        ).show(context);
+      }
     }
   }
 
@@ -51,6 +102,19 @@ class FindIdState extends State<FindId> {
         setState(() {
           encryptionNumber = authentication.AuthenticationNumber!;
         });
+        Flushbar(
+          margin: EdgeInsets.symmetric(horizontal: 15),
+          flushbarPosition: FlushbarPosition.TOP,
+          duration: Duration(seconds: 2),
+          message: '인증번호를 전송했습니다.' ,
+          messageSize: 15,
+          borderRadius: BorderRadius.circular(4),
+          backgroundColor: Colors.white,
+          messageColor: Colors.black,
+          boxShadows: [
+            BoxShadow(color: Colors.black, blurRadius: 8)
+          ],
+        ).show(context);
       });
     }
   }
@@ -83,7 +147,7 @@ class FindIdState extends State<FindId> {
               TextFormField(
                 validator: (value) {
                   if (value!.isEmpty) {
-                    return 'Please enter you name';
+                    return '아이디를 다시 입력해주세요';
                   }
                   return null;
                 },
@@ -144,10 +208,11 @@ class FindIdState extends State<FindId> {
                     ),
                     TextButton(
                       child: Text(
-                        '인증번호 보내기',
+                        '인증번호 요쳥',
                         style: TextStyle(color: Colors.blue, fontSize: 13),
                       ),
                       onPressed: () {
+                        FocusScope.of(context).requestFocus(_focusNode);
                         _tryNumberValidation();
                       },
                     ),
@@ -158,6 +223,7 @@ class FindIdState extends State<FindId> {
                 height: 10,
               ),
               TextFormField(
+                focusNode: _focusNode,
                 validator: (value) {
                   if (value!.length < 6) {
                     return '올바른 인증번호를 입력하시오';

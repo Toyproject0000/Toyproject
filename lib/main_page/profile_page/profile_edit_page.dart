@@ -1,3 +1,4 @@
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -202,6 +203,7 @@ class _ProfileEditState extends State<ProfileEdit> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
+        elevation: 1,
         backgroundColor: Colors.white,
         title: Text('프로필 편집'),
         leading: TextButton(
@@ -219,8 +221,19 @@ class _ProfileEditState extends State<ProfileEdit> {
               if (imagePath != null) {
                 Navigator.pop(context);
               } else {
-                showTopSnackBar(Overlay.of(context),
-                    CustomSnackBar.info(message: '변경사항을 입력해주세요.'));
+                Flushbar(
+                  margin: EdgeInsets.symmetric(horizontal: 30),
+                  flushbarPosition: FlushbarPosition.TOP,
+                  duration: Duration(seconds: 2),
+                  message: '변경사항을 입력해주세요.' ,
+                  messageSize: 15,
+                  borderRadius: BorderRadius.circular(4),
+                  backgroundColor: Colors.white,
+                  messageColor: Colors.black,
+                  boxShadows: [
+                    BoxShadow(color: Colors.grey, blurRadius: 8, ),
+                  ],
+                ).show(context);
               }
             },
           ),

@@ -162,10 +162,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               // 로그인 버튼
                               ElevatedButton(
                                 onPressed: () {
-                                  Navigator.pushNamed(
-                                      context, SetPage.routeName);
-                                  // 서버 연걸
-                                  // _tryValidation();
+                                  _tryValidation();
                                 },
                                 child: Text(
                                   '로그인',

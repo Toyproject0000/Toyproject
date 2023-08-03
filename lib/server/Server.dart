@@ -1,3 +1,4 @@
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -7,7 +8,7 @@ import '../login_page/setnickname.dart';
 import '../main_page/setpage.dart';
 
 class JoinMemdership {
-  Future<void> sendData(data, BuildContext context) async {
+  Future<String?> sendData(data, BuildContext context) async {
     final url = Uri.parse('http://172.30.1.20:8080/join');
     final headers = {'Content-Type': 'application/json'};
     print(data);
@@ -22,14 +23,9 @@ class JoinMemdership {
         print('요청 성공');
         print(jsonData);
         if (jsonData == 'ok') {
-          Navigator.pushNamed(context, NickName.routeName);
+          return null;
         } else if (jsonData == 'cancel') {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('이미가입된 회원입니다.'),
-              backgroundColor: Colors.blue,
-            ),
-          );
+          return 'cancel';
         }
       } else {
         // 요청이 실패하거나 오류가 발생함
@@ -41,7 +37,7 @@ class JoinMemdership {
     }
   }
 
-  Future<void> authenticationNumberCheck(data, context) async {
+  Future<String?> authenticationNumberCheck(data, context) async {
     final url = Uri.parse('http://172.30.1.20:8080/authentication-check');
     final headers = {'Content-Type': 'application/json'};
 
@@ -54,7 +50,9 @@ class JoinMemdership {
         print('요청 성공');
         print(jsonData);
         if (jsonData == 'true') {
-          print('최초 회원가입한 사람');
+          return null;
+        } else {
+          return 'no';
         }
       } else {
         // 요청이 실패하거나 오류가 발생함
@@ -83,6 +81,9 @@ Future<void> loginSendData(data, BuildContext context, loginCheck) async {
         Navigator.pushNamed(context, SetPage.routeName);
       } else if (jsonData == 'id 오류' || jsonData == '비번 오류') {
         loginCheck();
+      } else if (jsonData == '닉네임 설정 안 됨'){
+        print(data['id']);
+        Navigator.pushNamed(context, NickName.routeName, arguments: ArgumentEmail(data['id']));
       }
     } else {
       // 요청이 실패하거나 오류가 발생함
@@ -94,6 +95,31 @@ Future<void> loginSendData(data, BuildContext context, loginCheck) async {
   }
 }
 
+Future<String?> nickNameSetUp(data) async {
+  final url = Uri.parse('http://172.30.1.20:8080/edit-user/confirm');
+  final headers = {'Content-Type': 'application/json'};
+  print(data);
+  try {
+      final response =
+          await http.post(url, headers: headers, body: jsonEncode(data));
+
+      if (response.statusCode == 200) {
+        var jsonData = response.body;
+        print('요청 성공');
+        print(jsonData);
+        if(jsonData == 'ok'){
+          return 'ok';
+        } else {
+          return null;
+        }
+
+      } else {
+      }
+    } catch (error) {
+      print('네트워크 오류: $error');
+    }
+  }
+ 
 class numberAuthentiaction {
   String? AuthenticationNumber;
 
@@ -121,9 +147,11 @@ class numberAuthentiaction {
 }
 
 class ServerFindId {
-  Future<void> sendFindId(data, context) async {
+
+  Future<String?> sendFindId(data, context) async {
     final url = Uri.parse('http://172.30.1.20:8080/findId');
     final headers = {'Content-Type': 'application/json'};
+    print(data);
 
     try {
       final response =
@@ -131,10 +159,11 @@ class ServerFindId {
 
       if (response.statusCode == 200) {
         var jsonData = response.body;
-        if (jsonData == 'ok') {
-          print('당근을 찾았어요');
-        } else {
+        if (jsonData == '가입되어 있지않음') {
           print(jsonData);
+          return null;
+        } else {
+          return jsonData;
         }
       }
     } catch (e) {
@@ -142,7 +171,7 @@ class ServerFindId {
     }
   }
 
-  Future<void> authenticationNumberCheck(data, context) async {
+  Future<String?> authenticationNumberCheck(data, context) async {
     final url = Uri.parse('http://172.30.1.20:8080/authentication-check');
     final headers = {'Content-Type': 'application/json'};
 
@@ -153,13 +182,15 @@ class ServerFindId {
       if (response.statusCode == 200) {
         var jsonData = response.body;
         print('요청 성공');
-        print(jsonData);
         if (jsonData == 'true') {
-          print('최초 id를 찾은 사람');
+          return null;
+        } else {
+          print(jsonData);
+          return 'no';
         }
       } else {
-        // 요청이 실패하거나 오류가 발생함
         print('요청 실패: ${response.statusCode}');
+        // 요청이 실패하거나 오류가 발생함
       }
     } catch (error) {
       // 네트워크 오류 발생
@@ -213,7 +244,7 @@ class FindPasswordServer {
     }
   }
 
-  Future<String?> setupPassword(password) async {
+  Future<String?> setupPassword(password, context) async {
     final url = Uri.parse('http://172.30.1.20:8080/setPassword');
     final headers = {'Content-Type': 'application/json'};
     print(password);
@@ -225,7 +256,26 @@ class FindPasswordServer {
         print('요청 성공');
         print(jsonData);
         if (jsonData == 'ok') {
-          
+
+          showDialog(context: context, builder: (BuildContext context){
+          return AlertDialog(
+            contentPadding: EdgeInsets.fromLTRB(15, 15, 15, 0),
+            content: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Text('비밀번호를 성공적으로 변경했습니다.'),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(onPressed: (){
+                Navigator.popUntil(context, ModalRoute.withName('/'));
+              }, child: Text('확인', style: TextStyle(
+                color: Colors.blue, fontSize: 18
+              ),))
+            ],
+          );
+        });
           print(jsonData);
         }
       } else {
@@ -252,9 +302,60 @@ Future<String?> authenticationNumberCheck(data) async {
       print(jsonData);
       if (jsonData == 'true') {
         return jsonData;
+      } else {
+        return null;
       }
     } else {
       // 요청이 실패하거나 오류가 발생함
+      print('요청 실패: ${response.statusCode}');
+    }
+  } catch (error) {
+    // 네트워크 오류 발생
+    print('네트워크 오류: $error');
+  }
+}
+
+Future<String?> checkNickNameServer(data) async {
+  final url = Uri.parse('http://172.30.1.20:8080/nickname');
+  final headers = {'Content-Type': 'application/json'};
+
+  try {
+    final response =
+        await http.post(url, headers: headers, body: jsonEncode(data));
+
+    if (response.statusCode == 200) {
+      var jsonData = response.body;
+      print(jsonData);
+      if (jsonData == 'ok') {
+        return jsonData;
+      } else {
+        return null;
+      }
+    } else {
+      print('요청 실패: ${response.statusCode}');
+    }
+  } catch (error) {
+    print('네트워크 오류: $error');
+  }
+}
+
+Future<String?> AccountRemove(data) async {
+  final url = Uri.parse('http://172.30.1.20:8080/remove');
+  final headers = {'Content-Type': 'application/json'};
+
+  try {
+    final response =
+        await http.post(url, headers: headers, body: jsonEncode(data));
+
+    if (response.statusCode == 200) {
+      var jsonData = response.body;
+      print(jsonData);
+      if (jsonData == 'ok') {
+        return jsonData;
+      } else {
+        return null;
+      }
+    } else {
       print('요청 실패: ${response.statusCode}');
     }
   } catch (error) {

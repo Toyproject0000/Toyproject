@@ -39,7 +39,7 @@ class _NewPassWordState extends State<NewPassWord> {
         'password': newPasswordCheck,
       };
       final passwordServer = FindPasswordServer();
-      passwordServer.setupPassword(data);
+      passwordServer.setupPassword(data, context);
     } else if (newPassword != newPasswordCheck) {
       checkPasswordController.clear();
       setState(() {
