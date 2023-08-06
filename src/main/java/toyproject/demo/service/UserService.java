@@ -81,10 +81,13 @@ public class UserService {
 
     public String edit(User user){
         try {
+            System.out.println(user.getNickname());
             userRepository.update(user);
             return "ok";
         }
         catch (Exception e){
+            System.out.println(e.getCause());
+            System.out.println(e.getMessage());
             return "cancel";
         }
     }

@@ -2,22 +2,31 @@ package toyproject.demo.Controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import toyproject.demo.domain.User;
+import toyproject.demo.service.ImgUploadService;
 import toyproject.demo.service.MakeCertificationNumber;
 import toyproject.demo.service.SmsService;
 import toyproject.demo.service.UserService;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
 @RestController
 @RequestMapping("/")
+@RequiredArgsConstructor
 public class UserController {
 
     /*
@@ -32,12 +41,7 @@ public class UserController {
     private final UserService userService;
     private final SmsService smsService;
     private final MakeCertificationNumber makeCertificationNumber;
-
-    public UserController(UserService userService, SmsService smsService, MakeCertificationNumber makeCertificationNumber) {
-        this.userService = userService;
-        this.smsService = smsService;
-        this.makeCertificationNumber = makeCertificationNumber;
-    }
+    private final ImgUploadService imgUploadService;
 
     @PostMapping(value = "/join", consumes = "application/json")
     public String join(@RequestBody User user){
@@ -109,15 +113,31 @@ public class UserController {
     }
 
     @PostMapping(value = "/authentication-check", consumes = "application/json")
-    public Boolean check(@RequestBody Map<String, String> request){
+    public Boolean authenticationCheck(@RequestBody Map<String, String> request){
         String rawNum = request.get("rawNum");
         String num = request.get("num");
         return makeCertificationNumber.match(rawNum, num);
     }
 
 
-    @PostMapping(value = "/profile/{userId}", consumes = "application/json")
-    public User profile(@PathVariable String userId){
-        return null;
+    @PostMapping(value = "/profile/set", consumes = "application/json")
+    public String setProfile(@RequestBody User user, @RequestParam("file") MultipartFile file) throws IOException {
+        String imgUpload = imgUploadService.PostImgUpload(file, user.getId());
+        user.setImgLocation(imgUpload);
+        userService.edit(user);
+        return "ok";
+    }
+
+    @PostMapping("/profile")
+    public User ViewProfile(@RequestBody User user) throws IOException {
+        User findUser = userService.findUser(user).get(0);
+
+        Path path = Paths.get(findUser.getImgLocation());
+        byte[] imageBytes = Files.readAllBytes(path);
+        String Image = Base64.getEncoder().encodeToString(imageBytes);
+
+        findUser.setImg(Image);
+
+        return findUser;
     }
 }

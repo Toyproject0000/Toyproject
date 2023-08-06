@@ -1,6 +1,8 @@
 package toyproject.demo.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import toyproject.demo.domain.Category;
 import toyproject.demo.domain.Post;
 import toyproject.demo.domain.User;
 import toyproject.demo.repository.PostRepository;
@@ -16,16 +18,15 @@ import java.util.Base64;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
-
-    public PostService(PostRepository postRepository) {
-        this.postRepository = postRepository;
-    }
+    private final FindAlgorithm algorithm;
 
     public void submit(Post post){
         post.setDate(LocalDateTime.now());
         postRepository.insert(post);
+        algorithm.write(post);
     }
 
     public Post findPost(Post post) throws IOException {
@@ -70,6 +71,17 @@ public class PostService {
         return posts;
     }
 
+    public List<Post> findByCategory(String category, Integer num) throws IOException {
+        List<Post> posts = postRepository.findByCategory(category, num);
+        for (Post post : posts) {
+            Path imagePath = Paths.get(post.getImgLocation());
+            byte[] imageBytes = Files.readAllBytes(imagePath);
+            String base64EncodedImage = Base64.getEncoder().encodeToString(imageBytes);
+            post.setImg(base64EncodedImage);
+        }
+        return posts;
+    }
+
 
     private static void setPostImg(List<Post> posts) throws IOException {
         for (Post findPost : posts) {
@@ -79,4 +91,6 @@ public class PostService {
             findPost.setImg(Image);
         }
     }
+
+
 }

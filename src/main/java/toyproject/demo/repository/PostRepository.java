@@ -6,14 +6,15 @@ import toyproject.demo.domain.User;
 import java.time.LocalDate;
 import java.util.List;
 
-public interface PostRepository {
-    public void insert(Post post);
-    public void update(Post post);
-    public void delete(Post post);
-    public List<Post> findAll();
-    public List<Post> findMyPostByContents(String contents, User user);
-    public List<Post> findPostOfFollower(User user);
-    public List<Post> findAllLikePost(User user);
-    public List<Post> search(Post post, LocalDate formerDate, LocalDate afterDate);
-    public List<Post> findPost(Post post);
+ public interface PostRepository {
+     void insert(Post post);
+     void update(Post post);
+     void delete(Post post);
+     List<Post> findAll();
+     List<Post> findMyPostByContents(String contents, User user);
+     List<Post> findPostOfFollower(User user);
+     List<Post> findAllLikePost(User user);
+     List<Post> search(Post post, LocalDate formerDate, LocalDate afterDate);
+     List<Post> findPost(Post post);
+    List<Post> findByCategory(String category, Integer num);
 }

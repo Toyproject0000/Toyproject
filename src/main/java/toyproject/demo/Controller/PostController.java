@@ -1,27 +1,23 @@
 package toyproject.demo.Controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import toyproject.demo.domain.Post;
 import toyproject.demo.domain.User;
+import toyproject.demo.service.FindAlgorithm;
 import toyproject.demo.service.ImgUploadService;
 import toyproject.demo.service.PostService;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.util.Base64;
+
 import java.util.List;
 
 @RestController
 @RequestMapping("/post")
+@RequiredArgsConstructor
 public class PostController {
     /*
     * 글쓰기
@@ -37,11 +33,7 @@ public class PostController {
     * */
     private final PostService postService;
     private final ImgUploadService imgUploadService;
-
-    public PostController(PostService postService, ImgUploadService imgUploadService) {
-        this.postService = postService;
-        this.imgUploadService = imgUploadService;
-    }
+    private final FindAlgorithm algorithm;
 
     @PostMapping(value = "/submit")
     public String submitPost(@RequestParam("file") MultipartFile file, @RequestBody Post post) {
@@ -58,8 +50,9 @@ public class PostController {
     }
 
     @PostMapping(value = "/read")
-    public String read(@RequestBody Post post) throws IOException {
-        return postService.findPost(post).toString();
+    public Post read(@RequestBody Post post) throws IOException {
+        algorithm.read(post);
+        return postService.findPost(post);
     }
 
     @PatchMapping(value = "edit")

@@ -13,7 +13,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 @Repository
-
 public class PostRepositoryImpl implements PostRepository {
     private final JdbcTemplate jdbcTemplate;
     private final RowMapper<Post> rowMapper;
@@ -117,5 +116,11 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public List<Post> findPost(Post post) {
         return jdbcTemplate.query("select * from post where id = ?", rowMapper, post.getId());
+    }
+
+    @Override
+    public List<Post> findByCategory(String category, Integer num) {
+        String sql = "SELECT * FROM post WHERE category = ? LIMIT CAST(? AS SIGNED)";
+        return jdbcTemplate.query(sql, rowMapper, category, num);
     }
 }

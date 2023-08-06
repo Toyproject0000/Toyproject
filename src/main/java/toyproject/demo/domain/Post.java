@@ -15,12 +15,7 @@ public class Post {
     String title;
     String imgLocation;
     String category;
-    Boolean Disclosure;
+    String Disclosure;
     LocalDateTime date;
     String img;
-
-    public String toString() {
-        Gson gson = new Gson();
-        return gson.toJson(this);
-    }
 }
