@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:smart_dongne/login_page/Social_login/kakao_login.dart';
 import 'package:smart_dongne/login_page/Social_login/main_view_model.dart';
 import 'package:smart_dongne/server/Server.dart';
@@ -44,6 +47,14 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
+  void login_naver () async {
+    NaverLoginResult result = await FlutterNaverLogin.logIn();
+    print(result.account.name);
+    print(result.account.gender);
+    print(result.account.email);
+    print(result.account.birthyear);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -82,7 +93,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Container(
                       padding: EdgeInsets.all(20.0),
                       width: MediaQuery.of(context).size.width - 50,
-                      height: 400,
+                      height: 450,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(5),
                         border: Border.all(
@@ -161,7 +172,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   child: Text(
                                     '아이디(로그인 전용 아이디) 또는 비밀번호를 잘못 입력했습니다.'
                                     '입력하신 내용을 다시 확인해주세요.',
-                                    style: TextStyle(color: Colors.red),
+                                    style: TextStyle(color: Colors.red, ),
                                   ),
                                 ),
                               // 로그인 버튼
@@ -194,6 +205,20 @@ class _LoginScreenState extends State<LoginScreen> {
                                   child: Text('카카오톡 로그인'),
                                   style: ElevatedButton.styleFrom(
                                       primary: Colors.yellow,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(15))),
+                                ),
+                              ),
+                              Container(
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                  onPressed: ()  {
+                                    login_naver();
+                                  },
+                                  child: Text('네이버로 로그인', style: TextStyle(color: Colors.white),),
+                                  style: ElevatedButton.styleFrom(
+                                      primary: Colors.green,
                                       shape: RoundedRectangleBorder(
                                           borderRadius:
                                               BorderRadius.circular(15))),
