@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_dongne/main_page/profile_page/User_setting/Account_management.dart';
+import 'package:smart_dongne/main_page/profile_page/notification_page/cutoff.dart';
 import 'package:smart_dongne/main_page/profile_page/notification_page/notification_page.dart';
 
 class UserSetting extends StatefulWidget {
@@ -56,7 +57,9 @@ class _UserSettingState extends State<UserSetting> {
             ),
           ),
           InkWell(
-            onTap: (){},
+            onTap: (){
+              Navigator.pushNamed(context, Cutoff.routeName);
+            },
             
             child: Container(
               padding: EdgeInsets.all(20),

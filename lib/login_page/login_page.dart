@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_dongne/login_page/Social_login/kakao_login.dart';
+import 'package:smart_dongne/login_page/Social_login/main_view_model.dart';
 import 'package:smart_dongne/server/Server.dart';
 import 'package:smart_dongne/login_page/find_password.dart';
 import 'package:smart_dongne/login_page/join_membership_page.dart';
 import 'package:smart_dongne/main_page/setpage.dart';
+
 
 import 'find_id.dart';
 
@@ -16,6 +19,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final viewModel = MainViewModel(KakaoLogin());
+
   final _formKey = GlobalKey<FormState>();
   String userEmail = '';
   String userPassword = '';
@@ -57,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Container(
                   padding: EdgeInsets.only(top: 70),
                   child: Text(
-                    'Smart DongNe',
+                    'Writer',
                     style: TextStyle(
                       color: Colors.blue,
                       fontWeight: FontWeight.bold,
@@ -77,7 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Container(
                       padding: EdgeInsets.all(20.0),
                       width: MediaQuery.of(context).size.width - 50,
-                      height: 330,
+                      height: 400,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(5),
                         border: Border.all(
@@ -176,6 +181,25 @@ class _LoginScreenState extends State<LoginScreen> {
                                   minimumSize: Size(double.infinity, 48),
                                 ),
                               ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(vertical: 15),
+                                child: Text('또는', style: TextStyle(fontSize: 16, color: Colors.black),),
+                              ),
+                              Container(
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                  onPressed: () async {
+                                    await viewModel.login();
+                                  },
+                                  child: Text('카카오톡 로그인'),
+                                  style: ElevatedButton.styleFrom(
+                                      primary: Colors.yellow,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(15))),
+                                ),
+                              ),
+                              
                             ],
                           ),
                         ),

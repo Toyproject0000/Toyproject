@@ -45,7 +45,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 Navigator.pushNamed(context, ProfileEdit.routeName);
               },
               child: Text('편집',
-                  style: TextStyle(color: Colors.blue, fontSize: 16))),
+                  style: TextStyle(color: Colors.blue, fontSize: 20))),
           IconButton(
               onPressed: () {
                 Navigator.pushNamed(context, UserSetting.routeName);

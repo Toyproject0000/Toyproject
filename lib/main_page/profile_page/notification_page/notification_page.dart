@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_dongne/main_page/profile_page/notification_page/likeandpost.dart';
+import 'package:smart_dongne/main_page/profile_page/notification_page/reader_page.dart';
 
 class AccountNotification extends StatefulWidget {
   const AccountNotification({super.key});
@@ -56,18 +57,13 @@ class _AccountNotificationState extends State<AccountNotification> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('독자', style: TextStyle(fontSize: 18),),
-                IconButton(onPressed: (){}, icon: Icon(Icons.arrow_forward_ios))
+                Text('새로운 독자, 메세지', style: TextStyle(fontSize: 18),),
+                IconButton(onPressed: (){
+                  Navigator.pushNamed(context, ReaderNotification.routeName);
+                }, icon: Icon(Icons.arrow_forward_ios))
               ],
             ),
-            SizedBox(height: 5,),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('메세지', style: TextStyle(fontSize: 18),),
-                IconButton(onPressed: (){}, icon: Icon(Icons.arrow_forward_ios))
-              ],
-            ),
+            
           ],
         ),
       ),

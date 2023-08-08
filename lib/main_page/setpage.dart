@@ -5,7 +5,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'chatting_page/chatting.dart';
 import 'home_page/home_page.dart';
 import 'profile_page/profile.dart';
-import 'search_page/search_page.dart';
 import 'writing_page/writing_page.dart';
 
 class SetPage extends StatefulWidget {
@@ -20,7 +19,6 @@ class SetPageState extends State<SetPage> {
   int currentIndex = 0;
   final screens = [
     HomePage(),
-    SearchPage(),
     WritingPage(),
     Chatting(),
     ProfilePage(),
@@ -54,11 +52,6 @@ class SetPageState extends State<SetPage> {
               icon: Icon(Icons.home),
               label: 'Home',
             ),
-            BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.numbers,
-                ),
-                label: 'Search'),
             BottomNavigationBarItem(
                 icon: FaIcon(FontAwesomeIcons.pencil), label: 'write'),
             BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'chat'),

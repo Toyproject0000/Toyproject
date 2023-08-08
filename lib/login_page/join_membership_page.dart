@@ -170,10 +170,8 @@ class _JoinmembershipState extends State<Joinmembership> {
                     ),
                     TextFormField(
                       validator: (value) {
-                        if (value!.isEmpty) {
-                          return '이메일을 입력하시오';
-                        } else if (!value.contains('@')) {
-                          return '이메일 형식을 입력하시오';
+                        if (value!.isEmpty || !value.contains('@')) {
+                          return '이메일을 바르게 적어주세요';
                         }
                         return null;
                       },
@@ -192,11 +190,8 @@ class _JoinmembershipState extends State<Joinmembership> {
                     ),
                     TextFormField(
                       validator: (value) {
-                        if (value!.isEmpty || value.length < 8) {
-                          return '8글자 이상을 입력하시오';
-                        } else if (!value
-                            .contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
-                          return '비멀번호는 숫자,문자,특수기호를 포함한 형식으로 작성해주세요';
+                        if (value!.isEmpty || value.length < 8 || !value.contains(RegExp(r'[!@#$%^&*()<>?":{}|<>]'))) {
+                          return '비밀번호는 영문과 특수문자를 합쳐 8글자 이상으로 적어주세요.';
                         }
                         perfectPassWord = value; // 수정해야햄
                         return null;
@@ -215,7 +210,7 @@ class _JoinmembershipState extends State<Joinmembership> {
                     TextFormField(
                       validator: (value) {
                         if (value != perfectPassWord) {
-                          return '비밀번호가 일치하지 않습니다';
+                          return '비밀번호가 틀립니다.';
                         }
                         return null;
                       },
@@ -238,8 +233,8 @@ class _JoinmembershipState extends State<Joinmembership> {
                     ),
                     TextFormField(
                       validator: (value) {
-                        if (value!.isEmpty || value.length < 2) {
-                          return '2글자 이상을 입력하시오';
+                        if (value!.length < 2) {
+                          return '이름을 올바른 형식으로 적어주세요.';
                         }
                         return null;
                       },
@@ -262,8 +257,8 @@ class _JoinmembershipState extends State<Joinmembership> {
                     TextFormField(
                       keyboardType: TextInputType.number,
                       validator: (value) {
-                        if (value!.isEmpty || value.length < 8) {
-                          return '생년월일 8자리를 입력하시오';
+                        if (value!.length < 8) {
+                          return '생년월일 8자리를 적어주세요.';
                         }
                         return null;
                       },
@@ -360,7 +355,19 @@ class _JoinmembershipState extends State<Joinmembership> {
                                 ],
                                 validator: (value) {
                                   if (value!.isEmpty || value.length < 11) {
-                                    return '전화번호를 올바르게 입력하시오';
+                                    Flushbar(
+                                      margin: EdgeInsets.symmetric(horizontal: 15),
+                                      flushbarPosition: FlushbarPosition.TOP,
+                                      duration: Duration(seconds: 2),
+                                      message: '전화번호를 올바르게 입력하시오.' ,
+                                      messageSize: 15,
+                                      borderRadius: BorderRadius.circular(4),
+                                      backgroundColor: Colors.white,
+                                      messageColor: Colors.black,
+                                      boxShadows: [
+                                        BoxShadow(color: Colors.black, blurRadius: 8)
+                                      ],
+                                    ).show(context);
                                   }
                                   return null;
                                 },
@@ -391,7 +398,7 @@ class _JoinmembershipState extends State<Joinmembership> {
                     TextFormField(
                       validator: (value) {
                         if (value!.length < 6) {
-                          return '인증번호를 정확히 입력하시오';
+                          return '인증번호를 올바르게 입력하시오.';
                         }
                         return null;
                       },

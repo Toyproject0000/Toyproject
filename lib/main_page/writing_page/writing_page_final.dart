@@ -23,6 +23,7 @@ class _LastSettingState extends State<LastSetting> {
   List<bool> ButtonColorList = [];
   Color backGroundColor = Color(0xFF98DFFF);
   String title = '';
+  late String contents;
 
   bool buttonColor1 = false;
   bool buttonColor2 = false;
@@ -277,6 +278,8 @@ class _LastSettingState extends State<LastSetting> {
 
   @override
   Widget build(BuildContext context) {
+    final args = ModalRoute.of(context)!.settings.arguments as Contents;
+    contents = args.content;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -576,4 +579,10 @@ class _LastSettingState extends State<LastSetting> {
       ),
     );
   }
+}
+
+class Contents {
+  final String content;
+
+  Contents(this.content);
 }

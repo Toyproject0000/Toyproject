@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_summernote/flutter_summernote.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:smart_dongne/main_page/writing_page/writing_page_final.dart';
+import 'package:smart_dongne/server/userId.dart';
 
 class WritingPage extends StatefulWidget {
   const WritingPage({Key? key}) : super(key: key);
@@ -29,12 +30,12 @@ class _WritingPageState extends State<WritingPage> {
     final value1 = await _keyEditor.currentState?.getText();
 
     if (value1 != null && value1.isNotEmpty) {
-      // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      //   duration: Duration(seconds: 5),
-      //   content: Text(value1),
-      // ));
-
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        duration: Duration(seconds: 5),
+        content: Text(value1),
+      ));
       return value1;
+
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         duration: Duration(seconds: 5),
@@ -63,6 +64,7 @@ class _WritingPageState extends State<WritingPage> {
                   Navigator.pushNamed(
                     context, 
                     LastSetting.routeName,
+                    arguments: Contents(value)
                   );
                 }
               });

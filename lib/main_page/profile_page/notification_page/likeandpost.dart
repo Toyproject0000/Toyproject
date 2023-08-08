@@ -35,7 +35,7 @@ class _LikeAndPostState extends State<LikeAndPost> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '좋아요',
+                  '좋아요 알림',
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
                 RadioListTile(
@@ -78,7 +78,7 @@ class _LikeAndPostState extends State<LikeAndPost> {
                   height: 30,
                 ),
                 Text(
-                  '댓글',
+                  '댓글 알림',
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
                 RadioListTile(
@@ -121,7 +121,7 @@ class _LikeAndPostState extends State<LikeAndPost> {
                   height: 30,
                 ),
                 Text(
-                  '댓글 좋아요',
+                  '댓글 좋아요 알림',
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
                 RadioListTile(

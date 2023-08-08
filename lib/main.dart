@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:smart_dongne/login_page/find_password.dart';
 import 'package:smart_dongne/login_page/find_password_2.dart';
 import 'package:smart_dongne/login_page/join_membership_page.dart';
@@ -10,9 +11,11 @@ import 'package:smart_dongne/main_page/profile_page/User_setting/phoneNumberChan
 import 'package:smart_dongne/main_page/profile_page/User_setting/setting_page.dart';
 import 'package:smart_dongne/main_page/profile_page/User_setting/userName_change.dart';
 import 'package:smart_dongne/main_page/profile_page/User_setting/userWithdrawal.dart';
+import 'package:smart_dongne/main_page/profile_page/notification_page/cutoff.dart';
 import 'package:smart_dongne/main_page/profile_page/notification_page/likeandpost.dart';
 import 'package:smart_dongne/main_page/profile_page/notification_page/notification_page.dart';
 import 'package:smart_dongne/main_page/profile_page/notification_page/reader_page.dart';
+import 'package:smart_dongne/main_page/home_page/search_bar.dart';
 import 'package:smart_dongne/main_page/writing_page/cover.dart';
 import 'package:smart_dongne/main_page/profile_page/profile_edit_page.dart';
 import 'package:smart_dongne/main_page/writing_page/writing_page_final.dart';
@@ -21,6 +24,7 @@ import 'package:smart_dongne/main_page/setpage.dart';
 import 'login_page/find_id.dart';
 
 void main() {
+  KakaoSdk.init(nativeAppKey: 'ca6e54286fb5cc0bc83d0320f4cb60d8');
   runApp(const MyApp());
 }
 
@@ -53,6 +57,9 @@ class MyApp extends StatelessWidget {
         AccountNotification.routeName: (context) => AccountNotification(),
         LikeAndPost.routeName: (context) => LikeAndPost(),
         ReaderNotification.routeName: (context) => ReaderNotification(),
+        Cutoff.routeName: (context) => Cutoff(),
+        Search_Page_bar.routeName: (context) => Search_Page_bar(),
+        
       },
     );
   }
