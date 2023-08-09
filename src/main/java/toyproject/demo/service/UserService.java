@@ -79,10 +79,9 @@ public class UserService {
     }
 
 
-    public String edit(User user){
+    public String edit(User user, String userId){
         try {
-            System.out.println(user.getNickname());
-            userRepository.update(user);
+            userRepository.update(user, userId);
             return "ok";
         }
         catch (Exception e){

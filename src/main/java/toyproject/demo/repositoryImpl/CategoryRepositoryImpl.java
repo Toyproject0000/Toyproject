@@ -30,9 +30,16 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     }
 
     @Override
-    public void minus(Post post, Integer score) {
+    public void plus(Post post, String userId, Integer score) {
+        String sql = "update category set score = score+? where user_id=? and category=?";
+        jdbcTemplate.update(sql, score, userId, post.getCategory());
+    }
+
+
+    @Override
+    public void minus(Post post,String userId ,Integer score) {
         String sql = "update category set score = score-? where user_id=? and category=?";
-        jdbcTemplate.update(sql, score, post.getUserId(), post.getCategory());
+        jdbcTemplate.update(sql, score, userId, post.getCategory());
     }
 
     @Override

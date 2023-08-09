@@ -2,6 +2,8 @@ package toyproject.demo.Controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,14 +15,12 @@ import toyproject.demo.service.UserService;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -49,8 +49,18 @@ public class UserController {
     }
 
     @PostMapping(value = "/login", consumes = "application/json")
-    public String login(@RequestBody User user){
-        return userService.login(user);
+    public String login(@RequestBody User user, HttpServletRequest request){
+        HttpSession session = request.getSession();
+        session.setAttribute("SessionId", user.getId());
+        String result = userService.login(user);
+        if(!result.equals("ok")) return result;
+        return session.getId();
+    }
+
+    @PostMapping("logout")
+    public void logout(HttpServletRequest request){
+        HttpSession session = request.getSession(false);
+        session.invalidate();
     }
 
     @PostMapping(value = "/findId", consumes = "application/json")
@@ -74,17 +84,24 @@ public class UserController {
     }
 
     @PostMapping(value = "/edit-user/confirm", consumes = "application/json")
-    public String editConfirm(@RequestBody User user){
-        return userService.edit(user);
+    public String editConfirm(@RequestBody User user, @SessionAttribute("SessionId") String userId){
+        return userService.edit(user, userId);
     }
     @PostMapping(value = "/edit-user", consumes = "application/json")
-    public String edit(@RequestBody User user) throws JsonProcessingException {
+    public String edit(@RequestBody User user, @SessionAttribute("SessionId") String userId) throws JsonProcessingException {
+        if(user.getId()!=userId){
+            return "잘못된 요청입니다.";
+        }
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.writeValueAsString(userService.findUser(user));
     }
 
     @PostMapping(value = "/remove", consumes = "application/json")
-    public String delete(@RequestBody User user){
+    public String delete(@RequestBody User user, @SessionAttribute("SessionId") String userId){
+        if(user.getId()!=userId){
+            return "잘못된 요청입니다.";
+        }
+
         String login = userService.login(user);
         if(login=="ok"){
         try {
@@ -121,10 +138,10 @@ public class UserController {
 
 
     @PostMapping(value = "/profile/set", consumes = "application/json")
-    public String setProfile(@RequestBody User user, @RequestParam("file") MultipartFile file) throws IOException {
-        String imgUpload = imgUploadService.PostImgUpload(file, user.getId());
+    public String setProfile(@RequestBody User user, @RequestParam("file") MultipartFile file, @SessionAttribute("SessionId") String userId) throws IOException {
+        String imgUpload = imgUploadService.PostImgUpload(file, userId);
         user.setImgLocation(imgUpload);
-        userService.edit(user);
+        userService.edit(user, userId);
         return "ok";
     }
 

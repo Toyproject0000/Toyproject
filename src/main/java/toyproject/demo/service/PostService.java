@@ -29,16 +29,6 @@ public class PostService {
         algorithm.write(post);
     }
 
-    public Post findPost(Post post) throws IOException {
-        Post findPost = postRepository.findPost(post).get(0);
-        Path path = Paths.get(findPost.getImgLocation());
-        byte[] imageBytes = Files.readAllBytes(path);
-        String Image = Base64.getEncoder().encodeToString(imageBytes);
-        findPost.setImg(Image);
-
-        return findPost;
-    }
-
     public void delete(Post post){
         Post findPost = postRepository.findPost(post).get(0);
         String imgLocation = findPost.getImgLocation();
@@ -71,8 +61,10 @@ public class PostService {
         return posts;
     }
 
-    public List<Post> findByCategory(String category, Integer num) throws IOException {
-        List<Post> posts = postRepository.findByCategory(category, num);
+    public List<Post> findByCategory(String category, Integer num, Integer page) throws IOException {
+        int start = num*(page-1)+1;
+        int end = num*page;
+        List<Post> posts = postRepository.findByCategory(category, start, end);
         for (Post post : posts) {
             Path imagePath = Paths.get(post.getImgLocation());
             byte[] imageBytes = Files.readAllBytes(imagePath);
@@ -81,6 +73,10 @@ public class PostService {
         }
         return posts;
     }
+
+
+
+
 
 
     private static void setPostImg(List<Post> posts) throws IOException {

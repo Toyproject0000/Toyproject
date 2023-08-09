@@ -14,29 +14,21 @@ import java.io.IOException;
 import java.time.LocalDate;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/post")
 @RequiredArgsConstructor
 public class PostController {
-    /*
-    * 글쓰기
-    * 글수정
-    * 글삭제
-    * 내용으로 글검색
-    * 유저 글 검색(내 글 검색)
-    * 내 글 내용으로 검색
-    * 팔로워 글검색(모든 팔로워)
-    * 좋아요한 글검색
-    * 날짜로 글 검색
-    * 특정날짜이후로 쓴 글 검색
-    * */
     private final PostService postService;
     private final ImgUploadService imgUploadService;
     private final FindAlgorithm algorithm;
 
     @PostMapping(value = "/submit")
-    public String submitPost(@RequestParam("file") MultipartFile file, @RequestBody Post post) {
+    public String submitPost(@RequestParam("file") MultipartFile file, @RequestBody Post post, @SessionAttribute("SessionId") String userId) {
+        if (post.getUserId()!=userId)
+            return "잘못된 요청입니다.";
+
         try {
             String imgLocation = imgUploadService.PostImgUpload(file, post.getUserId());
             post.setImgLocation(imgLocation);
@@ -49,14 +41,10 @@ public class PostController {
         }
     }
 
-    @PostMapping(value = "/read")
-    public Post read(@RequestBody Post post) throws IOException {
-        algorithm.read(post);
-        return postService.findPost(post);
-    }
-
     @PatchMapping(value = "edit")
-    public String editConfirm(@RequestParam(value = "file", required = false) MultipartFile file, @RequestBody Post post){
+    public String editConfirm(@RequestParam(value = "file", required = false) MultipartFile file, @RequestBody Post post, @SessionAttribute("SessionId") String userId){
+        if (post.getUserId()!=userId)
+            return "잘못된 요청입니다.";
         try {
             String imgLocation = imgUploadService.PostImgUpload(file, post.getUserId());
             post.setImgLocation(imgLocation);
@@ -71,7 +59,9 @@ public class PostController {
     }
 
     @PostMapping(value = "/delete")
-    public String delete(@RequestBody Post post){
+    public String delete(@RequestBody Post post, @SessionAttribute("SessionId") String userId){
+        if (post.getUserId()!=userId)
+            return "잘못된 요청입니다.";
         try {
             postService.delete(post);
             return "ok";
@@ -80,19 +70,28 @@ public class PostController {
         }
     }
 
-
     @PostMapping(value = "/search")
     public List<Post> search(@RequestBody(required = false) Post post, @RequestBody(required = false) LocalDate formerDate, @RequestBody(required = false) LocalDate afterDate) throws IOException {
+
         return postService.search(post, formerDate, afterDate);
     }
 
     @PostMapping(value = "/find-follower")
-    public List<Post> findPostOfFollower(@RequestBody User user) throws IOException {
-        return postService.findPostByFollower(user);
+    public Optional<List<Post>> findPostOfFollower(@RequestBody User user, @SessionAttribute("SessionId") String userId) throws IOException {
+        if (user.getId()!=userId)
+            return null;
+        return Optional.ofNullable(postService.findPostByFollower(user));
     }
 
     @PostMapping(value = "/find-likepost")
-    public List<Post> findLikePost(@RequestBody User user) throws IOException {
-        return postService.findAllLikePost(user);
+    public Optional<List<Post>> findLikePost(@RequestBody User user, @SessionAttribute("SessionId") String userId) throws IOException {
+        if (user.getId()!=userId)
+            return null;
+        return Optional.ofNullable(postService.findAllLikePost(user));
+    }
+
+    @PostMapping
+    public void read(@SessionAttribute("SessionId")String userId, @RequestBody Post post){
+        algorithm.read(post, userId);
     }
 }

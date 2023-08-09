@@ -21,25 +21,25 @@ public class MainController {
     private final PostService postService;
 
     @PostMapping("/recommend")
-    public List<Post> recommend(@RequestBody User user) throws IOException {
+    public List<Post> recommend(@RequestBody User user, @RequestBody Integer page) throws IOException {
         List<Category> categories = algorithm.findCategory(user.getId());
 
         List<Post> result = new ArrayList<>();
 
         String firstCategory = categories.get(0).getCategory();
-        List<Post> firstPosts = postService.findByCategory(firstCategory, 5);
+        List<Post> firstPosts = postService.findByCategory(firstCategory, 5, page);
 
         result.addAll(firstPosts);
 
         String secondCategory = categories.get(1).getCategory();
-        List<Post> secondPosts = postService.findByCategory(secondCategory, 3);
+        List<Post> secondPosts = postService.findByCategory(secondCategory, 3, page);
 
         result.add(1,secondPosts.get(0));
         result.add(4,secondPosts.get(1));
         result.add(7,secondPosts.get(2));
 
         String thirdCategory = categories.get(2).getCategory();
-        List<Post> thirdPosts = postService.findByCategory(thirdCategory, 2);
+        List<Post> thirdPosts = postService.findByCategory(thirdCategory, 2, page);
 
         result.add(3, thirdPosts.get(0));
         result.add(7, thirdPosts.get(0));
@@ -48,8 +48,8 @@ public class MainController {
     }
 
     @PostMapping("/recommend/category")
-    public List<Post> recommendWithCategory(String category) throws IOException {
-        return postService.findByCategory(category, 10);
+    public List<Post> recommendWithCategory(@RequestBody String category,@RequestBody Integer page) throws IOException {
+        return postService.findByCategory(category, 10, page);
     }
 
 

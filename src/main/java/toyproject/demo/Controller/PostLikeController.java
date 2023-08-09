@@ -27,7 +27,7 @@ public class PostLikeController {
             postLikeService.add(postLike);
             return "ok";
         }catch (Exception e){
-            return "에러 발생"; // 작성했던 글 내용 그대로 다시 쓸수있는지 아니면 내가 다시 보내줘야되는지 물어보자
+            return "에러 발생";
         }
     }
 
@@ -37,7 +37,7 @@ public class PostLikeController {
             postLikeService.remove(postLike);
             return "ok";
         }catch (Exception e){
-            return "에러 발생"; // 작성했던 글 내용 그대로 다시 쓸수있는지 아니면 내가 다시 보내줘야되는지 물어보자
+            return "에러 발생";
         }
     }
 }

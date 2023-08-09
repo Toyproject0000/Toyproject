@@ -5,7 +5,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import toyproject.demo.domain.Post;
-import toyproject.demo.domain.Reply;
 import toyproject.demo.domain.User;
 import toyproject.demo.repository.PostRepository;
 
@@ -37,16 +36,6 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public void delete(Post post) {
         jdbcTemplate.update("delete from post where id = ?", post.getId());
-    }
-
-    @Override
-    public List<Post> findAll() {
-        return jdbcTemplate.query("select * from post", rowMapper);
-    }
-
-    @Override
-    public List<Post> findMyPostByContents(String contents, User user) {
-        return jdbcTemplate.query("SELECT * FROM post WHERE userId = ? And contents LIKE ? ", rowMapper,user.getId(), "%" + contents + "%");
     }
 
     @Override
@@ -119,8 +108,8 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public List<Post> findByCategory(String category, Integer num) {
-        String sql = "SELECT * FROM post WHERE category = ? LIMIT CAST(? AS SIGNED)";
-        return jdbcTemplate.query(sql, rowMapper, category, num);
+    public List<Post> findByCategory(String category, Integer start, Integer end){
+        String sql = "SELECT * FROM post WHERE category = ? LIMIT ?, ?";
+        return jdbcTemplate.query(sql, rowMapper, category, start, end - start + 1);
     }
 }

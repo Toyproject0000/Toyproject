@@ -1,6 +1,5 @@
 package toyproject.demo.domain;
 
-import com.google.gson.Gson;
 import lombok.Getter;
 import lombok.Setter;
 

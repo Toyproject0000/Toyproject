@@ -56,23 +56,13 @@ public class ReplyController {
         }
     }
 
-    @PostMapping("/find-post")
+    @PostMapping("/myReply")
     public String findPost(@RequestBody Post post){
         try {
             replyService.findReplyOfPost(post);
             return "ok";
         }catch (Exception e){
-            return "에러 발생"; // 작성했던 글 내용 그대로 다시 쓸수있는지 아니면 내가 다시 보내줘야되는지 물어보자
-        }
-    }
-
-    @PostMapping("/find-user")
-    public String findUser(@RequestBody User user){
-        try {
-            replyService.findReplyOfUser(user);
-            return "ok";
-        }catch (Exception e){
-            return "에러 발생"; // 작성했던 글 내용 그대로 다시 쓸수있는지 아니면 내가 다시 보내줘야되는지 물어보자
+            return "에러 발생";
         }
     }
 }

@@ -1,8 +1,6 @@
 package toyproject.demo.repositoryImpl;
 
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import toyproject.demo.domain.PostLike;
 import toyproject.demo.repository.PostLikeRepository;
@@ -11,11 +9,9 @@ import toyproject.demo.repository.PostLikeRepository;
 @Repository
 public class PostLikeRepositoryImpl implements PostLikeRepository {
     private final JdbcTemplate jdbcTemplate;
-    private final RowMapper rowMapper;
 
     public PostLikeRepositoryImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.rowMapper = BeanPropertyRowMapper.newInstance(PostLike.class);
     }
 
     @Override

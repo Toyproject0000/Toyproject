@@ -17,12 +17,12 @@ public class FindAlgorithm {
         categoryRepository.plus(post, 3);
     }
 
-    public void read(Post post){
-        categoryRepository.plus(post, 2);
+    public void read(Post post,String userId){
+        categoryRepository.plus(post, userId, 2);
     }
 
-    public void block(Post post){
-        categoryRepository.minus(post, 5);
+    public void block(Post post, String userId){
+        categoryRepository.minus(post, userId, 5);
     }
 
     public List<Category> findCategory(String userId){

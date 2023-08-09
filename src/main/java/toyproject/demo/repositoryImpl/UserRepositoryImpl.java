@@ -26,9 +26,9 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public void update(User user) {
+    public void update(User user, String userId) {
         jdbcTemplate.update("UPDATE user SET password = COALESCE(?, password), name = COALESCE(?, name), phoneNumber = COALESCE(?, phoneNumber), nickname = COALESCE(?, nickname), gender = COALESCE(?, gender), info = COALESCE(?, info) WHERE id = ?",
-                user.getPassword(), user.getName(), user.getPhoneNumber(), user.getNickname(), user.getGender(), user.getInfo(), user.getId());
+                user.getPassword(), user.getName(), user.getPhoneNumber(), user.getNickname(), user.getGender(), user.getInfo(), userId);
     }
 
     @Override
@@ -37,17 +37,8 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public List<User> findAll() {
-        return jdbcTemplate.query("select * from user", rowMapper);
-    }
-
-    @Override
     public List<User> findById(String id) {
         return jdbcTemplate.query("select * from user where id = ?", rowMapper, id);
-    }
-    @Override
-    public List<User> findByPassword(String password) {
-        return jdbcTemplate.query("select * from user where password = ?", rowMapper, password);
     }
 
     @Override
