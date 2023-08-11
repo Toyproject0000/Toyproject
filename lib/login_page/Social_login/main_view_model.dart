@@ -1,5 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:smart_dongne/login_page/Social_login/social_login.dart';
+
+import '../../server/Server.dart';
 
 class MainViewModel {
   final SocialLogin _socialLogin;
@@ -12,13 +15,16 @@ class MainViewModel {
     isLogined = await _socialLogin.login();
     if (isLogined) {
       user = await UserApi.instance.me();
-      print('사용자 정보 요청 성공'
-          '\n이메일: ${user!.kakaoAccount?.email}'
-          '\n닉네임: ${user!.kakaoAccount?.profile?.nickname ?? 'N/A'}'
-          '\n성별: ${user!.kakaoAccount?.gender ?? 'N/A'}'
-          );
+      
+      final data = {
+        'id' : user!.kakaoAccount?.email,
+        'name' : user!.kakaoAccount?.profile?.nickname
+      };
+      return data;
     }
   }
+
+  
 
   Future logout() async {
     await _socialLogin.logout();

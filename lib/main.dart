@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:smart_dongne/login_page/find_password.dart';
@@ -20,10 +21,11 @@ import 'package:smart_dongne/main_page/writing_page/cover.dart';
 import 'package:smart_dongne/main_page/profile_page/profile_edit_page.dart';
 import 'package:smart_dongne/main_page/writing_page/writing_page_final.dart';
 import 'package:smart_dongne/main_page/setpage.dart';
-
 import 'login_page/find_id.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   KakaoSdk.init(nativeAppKey: 'ca6e54286fb5cc0bc83d0320f4cb60d8');
   runApp(const MyApp());
 }

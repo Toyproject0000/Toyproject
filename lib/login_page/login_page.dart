@@ -1,16 +1,17 @@
 import 'dart:io';
-
+import 'package:another_flushbar/flushbar.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:smart_dongne/login_page/Social_login/kakao_login.dart';
 import 'package:smart_dongne/login_page/Social_login/main_view_model.dart';
+import 'package:smart_dongne/login_page/setnickname.dart';
 import 'package:smart_dongne/server/Server.dart';
 import 'package:smart_dongne/login_page/find_password.dart';
 import 'package:smart_dongne/login_page/join_membership_page.dart';
 import 'package:smart_dongne/main_page/setpage.dart';
-
-
+import 'Social_login/naver_login.dart';
 import 'find_id.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -23,6 +24,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final viewModel = MainViewModel(KakaoLogin());
+
 
   final _formKey = GlobalKey<FormState>();
   String userEmail = '';
@@ -47,16 +49,32 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
-  void login_naver () async {
-    NaverLoginResult result = await FlutterNaverLogin.logIn();
-    print(result.account.name);
-    print(result.account.gender);
-    print(result.account.email);
-    print(result.account.birthyear);
+  void kakaoAccountServer() async {
+    final data = await viewModel.login();
+    final kakaoServer = JoinMemdership();
+    final jsonData = kakaoServer.sendData(data);
+    if(jsonData == null){
+      Navigator.pushNamed(context, NickName.routeName);
+    }else {
+       Flushbar(
+          margin: EdgeInsets.symmetric(horizontal: 15),
+          flushbarPosition: FlushbarPosition.TOP,
+          duration: Duration(seconds: 2),
+          message: '이미 가입된 사용자 입니다.' ,
+          messageSize: 15,
+          borderRadius: BorderRadius.circular(4),
+          backgroundColor: Colors.white,
+          messageColor: Colors.black,
+          boxShadows: [
+            BoxShadow(color: Colors.black, blurRadius: 8)
+          ],
+        ).show(context);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: GestureDetector(
@@ -93,7 +111,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Container(
                       padding: EdgeInsets.all(20.0),
                       width: MediaQuery.of(context).size.width - 50,
-                      height: 450,
+                      height: 470,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(5),
                         border: Border.all(
@@ -200,9 +218,16 @@ class _LoginScreenState extends State<LoginScreen> {
                                 width: double.infinity,
                                 child: ElevatedButton(
                                   onPressed: () async {
-                                    await viewModel.login();
+                                    kakaoAccountServer();
                                   },
-                                  child: Text('카카오톡 로그인'),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Image.asset('image/kakao.png', width: 20, height: 20,),
+                                      SizedBox(width: 15,),
+                                      Text('카카오톡 로그인'),
+                                    ],
+                                  ),
                                   style: ElevatedButton.styleFrom(
                                       primary: Colors.yellow,
                                       shape: RoundedRectangleBorder(
@@ -216,7 +241,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                   onPressed: ()  {
                                     login_naver();
                                   },
-                                  child: Text('네이버로 로그인', style: TextStyle(color: Colors.white),),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text('N', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),),
+                                      SizedBox(width: 15,),
+                                      Text('네이버로 로그인', style: TextStyle(color: Colors.white),),
+                                    ],
+                                  ),
                                   style: ElevatedButton.styleFrom(
                                       primary: Colors.green,
                                       shape: RoundedRectangleBorder(
@@ -224,7 +256,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                               BorderRadius.circular(15))),
                                 ),
                               ),
-                              
                             ],
                           ),
                         ),

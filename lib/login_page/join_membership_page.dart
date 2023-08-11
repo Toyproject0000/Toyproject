@@ -57,7 +57,7 @@ class _JoinmembershipState extends State<Joinmembership> {
         };
 
         JoinMemdership server = JoinMemdership();
-        final String? answer = await server.sendData(data, context);
+        final String? answer = await server.sendData(data);
         final String? numberAnswer = await server.authenticationNumberCheck(authenticationdata, context);
         if (answer == null && numberAnswer == null){
           Navigator.pushNamed(context, NickName.routeName, arguments: ArgumentEmail(userEmail));

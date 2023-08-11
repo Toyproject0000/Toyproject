@@ -23,5 +23,5 @@ import NaverThirdPartyLogin
        applicationResult = super.application(app, open: url, options: options)
     }
     return applicationResult
-}
+  }
 }

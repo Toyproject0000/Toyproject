@@ -89,7 +89,7 @@ class _CoverPageState extends State<CoverPage> {
               TextEditor(
                   text: _text,
                   textStyle: _textStyle,
-                  textAlingment: _textAlign,
+                  // textAlingment: _textAlign,
                   fonts: [
                     'NotoSansKR',
                     'NanumGothic',

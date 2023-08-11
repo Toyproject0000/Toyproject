@@ -56,6 +56,7 @@ class _WritingPageState extends State<WritingPage> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: SelectableText('새 게시물'),
+        elevation: 1,
         actions: [
           TextButton(
             onPressed: () {
@@ -77,17 +78,19 @@ class _WritingPageState extends State<WritingPage> {
         ],
         automaticallyImplyLeading: false,
       ),
-      body: FlutterSummernote(
-        key: _keyEditor,
-        hint: "내용을 입력하시오....",
-        showBottomToolbar: false,
-        customToolbar: """
-				[
-					['style', ['bold','italic','underline','clear']],
-					['font', ['fontsize']],
-					['para', ['paragraph']],
-				]
-				""",
+      body: Container(
+        child: FlutterSummernote(
+          key: _keyEditor,
+          hint: "내용을 입력하시오....",
+          showBottomToolbar: false,
+          customToolbar: """
+              [
+                ['style', ['bold','italic','underline','clear']],
+                ['font', ['fontsize']],
+                ['para', ['paragraph']],
+              ]
+              """,
+        ),
       ),
     );
   }

@@ -17,18 +17,22 @@ class _ChattingState extends State<Chatting> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          leading: Container(),
           elevation: 0,
           backgroundColor: Colors.white,
           title: Text('userName'),
           centerTitle: false,
           actions: [
-            IconButton(
-                onPressed: () {
-                  setState(() {
-                    Navigator.pushNamed(context, ChatSearchMode.routeName);
-                  });
-                },
-                icon: Icon(Icons.search))
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 15),
+              child: IconButton(
+                  onPressed: () {
+                    setState(() {
+                      Navigator.pushNamed(context, ChatSearchMode.routeName);
+                    });
+                  },
+                  icon: Icon(Icons.search)),
+            )
           ],
         ),
         body: Container(
