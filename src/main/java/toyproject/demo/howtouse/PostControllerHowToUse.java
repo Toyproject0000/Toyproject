@@ -25,39 +25,39 @@ public class PostControllerHowToUse {
         return "post/post-submit";
     }
 
-    @GetMapping("/read")
-    public String read(){
-        return "post/post-read";
-    }
-
-    @GetMapping("edit")
-    public String editConfirm(){
-        return "post/post-edit";
-    }
-
-    @GetMapping("/delete")
-    public String delete(){
-        return "post/post-delete";
-    }
-
-
-    @GetMapping("/search")
-    public String search(){
-        return "post/post-search";
-    }
-
-    @GetMapping("/find-mypost-bycontent")
-    public String findMyPostByContents(){
-        return "post/mypost";
-    }
-
-    @GetMapping("/find-follower")
-    public String findPostOfFollower(){
-        return "post/post-follower";
-    }
-
-    @GetMapping("/find-likepost")
-    public String findLikePost(){
-        return "post/post-likepost";
-    }
+//    @GetMapping("/read")
+//    public String read(){
+//        return "post/post-read";
+//    }
+//
+//    @GetMapping("edit")
+//    public String editConfirm(){
+//        return "post/post-edit";
+//    }
+//
+//    @GetMapping("/delete")
+//    public String delete(){
+//        return "post/post-delete";
+//    }
+//
+//
+//    @GetMapping("/search")
+//    public String search(){
+//        return "post/post-search";
+//    }
+//
+//    @GetMapping("/find-mypost-bycontent")
+//    public String findMyPostByContents(){
+//        return "post/mypost";
+//    }
+//
+//    @GetMapping("/find-follower")
+//    public String findPostOfFollower(){
+//        return "post/post-follower";
+//    }
+//
+//    @GetMapping("/find-likepost")
+//    public String findLikePost(){
+//        return "post/post-likepost";
+//    }
 }

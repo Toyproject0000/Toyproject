@@ -29,15 +29,6 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class UserController {
 
-    /*
-    * 회원가입
-    * 로그인
-    * SMS 인증
-    * 아이디찾기
-    * 비번 찾기
-    * 회원정보수정
-    * 회원 탈퇴
-    * */
     private final UserService userService;
     private final SmsService smsService;
     private final MakeCertificationNumber makeCertificationNumber;
@@ -136,7 +127,6 @@ public class UserController {
         return makeCertificationNumber.match(rawNum, num);
     }
 
-
     @PostMapping(value = "/profile/set", consumes = "application/json")
     public String setProfile(@RequestBody User user, @RequestParam("file") MultipartFile file, @SessionAttribute("SessionId") String userId) throws IOException {
         String imgUpload = imgUploadService.PostImgUpload(file, userId);
@@ -157,4 +147,5 @@ public class UserController {
 
         return findUser;
     }
+
 }

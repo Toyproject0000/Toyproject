@@ -25,7 +25,7 @@ public class PostController {
     private final FindAlgorithm algorithm;
 
     @PostMapping(value = "/submit")
-    public String submitPost(@RequestParam("file") MultipartFile file, @RequestBody Post post, @SessionAttribute("SessionId") String userId) {
+    public String submitPost(@RequestParam("file") MultipartFile file, @RequestBody Post post, @SessionAttribute(value = "SessionId", required = false) String userId) {
         if (post.getUserId()!=userId)
             return "잘못된 요청입니다.";
 
@@ -94,4 +94,5 @@ public class PostController {
     public void read(@SessionAttribute("SessionId")String userId, @RequestBody Post post){
         algorithm.read(post, userId);
     }
+
 }
