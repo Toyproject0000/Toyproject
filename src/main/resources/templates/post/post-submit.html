@@ -1,21 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Title</title>
+    <meta charset="UTF-8">
+    <title>Title</title>
 </head>
 <body>
-<p>요청 URL : http://localhost:8080/post/submit</p>
-<br>
-<p>요청 형식 : {
-  "userId" : "유저아이디",
-  "contents" : "내용",
-  "title" : "제목",
-  "category" : "카테고리",
-  "Disclosure" : true/false,
-  "file" : "사진"
-  } </p>
-<br>
-<p>반환 값 : 잘되면 ok 안되면 에러 발생</p>
+<p>요청 url : http://localhost:8080/post/submit</p>
+<p>
+  요청 형식<br>
+  {<br>
+    "SessionId" : "로그인시 받은 세션 아이디", <br>
+    "userId" : "아이디",<br>
+    "title" : "제목",<br>
+    "contents" : "내용",<br>
+    "category" : "카테고리",<br>
+    "Disclosure" : "공개여부",   <br>
+    "possibleReply" : "String",    <br>
+    "file" : "사진 파일"<br>
+  }
+  <br>
+  <br>
+  <br>
+  SessionId -> 일단 비활성화 해놓았습니다. 지금은 안보내도 됩니다 <br>
+  Disclosure, possibleReply -> 공개 비공개 독자에게 공개 생각해서 String으로 넣었습니다.
+</p>
+<p>반환 : ok, 에러발생</p>
 </body>
 </html>

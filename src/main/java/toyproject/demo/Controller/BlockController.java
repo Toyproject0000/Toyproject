@@ -21,7 +21,7 @@ public class BlockController {
         return blockService.blockUser(userId, user.getId());
     }
 
-    @PostMapping("/block/user")
+    @PostMapping("/block/post")
     public String blockPost(@SessionAttribute("SessionId") String userId,@RequestBody Post post){
         return blockService.blockPost(userId, post);
     }
@@ -66,12 +66,12 @@ public class BlockController {
         return Optional.ofNullable(blockService.findBlockPost(userId));
     }
 
-    @PostMapping("/find/block/user")
+    @PostMapping("/find/report/user")
     public Optional<List<User>> findReportUser(@SessionAttribute("SessionId") String userId){
         return Optional.ofNullable(blockService.findReportUser(userId));
     }
 
-    @PostMapping("/find/block/post")
+    @PostMapping("/find/report/post")
     public Optional<List<Post>> findReportPost(@SessionAttribute("SessionId") String userId){
         return Optional.ofNullable(blockService.findReportPost(userId));
     }
