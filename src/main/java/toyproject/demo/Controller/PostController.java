@@ -25,14 +25,13 @@ public class PostController {
     private final FindAlgorithm algorithm;
 
     @PostMapping(value = "/submit")
-    public String submitPost(@RequestBody Post post, @SessionAttribute(value = "SessionId", required = false) String userId) {
+    public String submitPost(@RequestParam(value = "file", required = false) MultipartFile file,@RequestBody Post post, @SessionAttribute(value = "SessionId", required = false) String userId) {
 //        if (post.getUserId()!=userId)
 //            return "잘못된 요청입니다.";
 
         try {
-//            String imgLocation = imgUploadService.PostImgUpload(file, post.getUserId());
-//            post.setImgLocation(imgLocation);
-            post.setImgLocation("1");
+            String imgLocation = imgUploadService.PostImgUpload(file, post.getUserId());
+            post.setImgLocation(imgLocation);
 
             postService.submit(post);
 
