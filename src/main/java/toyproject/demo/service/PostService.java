@@ -28,6 +28,9 @@ public class PostService {
         postRepository.insert(post);
         algorithm.write(post);
     }
+    public void submitImg(Post post){
+        postRepository.insertImg(post);
+    }
 
     public void delete(Post post){
         Post findPost = postRepository.findPost(post).get(0);
@@ -69,7 +72,7 @@ public class PostService {
             Path imagePath = Paths.get(post.getImgLocation());
             byte[] imageBytes = Files.readAllBytes(imagePath);
             String base64EncodedImage = Base64.getEncoder().encodeToString(imageBytes);
-            post.setImg(base64EncodedImage);
+//            post.setImg(base64EncodedImage);
         }
         return posts;
     }
@@ -84,7 +87,7 @@ public class PostService {
             Path path = Paths.get(findPost.getImgLocation());
             byte[] imageBytes = Files.readAllBytes(path);
             String Image = Base64.getEncoder().encodeToString(imageBytes);
-            findPost.setImg(Image);
+//            findPost.setImg(Image);
         }
     }
 

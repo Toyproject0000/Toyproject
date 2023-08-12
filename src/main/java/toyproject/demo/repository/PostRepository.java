@@ -8,6 +8,7 @@ import java.util.List;
 
  public interface PostRepository {
      void insert(Post post);
+     void insertImg(Post post);
      void update(Post post);
      void delete(Post post);
      List<Post> findPostOfFollower(User user);

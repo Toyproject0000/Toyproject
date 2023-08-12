@@ -22,10 +22,18 @@ public class PostRepositoryImpl implements PostRepository {
     }
     @Override
     public void insert(Post post) {
-        String sql = "INSERT INTO post (user_id, contents, title, category, disclosure, date, img_location, possibly_reply) VALUES (?, ?, ?, ?, ?, ?, ?,?)";
-        jdbcTemplate.update(sql, post.getUserId(), post.getContents(), post.getTitle(), post.getCategory(), post.getDisclosure(), post.getDate(), post.getImgLocation(), post.getPossibleReply());
+        String sql = "INSERT INTO post (user_id, contents, title, category, disclosure, date, possibly_reply, img_location) VALUES (?, ?, ?, ?, ?, ?,?,?)";
+        jdbcTemplate.update(sql, post.getUserId(), post.getContents(), post.getTitle(), post.getCategory(), post.getDisclosure(), post.getDate(), post.getPossibleReply(), post.getImgLocation());
     }
 
+    @Override
+    public void insertImg(Post post) {
+        String updateQuery = "UPDATE post p1" +
+                " INNER JOIN (SELECT id FROM post WHERE user_id = ? ORDER BY date DESC LIMIT 1) p2" +
+                " ON p1.id = p2.id" +
+                " SET p1.img_location = ?";
+        jdbcTemplate.update(updateQuery, post.getUserId(), post.getImgLocation());
+    }
     @Override
     public void update(Post post) {
         String sql = "UPDATE post SET user_id = ?, contents = ? WHERE id = ?";

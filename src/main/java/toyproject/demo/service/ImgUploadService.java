@@ -21,7 +21,8 @@ public class ImgUploadService {
     }
 
     public String PostImgUpload(MultipartFile file, String userId) throws IOException {
-        String filePath = userId+"/post/"+file.getOriginalFilename();
+        String baseUploadPath = "C:/Users/kwh87"; // 절대 경로 설정
+        String filePath = baseUploadPath + "/" + userId + "/post/" + file.getOriginalFilename();
         File directory = new File(filePath).getParentFile();
         if (!directory.exists()) {
             directory.mkdirs();

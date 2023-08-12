@@ -31,6 +31,10 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'com.google.code.gson:gson:2.9.0'
+	implementation 'commons-io:commons-io:2.11.0'    /* Apache commons-io */
+	implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.4'
+	implementation 'commons-fileupload:commons-fileupload:1.4'
+	implementation 'javax.servlet:javax.servlet-api:3.1.0'
 }
 
 tasks.named('test') {

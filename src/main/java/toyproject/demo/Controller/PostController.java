@@ -25,15 +25,49 @@ public class PostController {
     private final FindAlgorithm algorithm;
 
     @PostMapping(value = "/submit")
-    public String submitPost(@RequestParam(value = "file", required = false) MultipartFile file,@RequestBody Post post, @SessionAttribute(value = "SessionId", required = false) String userId) {
-//        if (post.getUserId()!=userId)
+    public String submitPost(@RequestParam MultipartFile file,
+                             @RequestParam String userId,
+                             @RequestParam String contents,
+                             @RequestParam String title,
+                             @RequestParam String category,
+                             @RequestParam String disclosure,
+                             @RequestParam Boolean possibleReply,
+                             @SessionAttribute(value = "SessionId", required = false) String sessionId) {
+//        if (!post.getUserId().equals(userId))
 //            return "잘못된 요청입니다.";
 
         try {
-            String imgLocation = imgUploadService.PostImgUpload(file, post.getUserId());
+            Post post = new Post();
+            post.setUserId(userId);
+            post.setContents(contents);
+            post.setTitle(title);
+            post.setCategory(category);
+            post.setDisclosure(disclosure);
+            post.setPossibleReply(possibleReply);
+            String imgLocation = imgUploadService.PostImgUpload(file, userId);
             post.setImgLocation(imgLocation);
-            post.setImg(file);
+
             postService.submit(post);
+
+            return "ok";
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            return "에러 발생";
+        }
+    }
+
+    @PostMapping(value = "/submit/img")
+    public String submitPostImg(@RequestParam MultipartFile file) {
+//        if (!post.getUserId().equals(userId))
+//            return "잘못된 요청입니다.";
+
+        String userId = "alsdnd336@naver.com";
+        try {
+            String imgUpload = imgUploadService.PostImgUpload(file, userId);
+            Post post = new Post();
+            post.setImgLocation(imgUpload);
+            post.setUserId(userId);
+            postService.submitImg(post);
 
             return "ok";
         }catch (Exception e){
