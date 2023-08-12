@@ -2,7 +2,9 @@ package toyproject.demo.domain;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.time.LocalDateTime;
 
 @Getter
@@ -17,5 +19,5 @@ public class Post {
     String disclosure;
     Boolean possibleReply;
     LocalDateTime date;
-    String img;
+    MultipartFile img;
 }

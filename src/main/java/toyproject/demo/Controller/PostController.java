@@ -32,7 +32,7 @@ public class PostController {
         try {
             String imgLocation = imgUploadService.PostImgUpload(file, post.getUserId());
             post.setImgLocation(imgLocation);
-
+            post.setImg(file);
             postService.submit(post);
 
             return "ok";
