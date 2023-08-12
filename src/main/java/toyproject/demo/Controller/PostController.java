@@ -38,6 +38,7 @@ public class PostController {
 
             return "ok";
         }catch (Exception e){
+            System.out.println(e.getMessage());
             return "에러 발생";
         }
     }

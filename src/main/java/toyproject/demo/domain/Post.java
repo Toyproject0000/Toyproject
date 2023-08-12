@@ -15,7 +15,7 @@ public class Post {
     String imgLocation;
     String category;
     String disclosure;
-    String possibleReply;
+    Boolean possibleReply;
     LocalDateTime date;
     String img;
 }
