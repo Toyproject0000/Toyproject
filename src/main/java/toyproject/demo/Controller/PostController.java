@@ -25,7 +25,7 @@ public class PostController {
     private final FindAlgorithm algorithm;
 
     @PostMapping(value = "/submit")
-    public String submitPost(@RequestParam MultipartFile file,
+    public String submitPost(@RequestParam(required = false) MultipartFile file,
                              @RequestParam String userId,
                              @RequestParam String contents,
                              @RequestParam String title,
@@ -44,8 +44,9 @@ public class PostController {
             post.setCategory(category);
             post.setDisclosure(disclosure);
             post.setPossibleReply(possibleReply);
+            if(!file.isEmpty()){
             String imgLocation = imgUploadService.PostImgUpload(file, userId);
-            post.setImgLocation(imgLocation);
+            post.setImgLocation(imgLocation);}
 
             postService.submit(post);
 
