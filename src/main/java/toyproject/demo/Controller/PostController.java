@@ -31,7 +31,7 @@ public class PostController {
                              @RequestParam String title,
                              @RequestParam String category,
                              @RequestParam String disclosure,
-                             @RequestParam Boolean possibleReply,
+                             @RequestParam String possibleReply,
                              @SessionAttribute(value = "SessionId", required = false) String sessionId) {
 //        if (!post.getUserId().equals(userId))
 //            return "잘못된 요청입니다.";

@@ -17,7 +17,7 @@ public class Post {
     String imgLocation;
     String category;
     String disclosure;
-    Boolean possibleReply;
+    String possibleReply;
     LocalDateTime date;
     MultipartFile img;
 }
