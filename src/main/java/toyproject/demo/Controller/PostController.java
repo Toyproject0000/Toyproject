@@ -26,8 +26,8 @@ public class PostController {
 
     @PostMapping(value = "/submit")
     public String submitPost(@RequestBody Post post, @SessionAttribute(value = "SessionId", required = false) String userId) {
-        if (post.getUserId()!=userId)
-            return "잘못된 요청입니다.";
+//        if (post.getUserId()!=userId)
+//            return "잘못된 요청입니다.";
 
         try {
 //            String imgLocation = imgUploadService.PostImgUpload(file, post.getUserId());

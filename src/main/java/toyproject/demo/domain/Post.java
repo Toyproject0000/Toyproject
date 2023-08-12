@@ -14,7 +14,7 @@ public class Post {
     String title;
     String imgLocation;
     String category;
-    String Disclosure;
+    String disclosure;
     String possibleReply;
     LocalDateTime date;
     String img;
