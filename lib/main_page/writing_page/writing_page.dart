@@ -30,12 +30,7 @@ class _WritingPageState extends State<WritingPage> {
     final value1 = await _keyEditor.currentState?.getText();
 
     if (value1 != null && value1.isNotEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        duration: Duration(seconds: 5),
-        content: Text(value1),
-      ));
       return value1;
-
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         duration: Duration(seconds: 5),

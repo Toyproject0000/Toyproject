@@ -196,7 +196,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               // 로그인 버튼
                               ElevatedButton(
                                 onPressed: () {
-                                  _tryValidation();
+                                  // _tryValidation();
+                                  Navigator.pushNamed(context, SetPage.routeName);
                                 },
                                 child: Text(
                                   '로그인',
@@ -265,17 +266,17 @@ class _LoginScreenState extends State<LoginScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, FindId.routeName);
-                        },
-                        child: Text(
-                          '아이디 찾기',
-                          style: TextStyle(
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ),
+                      // TextButton(
+                      //   onPressed: () {
+                      //     Navigator.pushNamed(context, FindId.routeName);
+                      //   },
+                      //   child: Text(
+                      //     '아이디 찾기',
+                      //     style: TextStyle(
+                      //       color: Colors.grey,
+                      //     ),
+                      //   ),
+                      // ),
                       TextButton(
                         onPressed: () {
                           Navigator.pushNamed(context, FindPassword.routeName);

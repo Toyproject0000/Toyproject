@@ -7,6 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:smart_dongne/main_page/writing_page/cover.dart';
 import 'package:smart_dongne/main_page/writing_page/writing_page.dart';
+import 'package:path_provider/path_provider.dart';
+
+import '../../server/Server.dart';
+
 
 class LastSetting extends StatefulWidget {
   const LastSetting({super.key});
@@ -24,15 +28,19 @@ class _LastSettingState extends State<LastSetting> {
   Color backGroundColor = Color(0xFF98DFFF);
   String title = '';
   late String contents;
+  dynamic? finalImage; // 꾸밈까지 맞친 최종 이미지
+  late File imageFile;
 
   bool buttonColor1 = false;
   bool buttonColor2 = false;
   bool buttonColor3 = false;
   bool buttonColor4 = false;
+
   Row? dropDownValue;
   bool commentvalue = false;
   bool numberoflike = false;
   int disclosureindex = 0;
+  
 
   List<String> settingRange = [
     '모두 공개',
@@ -63,12 +71,12 @@ class _LastSettingState extends State<LastSetting> {
         imagePath = pickerFile.path;
         selectCover = true;
       });
-      Navigator.pushNamed(context, CoverPage.routeName,
+      finalImage = await Navigator.pushNamed(context, CoverPage.routeName,
           arguments: ScreenArguments(imagePath!));
     }
   }
 
-  void sendDateServer() {
+  void sendDateServer() async {
     final titleString = _tryValidation();
 
     if (titleString == null) {
@@ -90,7 +98,42 @@ class _LastSettingState extends State<LastSetting> {
         content: Text('주제를 선택해주세요.'),
       ));
     } else {
+      final settingComment = commentFunc();
+      final selectTopic = topicSelect();
+      final tempDir = await getTemporaryDirectory();
+      File file = await File('${tempDir.path}/image.png').create();
+      final finalImageFile = await file.writeAsBytes(finalImage); 
+      print(finalImageFile.path);
       // 서버에 데이터 보내기
+      final data = {
+        'userId' : 'alsdnd336@naver.com',
+        'title': titleString,
+        'contents': contents,
+        'category' : selectTopic,
+        'disclosure': settingRange[disclosureindex],
+        'possibleReply' : settingComment,
+      };
+      final response = contentSend(data, finalImageFile);
+    }
+  }
+
+  String topicSelect(){
+    if(buttonColor1 == true){
+      return '소설';
+    }else if(buttonColor2 == true){
+      return '일기';
+    }else if(buttonColor3 == true){
+      return '동기부여';
+    }else{
+      return '지식';
+    }
+  }
+
+  String commentFunc(){
+    if(commentvalue == false){
+      return '활성화';
+    }else{
+      return '비활성화';
     }
   }
 
@@ -105,7 +148,7 @@ class _LastSettingState extends State<LastSetting> {
         selectCover = true;
       });
 
-      Navigator.pushNamed(context, CoverPage.routeName,
+      finalImage = await Navigator.pushNamed(context, CoverPage.routeName,
           arguments: ScreenArguments(imagePath!));
     }
   }
@@ -206,10 +249,10 @@ class _LastSettingState extends State<LastSetting> {
                 )),
                 Expanded(
                   child: GestureDetector(
-                    onTap: () {
+                    onTap: () async {
                       Navigator.pop(context);
                       selectCover = true;
-                      Navigator.pushNamed(context, CoverPage.routeName);
+                      finalImage = await Navigator.pushNamed(context, CoverPage.routeName);
                     },
                     child: Container(
                       padding: EdgeInsets.all(10.0),
@@ -574,7 +617,7 @@ class _LastSettingState extends State<LastSetting> {
                 ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );
