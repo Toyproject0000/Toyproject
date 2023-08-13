@@ -64,16 +64,9 @@ public class PostService {
         return posts;
     }
 
-    public List<Post> findByCategory(String category, Integer num, Integer page) throws IOException {
-        int start = num*(page-1)+1;
-        int end = num*page;
-        List<Post> posts = postRepository.findByCategory(category, start, end);
-        for (Post post : posts) {
-            Path imagePath = Paths.get(post.getImgLocation());
-            byte[] imageBytes = Files.readAllBytes(imagePath);
-            String base64EncodedImage = Base64.getEncoder().encodeToString(imageBytes);
-//            post.setImg(base64EncodedImage);
-        }
+    public List<Post> findByCategory(String userId, Integer page) throws IOException {
+        List<Post> posts = postRepository.findPostsByCategory(userId, page);
+
         return posts;
     }
 

@@ -1,55 +1,50 @@
 package toyproject.demo.Controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-import toyproject.demo.domain.Category;
+import org.springframework.web.bind.annotation.*;
 import toyproject.demo.domain.Post;
 import toyproject.demo.domain.User;
-import toyproject.demo.service.FindAlgorithm;
 import toyproject.demo.service.PostService;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-@RestController("/main")
+@RestController
+@RequestMapping("/main")
 @RequiredArgsConstructor
 public class MainController {
-    private final FindAlgorithm algorithm;
     private final PostService postService;
 
     @PostMapping("/recommend")
-    public List<Post> recommend(@RequestBody User user, @RequestBody Integer page) throws IOException {
-        List<Category> categories = algorithm.findCategory(user.getId());
+    public List<Post> recommend(@RequestBody User user) throws IOException {
+        int page = 0;
+        List<Post> result = postService.findByCategory(user.getId(), page);
 
-        List<Post> result = new ArrayList<>();
+        int size = result.size()-1;
 
-        String firstCategory = categories.get(0).getCategory();
-        List<Post> firstPosts = postService.findByCategory(firstCategory, 5, page);
+        Set<Integer> num = new HashSet<>();
+        Random random = new Random();
 
-        result.addAll(firstPosts);
+        while (num.size()<Math.min(10, size)){
+            num.add(random.nextInt(size));
+        }
 
-        String secondCategory = categories.get(1).getCategory();
-        List<Post> secondPosts = postService.findByCategory(secondCategory, 3, page);
+        List<Post> posts = new ArrayList<>();
 
-        result.add(1,secondPosts.get(0));
-        result.add(4,secondPosts.get(1));
-        result.add(7,secondPosts.get(2));
+        for (int i : num) {
+            posts.add(result.get(i));
+        }
 
-        String thirdCategory = categories.get(2).getCategory();
-        List<Post> thirdPosts = postService.findByCategory(thirdCategory, 2, page);
+        posts.sort(Comparator.comparing(Post::getDate, Comparator.reverseOrder()));
 
-        result.add(3, thirdPosts.get(0));
-        result.add(7, thirdPosts.get(0));
 
-        return result;
+        return posts;
     }
 
     @PostMapping("/recommend/category")
     public List<Post> recommendWithCategory(@RequestBody String category,@RequestBody Integer page) throws IOException {
-        return postService.findByCategory(category, 10, page);
+//        return postService.findByCategory(category, 10, page);
+        return null;
     }
 
 

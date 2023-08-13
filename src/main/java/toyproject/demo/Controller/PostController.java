@@ -31,11 +31,7 @@ public class PostController {
                              @RequestParam String title,
                              @RequestParam String category,
                              @RequestParam String disclosure,
-                             @RequestParam String possibleReply,
-                             @SessionAttribute(value = "SessionId", required = false) String sessionId) {
-//        if (!post.getUserId().equals(userId))
-//            return "잘못된 요청입니다.";
-
+                             @RequestParam String possibleReply) {
         try {
             Post post = new Post();
             post.setUserId(userId);
@@ -59,8 +55,6 @@ public class PostController {
 
     @PostMapping(value = "/submit/img")
     public String submitPostImg(@RequestParam MultipartFile file) {
-//        if (!post.getUserId().equals(userId))
-//            return "잘못된 요청입니다.";
 
         String userId = "alsdnd336@naver.com";
         try {
@@ -77,10 +71,8 @@ public class PostController {
         }
     }
 
-    @PatchMapping(value = "edit")
-    public String editConfirm(@RequestParam(value = "file", required = false) MultipartFile file, @RequestBody Post post, @SessionAttribute("SessionId") String userId){
-        if (post.getUserId()!=userId)
-            return "잘못된 요청입니다.";
+    @PatchMapping(value = "/edit")
+    public String editConfirm(@RequestParam(value = "file", required = false) MultipartFile file, @RequestBody Post post){
         try {
             String imgLocation = imgUploadService.PostImgUpload(file, post.getUserId());
             post.setImgLocation(imgLocation);
@@ -91,13 +83,15 @@ public class PostController {
         }catch (Exception e){
             return "에러 발생";
         }
-
     }
 
+//    @PostMapping("/read")
+//    public String readPost(){
+//
+//    }
+
     @PostMapping(value = "/delete")
-    public String delete(@RequestBody Post post, @SessionAttribute("SessionId") String userId){
-        if (post.getUserId()!=userId)
-            return "잘못된 요청입니다.";
+    public String delete(@RequestBody Post post){
         try {
             postService.delete(post);
             return "ok";
@@ -113,21 +107,18 @@ public class PostController {
     }
 
     @PostMapping(value = "/find-follower")
-    public Optional<List<Post>> findPostOfFollower(@RequestBody User user, @SessionAttribute("SessionId") String userId) throws IOException {
-        if (user.getId()!=userId)
-            return null;
+    public Optional<List<Post>> findPostOfFollower(@RequestBody User user) throws IOException {
         return Optional.ofNullable(postService.findPostByFollower(user));
     }
 
     @PostMapping(value = "/find-likepost")
-    public Optional<List<Post>> findLikePost(@RequestBody User user, @SessionAttribute("SessionId") String userId) throws IOException {
-        if (user.getId()!=userId)
-            return null;
+    public Optional<List<Post>> findLikePost(@RequestBody User user) throws IOException {
+
         return Optional.ofNullable(postService.findAllLikePost(user));
     }
 
     @PostMapping
-    public void read(@SessionAttribute("SessionId")String userId, @RequestBody Post post){
+    public void read(@RequestBody Post post, @RequestBody String userId){
         algorithm.read(post, userId);
     }
 

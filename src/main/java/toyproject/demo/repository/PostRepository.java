@@ -15,5 +15,5 @@ import java.util.List;
      List<Post> findAllLikePost(User user);
      List<Post> search(Post post, LocalDate formerDate, LocalDate afterDate);
      List<Post> findPost(Post post);
-     List<Post> findByCategory(String category, Integer start, Integer end);
+     List<Post> findPostsByCategory(String userId, int page);
 }

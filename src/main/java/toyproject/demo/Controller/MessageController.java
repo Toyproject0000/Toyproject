@@ -23,47 +23,33 @@ public class MessageController {
      */
     private final MessageService messageService;
     @PostMapping("/message/send")
-    public String sendMessage(@SessionAttribute("SessionId") String userId, Message message){
-        if (userId != message.getSendUser()){
-            return "잘못된 접근입니다.";
-        }
+    public String sendMessage( Message message){
         return messageService.send(message);
     }
     @PostMapping("/message/findAll")
-    public Optional<List<Message>> findAllMessage(@SessionAttribute("SessionId") String userId, Message message){
-        if (userId != message.getSendUser()||userId!=message.getAcceptUser()){
-            return null;
-        }
+    public Optional<List<Message>> findAllMessage( Message message){
         return messageService.findAll(message);
     }
     @PostMapping("/message/user")
-    public Optional<List<Message>> Message(@SessionAttribute("SessionId") String userId, Message message){
-        if (userId != message.getSendUser()||userId!=message.getAcceptUser()){
-            return null;
-        }
+    public Optional<List<Message>> Message( Message message){
+
         return messageService.findMessage(message);
     }
 
     @PostMapping("/message/search")
-    public Optional<List<Message>> searchMessage(@SessionAttribute("SessionId") String userId, Message message){
-        if (userId != message.getSendUser()||userId!=message.getAcceptUser()){
-            return null;
-        }
+    public Optional<List<Message>> searchMessage( Message message){
+
         return messageService.search(message);
     }
     @PostMapping("/message/deleteAll")
-    public String deleteAllMessage(@SessionAttribute("SessionId") String userId, Message message){
-        if (userId != message.getSendUser()||userId!=message.getAcceptUser()){
-            return "잘못된 접근입니다.";
-        }
+    public String deleteAllMessage( Message message){
+
         return messageService.deleteAll(message);
     }
 
     @PostMapping("/message/delete")
-    public String deleteMessage(@SessionAttribute("SessionId") String userId, Message message){
-        if (userId != message.getSendUser()||userId!=message.getAcceptUser()){
-            return "잘못된 접근입니다.";
-        }
+    public String deleteMessage( Message message){
+
         return messageService.delete(message);
     }
 }
