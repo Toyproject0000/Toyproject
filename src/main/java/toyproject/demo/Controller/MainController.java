@@ -32,7 +32,9 @@ public class MainController {
         List<Post> posts = new ArrayList<>();
 
         for (int i : num) {
-            posts.add(result.get(i));
+            if (result.get(i).getId()!=null){
+                posts.add(result.get(i));
+            }
         }
 
         posts.sort(Comparator.comparing(Post::getDate, Comparator.reverseOrder()));
