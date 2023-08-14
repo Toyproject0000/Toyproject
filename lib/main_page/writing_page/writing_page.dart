@@ -18,6 +18,7 @@ class WritingPage extends StatefulWidget {
 
 class _WritingPageState extends State<WritingPage> {
   GlobalKey<FlutterSummernoteState> _keyEditor = GlobalKey();
+  Widget? summerNote;
 
   TextStyle basicFont = TextStyle(
     fontSize: 15,
@@ -74,17 +75,17 @@ class _WritingPageState extends State<WritingPage> {
         automaticallyImplyLeading: false,
       ),
       body: Container(
-        child: FlutterSummernote(
-          key: _keyEditor,
-          hint: "내용을 입력하시오....",
-          showBottomToolbar: false,
-          customToolbar: """
-              [
-                ['style', ['bold','italic','underline','clear']],
-                ['font', ['fontsize']],
-                ['para', ['paragraph']],
-              ]
-              """,
+        child:  FlutterSummernote(
+        key: _keyEditor,
+        hint: "내용을 입력하시오....",
+        showBottomToolbar: false,
+        customToolbar: """
+            [
+              ['style', ['bold','italic','underline','clear']],
+              ['font', ['fontsize']],
+              ['para', ['paragraph']],
+            ]
+            """,
         ),
       ),
     );

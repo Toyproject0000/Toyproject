@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_dongne/main_page/home_page/Content_page.dart';
 import 'package:smart_dongne/main_page/home_page/search_bar.dart';
 
 import '../../server/Server.dart';
@@ -23,8 +24,10 @@ class _HomePageState extends State<HomePage> {
   // 게시물에 쓸 데이터들
   Container PostingWidget = Container();
 
-  Container MakeaPosting(data){
-    final contentDate = data['date'];
+  Container MakeaPosting(data) {
+    final contentsDate = data['date'];
+    final PostingContent = data['contents'];
+
     return Container(
       child: Column(
         children: [
@@ -50,40 +53,49 @@ class _HomePageState extends State<HomePage> {
               children: [
                 Text(
                   '제목:',
-                  style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(
                   width: 5,
                 ),
-                Text(data['title'], style: TextStyle(fontSize: 15),),
+                Text(
+                  data['title'],
+                  style: TextStyle(fontSize: 15),
+                ),
               ],
             ),
           ),
-          AspectRatio(
-            aspectRatio: 4 / 4,
-            child: Image.file(File(data['imgLocation']), fit: BoxFit.cover,),
+          InkWell(
+            onTap: () {
+              Navigator.pushNamed(context, ShowaContents.routeName,
+                  arguments: ContentArguments(PostingContent));
+            },
+            child: AspectRatio(
+              aspectRatio: 4 / 4,
+              child: Image.file(
+                File(data['imgLocation']),
+                fit: BoxFit.cover,
+              ),
+            ),
           ),
           Container(
-            margin: EdgeInsets.only(bottom: 15),
-            padding: EdgeInsets.all(7),
-            child: Row(
-              children: [
-                Text(contentDate.substring(0,10))
-              ],
-            )
-          ),
+              margin: EdgeInsets.only(bottom: 15),
+              padding: EdgeInsets.all(7),
+              child: Row(
+                children: [Text(contentsDate.substring(0, 10))],
+              )),
         ],
       ),
     );
   }
-  
 
   void GetMainData() async {
     final data = {'id': 'alsdnd336@naver.com'};
     mainData = await mainPageData(data);
     jsonData = jsonDecode(mainData);
     print(jsonData);
-    FinishedWidgetList = jsonData.map<Container>((data) => MakeaPosting(data)).toList();
+    FinishedWidgetList =
+        jsonData.map<Container>((data) => MakeaPosting(data)).toList();
     setState(() {
       BuildFinshWidget = Column(children: FinishedWidgetList);
     });
@@ -110,7 +122,8 @@ class _HomePageState extends State<HomePage> {
                     Navigator.pushNamed(context, Search_Page_bar.routeName);
                   },
                   child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                      padding:
+                          EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                       width: double.infinity,
                       decoration: BoxDecoration(
                           color: Colors.grey[300],
@@ -175,8 +188,14 @@ class _HomePageState extends State<HomePage> {
                     ]),
               ),
               // tempWidget
-              if(BuildFinshWidget != null)
-              BuildFinshWidget!
+              BuildFinshWidget == null
+                  ? Center(
+                      child: CircularProgressIndicator(
+                        color: Colors.blue,
+                        backgroundColor: Colors.grey,
+                      ),
+                    )
+                  : BuildFinshWidget!
               // tempWidget
             ],
           ),

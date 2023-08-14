@@ -48,6 +48,8 @@ dependencies:
   firebase_auth: ^4.7.2
   screenshot: ^2.1.0
   path_provider: ^2.1.0
+  webview_flutter: ^4.2.2
+
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -80,7 +82,7 @@ flutter:
    - image/basicprofile.png 
    - image/naverButton.png
    - image/kakao.png
-
+   - contents_web/contents.html
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

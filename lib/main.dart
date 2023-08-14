@@ -7,6 +7,7 @@ import 'package:smart_dongne/login_page/join_membership_page.dart';
 import 'package:smart_dongne/login_page/login_page.dart';
 import 'package:smart_dongne/login_page/setnickname.dart';
 import 'package:smart_dongne/main_page/chatting_page/chatting_searchmode.dart';
+import 'package:smart_dongne/main_page/home_page/Content_page.dart';
 import 'package:smart_dongne/main_page/profile_page/User_setting/Account_management.dart';
 import 'package:smart_dongne/main_page/profile_page/User_setting/phoneNumberChange.dart';
 import 'package:smart_dongne/main_page/profile_page/User_setting/setting_page.dart';
@@ -61,7 +62,7 @@ class MyApp extends StatelessWidget {
         ReaderNotification.routeName: (context) => ReaderNotification(),
         Cutoff.routeName: (context) => Cutoff(),
         Search_Page_bar.routeName: (context) => Search_Page_bar(),
-        
+        ShowaContents.routeName: (context) => ShowaContents(),
       },
     );
   }
