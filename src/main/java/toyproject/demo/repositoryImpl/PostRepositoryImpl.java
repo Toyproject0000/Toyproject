@@ -117,14 +117,8 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public List<Post> findPostsByCategory(String userId, int page) {
-        String sql = "SELECT p.* " +
-                "FROM category c " +
-                "LEFT JOIN post p ON c.category = p.category " +
-                "WHERE c.user_id = ?";
-
-        Object[] params = {userId, userId, userId};
+        String sql = "SELECT p.*, u.nickname As nickname FROM category c LEFT JOIN post p ON c.category = p.category LEFT JOIN user u ON p.user_id = u.id WHERE c.user_id = ?";
 
         return jdbcTemplate.query(sql, rowMapper, userId);
     }
-
 }
