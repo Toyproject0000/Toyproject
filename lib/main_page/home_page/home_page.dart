@@ -1,6 +1,10 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_dongne/main_page/home_page/search_bar.dart';
+
+import '../../server/Server.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -10,73 +14,170 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  late dynamic mainData;
+  late Map<String, dynamic> firstPosting;
+  late List<Container> FinishedWidgetList;
+  Column? BuildFinshWidget;
+  late dynamic jsonData;
+
+  // 게시물에 쓸 데이터들
+  Container PostingWidget = Container();
+
+  Container MakeaPosting(data){
+    final contentDate = data['date'];
+    return Container(
+      child: Column(
+        children: [
+          Divider(
+            color: Colors.black,
+            height: 0,
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+            child: Row(
+              children: [
+                Text(data['nickname'], style: TextStyle(fontSize: 18)),
+              ],
+            ),
+          ),
+          Divider(
+            color: Colors.grey,
+            height: 0,
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+            child: Row(
+              children: [
+                Text(
+                  '제목:',
+                  style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),
+                ),
+                SizedBox(
+                  width: 5,
+                ),
+                Text(data['title'], style: TextStyle(fontSize: 15),),
+              ],
+            ),
+          ),
+          AspectRatio(
+            aspectRatio: 4 / 4,
+            child: Image.file(File(data['imgLocation']), fit: BoxFit.cover,),
+          ),
+          Container(
+            margin: EdgeInsets.only(bottom: 15),
+            padding: EdgeInsets.all(7),
+            child: Row(
+              children: [
+                Text(contentDate.substring(0,10))
+              ],
+            )
+          ),
+        ],
+      ),
+    );
+  }
+  
+
+  void GetMainData() async {
+    final data = {'id': 'alsdnd336@naver.com'};
+    mainData = await mainPageData(data);
+    jsonData = jsonDecode(mainData);
+    print(jsonData);
+    FinishedWidgetList = jsonData.map<Container>((data) => MakeaPosting(data)).toList();
+    setState(() {
+      BuildFinshWidget = Column(children: FinishedWidgetList);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    GetMainData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.all(10),
+          padding: EdgeInsets.symmetric(vertical: 10),
           child: ListView(
             children: [
-              InkWell(
-                onTap: () {
-                  Navigator.pushNamed(context, Search_Page_bar.routeName);
-                },
-                child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                        color: Colors.grey[300],
-                        borderRadius: BorderRadius.circular(5)),
-                    child: Row(
-                      children: [
-                        Icon(Icons.search),
-                      ],
-                    )),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.pushNamed(context, Search_Page_bar.routeName);
+                  },
+                  child: Container(
+                      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                          color: Colors.grey[300],
+                          borderRadius: BorderRadius.circular(5)),
+                      child: Row(
+                        children: [
+                          Icon(Icons.search),
+                        ],
+                      )),
+                ),
               ),
               Padding(
-                padding: EdgeInsets.symmetric(vertical: 10),
+                padding: EdgeInsets.all(10),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                  ElevatedButton(
-                    onPressed: () {},
-                    child: Text(
-                      '전체', style: TextStyle(color: Colors.black),
-                    ),
-                    style: ElevatedButton.styleFrom(primary: Colors.grey[500]),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {},
-                    child: Text(
-                      '동기부여', style: TextStyle(color: Colors.black),
-                    ),
-                    style: ElevatedButton.styleFrom(primary: Colors.grey[400]),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {},
-                    child: Text(
-                      '소설', style: TextStyle(color: Colors.black),
-                    ),
-                    style: ElevatedButton.styleFrom(primary: Colors.grey[400]),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {},
-                    child: Text(
-                      '일기', style: TextStyle(color: Colors.black),
-                    ),
-                    style: ElevatedButton.styleFrom(primary: Colors.grey[400]),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {},
-                    child: Text(
-                      '지식', style: TextStyle(color: Colors.black),
-                    ),
-                    style: ElevatedButton.styleFrom(primary: Colors.grey[400]),
-                  ),
-                ]),
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {},
+                        child: Text(
+                          '전체',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        style:
+                            ElevatedButton.styleFrom(primary: Colors.grey[500]),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {},
+                        child: Text(
+                          '동기부여',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        style:
+                            ElevatedButton.styleFrom(primary: Colors.grey[400]),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {},
+                        child: Text(
+                          '소설',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        style:
+                            ElevatedButton.styleFrom(primary: Colors.grey[400]),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {},
+                        child: Text(
+                          '일기',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        style:
+                            ElevatedButton.styleFrom(primary: Colors.grey[400]),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {},
+                        child: Text(
+                          '지식',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        style:
+                            ElevatedButton.styleFrom(primary: Colors.grey[400]),
+                      ),
+                    ]),
               ),
-
+              // tempWidget
+              if(BuildFinshWidget != null)
+              BuildFinshWidget!
+              // tempWidget
             ],
           ),
         ),

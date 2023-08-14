@@ -34,7 +34,6 @@ class _JoinmembershipState extends State<Joinmembership> {
   String? perfectPassWord;
   bool manButton = false;
   bool womanButton = false;
-  String encryptionNumber = '';
   final _focusNode = FocusNode();
 
   void _tryValidation() async {
@@ -47,34 +46,12 @@ class _JoinmembershipState extends State<Joinmembership> {
           'password': userPassword,
           'name': userName,
           'gender': manButton,
-          'phoneNumber': phoneNumber,
-          
-        };
-
-        var authenticationdata = {
-          'rawNum': authenticationNumber,
-          'num': encryptionNumber,
         };
 
         JoinMemdership server = JoinMemdership();
         final String? answer = await server.sendData(data);
-        final String? numberAnswer = await server.authenticationNumberCheck(authenticationdata, context);
-        if (answer == null && numberAnswer == null){
+        if (answer == null ){
           Navigator.pushNamed(context, NickName.routeName, arguments: ArgumentEmail(userEmail));
-        } else if(numberAnswer != null){
-          Flushbar(
-          margin: EdgeInsets.symmetric(horizontal: 15),
-          flushbarPosition: FlushbarPosition.TOP,
-          duration: Duration(seconds: 2),
-          message: '인증번호가 맞지 않습니다.' ,
-          messageSize: 15,
-          borderRadius: BorderRadius.circular(4),
-          backgroundColor: Colors.white,
-          messageColor: Colors.red,
-          boxShadows: [
-            BoxShadow(color: Colors.black, blurRadius: 8)
-          ],
-        ).show(context);
         } else {
           Flushbar(
           margin: EdgeInsets.symmetric(horizontal: 15),
@@ -90,7 +67,6 @@ class _JoinmembershipState extends State<Joinmembership> {
           ],
         ).show(context);
         }
-
       } catch (e) {
         print(e);
         if (mounted) {
@@ -103,33 +79,6 @@ class _JoinmembershipState extends State<Joinmembership> {
 
         }
       }
-    }
-  }
-
-  void _NumberValidation() {
-    final NumberValid = _numberKey.currentState!.validate();
-    if (NumberValid) {
-      _numberKey.currentState!.save();
-      final data = {'phoneNumber': phoneNumber};
-      final authentication = numberAuthentiaction();
-      authentication.sendPhoneNumber(data).then((value) {
-        Flushbar(
-          margin: EdgeInsets.symmetric(horizontal: 15),
-          flushbarPosition: FlushbarPosition.TOP,
-          duration: Duration(seconds: 2),
-          message: '인증번호를 전송했습니다.' ,
-          messageSize: 15,
-          borderRadius: BorderRadius.circular(4),
-          backgroundColor: Colors.white,
-          messageColor: Colors.black,
-          boxShadows: [
-            BoxShadow(color: Colors.black, blurRadius: 8)
-          ],
-        ).show(context);
-        setState(() {
-          encryptionNumber = authentication.AuthenticationNumber!;
-        });
-      });
     }
   }
 
@@ -168,26 +117,58 @@ class _JoinmembershipState extends State<Joinmembership> {
                     SizedBox(
                       height: 30,
                     ),
-                    TextFormField(
-                      validator: (value) {
-                        if (value!.isEmpty || !value.contains('@')) {
-                          return '이메일을 바르게 적어주세요';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) {
-                        userEmail = value!;
-                      },
-                      onChanged: (value) {
-                        userEmail = value;
-                      },
-                      decoration: InputDecoration(
-                          prefixIcon: Icon(Icons.email),
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey),
+                    Container(
+                      padding: EdgeInsets.symmetric(vertical: 5),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey, width: 1),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: TextFormField(
+                              validator: (value) {
+                                if (value!.isEmpty || !value.contains('@')) {
+                                  return '이메일을 바르게 적어주세요';
+                                }
+                                return null;
+                              },
+                              onSaved: (value) {
+                                userEmail = value!;
+                              },
+                              onChanged: (value) {
+                                userEmail = value;
+                              },
+                              decoration: InputDecoration(
+                                  prefixIcon: Icon(Icons.email),
+                                  focusedBorder: InputBorder.none,
+                                  border: InputBorder.none,
+                                  hintText: '이메일'),
+                            ),
                           ),
-                          hintText: '이메일'),
+                          TextButton(
+                            onPressed: (){
+                              FocusScope.of(context).requestFocus(_focusNode);
+                            },
+                            child: Text('인증번호 요청', style: TextStyle(
+                              color: Colors.blue
+                            ),))
+                        ],
+                      ),
                     ),
+                    TextFormField(
+                      focusNode: _focusNode,
+                      decoration: InputDecoration(
+                        hintText: '인증번호 입력',
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey)
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 15,),
                     TextFormField(
                       validator: (value) {
                         if (value!.isEmpty || value.length < 8 || !value.contains(RegExp(r'[!@#$%^&*()<>?":{}|<>]'))) {
@@ -331,90 +312,6 @@ class _JoinmembershipState extends State<Joinmembership> {
                     ),
                     SizedBox(
                       height: 25,
-                    ),
-                    Container(
-                      height: 60,
-                      
-                      padding: EdgeInsets.all(10.0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        border: Border.all(
-                          color: Colors.grey,
-                          width: 1.0,
-                        ),
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Form(
-                              key: _numberKey,
-                              child: TextFormField(
-                                keyboardType: TextInputType.number,
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.digitsOnly,
-                                ],
-                                validator: (value) {
-                                  if (value!.isEmpty || value.length < 11) {
-                                    Flushbar(
-                                      margin: EdgeInsets.symmetric(horizontal: 15),
-                                      flushbarPosition: FlushbarPosition.TOP,
-                                      duration: Duration(seconds: 2),
-                                      message: '전화번호를 올바르게 입력하시오.' ,
-                                      messageSize: 15,
-                                      borderRadius: BorderRadius.circular(4),
-                                      backgroundColor: Colors.white,
-                                      messageColor: Colors.black,
-                                      boxShadows: [
-                                        BoxShadow(color: Colors.black, blurRadius: 8)
-                                      ],
-                                    ).show(context);
-                                  }
-                                  return null;
-                                },
-                                onSaved: (value) {
-                                  phoneNumber = value!;
-                                },
-                                onChanged: (value) {
-                                  phoneNumber = value;
-                                },
-                                decoration: InputDecoration(
-                                    border: InputBorder.none, hintText: '전화번호'),
-                              ),
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              _NumberValidation();
-                              FocusScope.of(context).requestFocus(_focusNode);
-                            },
-                            child: Text(
-                              '인증번호 요청',
-                              style: TextStyle(color: Colors.blue),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    TextFormField(
-                      validator: (value) {
-                        if (value!.length < 6) {
-                          return '인증번호를 올바르게 입력하시오.';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) {
-                        authenticationNumber = value!;
-                      },
-                      focusNode: _focusNode,
-                      decoration: InputDecoration(
-                        hintText: '인증번호 6자리를 입력해주세요.',
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20,
                     ),
                     ElevatedButton(
                         style: ElevatedButton.styleFrom(

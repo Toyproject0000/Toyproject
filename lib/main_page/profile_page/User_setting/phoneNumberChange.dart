@@ -33,26 +33,26 @@ class _ChangePhoneNumberState extends State<ChangePhoneNumber> {
     super.initState();
   }
 
-  void sendAuthenticationNumber() {
-    final data = {'phoneNumber': newNumberController.text};
-    final checkNumber = numberAuthentiaction();
-    checkNumber.sendPhoneNumber(data).then((value) {
-      setState(() {
-        encryptionNumber = checkNumber.AuthenticationNumber!;
-      });
-      Flushbar(
-        margin: EdgeInsets.symmetric(horizontal: 15),
-        flushbarPosition: FlushbarPosition.TOP,
-        duration: Duration(seconds: 2),
-        message: '인증번호를 전송했습니다',
-        messageSize: 15,
-        borderRadius: BorderRadius.circular(4),
-        backgroundColor: Colors.white,
-        messageColor: Colors.black,
-        boxShadows: [BoxShadow(color: Colors.black, blurRadius: 8)],
-      ).show(context);
-    });
-  }
+  // void sendAuthenticationNumber() {
+  //   final data = {'phoneNumber': newNumberController.text};
+  //   final checkNumber = numberAuthentiaction();
+  //   checkNumber.sendPhoneNumber(data).then((value) {
+  //     setState(() {
+  //       encryptionNumber = checkNumber.AuthenticationNumber!;
+  //     });
+  //     Flushbar(
+  //       margin: EdgeInsets.symmetric(horizontal: 15),
+  //       flushbarPosition: FlushbarPosition.TOP,
+  //       duration: Duration(seconds: 2),
+  //       message: '인증번호를 전송했습니다',
+  //       messageSize: 15,
+  //       borderRadius: BorderRadius.circular(4),
+  //       backgroundColor: Colors.white,
+  //       messageColor: Colors.black,
+  //       boxShadows: [BoxShadow(color: Colors.black, blurRadius: 8)],
+  //     ).show(context);
+  //   });
+  // }
 
   void CheckAuthenticationNumber() async {
     if (encryptionNumber != null) {
@@ -115,7 +115,7 @@ class _ChangePhoneNumberState extends State<ChangePhoneNumber> {
                   ),
                   TextButton(
                       onPressed: () {
-                        sendAuthenticationNumber();
+                        // sendAuthenticationNumber();
                         FocusScope.of(context).requestFocus(_focusNode);
                       },
                       child: Text(

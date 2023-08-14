@@ -82,7 +82,7 @@ class _CoverPageState extends State<CoverPage> {
             children: [
               Center(
                 child: AspectRatio(
-                  aspectRatio: 4 / 5,
+                  aspectRatio: 4 / 4,
                   child: Container(
                     width: double.infinity,
                     child: argumentSend == true

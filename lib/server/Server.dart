@@ -388,3 +388,21 @@ Future<String?> contentSend(data, imageFile) async {
     print('네트워크 오류: $error');
   }
 }
+
+Future<dynamic> mainPageData(email) async {
+  final url = Uri.parse('http://192.168.45.121:8080/main/recommend');
+  final headers = {'Content-Type': 'application/json'};
+  try {
+    final response = await http.post(url, headers: headers, body: jsonEncode(email));
+    if (response.statusCode == 200) {
+      var jsonData = response.body;
+      return jsonData;
+    } else {
+      print('요청 실패: ${response.statusCode}');
+    }
+  } catch (error) {
+    // 네트워크 오류 발생
+    print('네트워크 오류: $error');
+  }
+
+}
