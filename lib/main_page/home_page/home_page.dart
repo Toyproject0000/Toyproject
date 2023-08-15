@@ -93,7 +93,6 @@ class _HomePageState extends State<HomePage> {
     final data = {'id': 'alsdnd336@naver.com'};
     mainData = await mainPageData(data);
     jsonData = jsonDecode(mainData);
-    print(jsonData);
     FinishedWidgetList =
         jsonData.map<Container>((data) => MakeaPosting(data)).toList();
     setState(() {

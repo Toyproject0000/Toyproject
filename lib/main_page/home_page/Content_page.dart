@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+
 
 class ShowaContents extends StatefulWidget {
   const ShowaContents({super.key});
@@ -13,22 +14,28 @@ class ShowaContents extends StatefulWidget {
 class _ShowaContentsState extends State<ShowaContents> {
   late String PostingContents;
   bool activationThumb = false;
-  late WebViewController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = WebViewController()
-    ..setJavaScriptMode(JavaScriptMode.unrestricted)
-    ..loadFlutterAsset('contents_web/contents.html');
-
-
+  
+  void buttonshitofComment(){
+    showModalBottomSheet(
+      shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(20.0), // 둥글게 만드는 모서리 반지름 설정
+    ),
+      context: context,
+      isScrollControlled: true,
+      builder: (BuildContext context) {
+        return SizedBox(
+          height: MediaQuery.of(context).size.height * 4/5,
+          child: ListView(),
+        );
+      }
+    );
   }
+  
 
   @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments as ContentArguments;
-    PostingContents = args.content;
+    PostingContents = args.content.replaceAll('<p>', '<p style="font-size : 50px;">');
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -37,16 +44,24 @@ class _ShowaContentsState extends State<ShowaContents> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-          InkWell(
-            onTap: (){
-              setState(() {
-                activationThumb = !activationThumb;
-              });
-            },
-            child: activationThumb == false ? Icon(Icons.thumb_up_alt_outlined, color: Colors.black,) : 
-              Icon(Icons.thumb_up, color: Colors.blue,)
-            ) ,
-          InkWell(onTap: (){}, child: Icon(Icons.mode_edit_outline_outlined,),)
+          Row(
+            children: [
+              InkWell(
+                onTap: (){
+                  setState(() {
+                    activationThumb = !activationThumb;
+                  });
+                },
+                child: activationThumb == false ? Icon(Icons.thumb_up_alt_outlined, color: Colors.black,) : 
+                  Icon(Icons.thumb_up, color: Colors.blue,)
+                ),
+            ],
+          ) ,
+          Row(
+            children: [
+              InkWell(onTap: (){buttonshitofComment();}, child: Icon(Icons.mode_edit_outline_outlined,),),
+            ],
+          )
         ]),
         actions: [
           IconButton(
@@ -54,7 +69,13 @@ class _ShowaContentsState extends State<ShowaContents> {
             icon: Icon(Icons.more_horiz))
         ],
       ),
-      body: WebViewWidget(controller: _controller),
+      body: InAppWebView(
+        initialData: InAppWebViewInitialData(
+          data: '''
+            $PostingContents
+          ''', encoding: 'utf-8',
+        ),
+      )
     );
   }
 }
