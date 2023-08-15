@@ -27,8 +27,8 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public void update(User user, String userId) {
-        jdbcTemplate.update("UPDATE user SET password = COALESCE(?, password), name = COALESCE(?, name), phoneNumber = COALESCE(?, phoneNumber), nickname = COALESCE(?, nickname), gender = COALESCE(?, gender), info = COALESCE(?, info) WHERE id = ?",
-                user.getPassword(), user.getName(), user.getPhoneNumber(), user.getNickname(), user.getGender(), user.getInfo(), userId);
+        jdbcTemplate.update("UPDATE user SET password = COALESCE(?, password),  nickname = COALESCE(?, nickname), info = COALESCE(?, info), img_location = coalesce(?, img_location) WHERE id = ?",
+                user.getPassword(), user.getNickname(), user.getInfo(), user.getImgLocation(), userId);
     }
 
     @Override

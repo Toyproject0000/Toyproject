@@ -20,5 +20,4 @@ public class Post {
     String disclosure;
     String possibleReply;
     LocalDateTime date;
-    MultipartFile img;
 }

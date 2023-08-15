@@ -61,4 +61,14 @@ public class UserControllerHowToUse {
     public String check(){
         return "user/user-authentication-check";
     }
+
+    @GetMapping(value = "/profile")
+    public String profile(){
+        return "user/profile";
+    }
+
+    @GetMapping(value = "/profile/set")
+    public String profileSet(){
+        return "user/profile-set";
+    }
 }

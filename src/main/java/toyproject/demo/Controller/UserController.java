@@ -127,23 +127,35 @@ public class UserController {
         return makeCertificationNumber.match(rawNum, num);
     }
 
-    @PostMapping(value = "/profile/set", consumes = "application/json")
-    public String setProfile(@RequestBody User user, @RequestParam("file") MultipartFile file, @SessionAttribute("SessionId") String userId) throws IOException {
-        String imgUpload = imgUploadService.PostImgUpload(file, userId);
-        user.setImgLocation(imgUpload);
-        userService.edit(user, userId);
+    @PostMapping(value = "/profile/set")
+    public String setProfile(@RequestParam(value = "file", required = false) MultipartFile file,
+                             @RequestParam String userId,
+                             @RequestParam(required = false) String info,
+                             @RequestParam(required = false) String nickname,
+                             @RequestParam(required = false) String password
+                             ){
+        try {
+            User user = new User();
+            user.setId(userId);
+            user.setNickname(nickname);
+            user.setInfo(info);
+            user.setPassword(password);
+            if (file!=null)
+            {
+                String imgUpload = imgUploadService.ProfileImgUpload(file, userId);
+                user.setImgLocation(imgUpload);
+            }
+            userService.edit(user, userId);
+        }catch (Exception e){
+            System.out.println("e.getMessage() = " + e.getMessage());
+            return "cancel";
+        }
         return "ok";
     }
 
     @PostMapping("/profile")
-    public User ViewProfile(@RequestBody User user) throws IOException {
+    public User ViewProfile(@RequestBody User user) {
         User findUser = userService.findUser(user).get(0);
-
-        Path path = Paths.get(findUser.getImgLocation());
-        byte[] imageBytes = Files.readAllBytes(path);
-        String Image = Base64.getEncoder().encodeToString(imageBytes);
-
-        findUser.setImg(Image);
 
         return findUser;
     }

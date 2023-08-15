@@ -13,6 +13,5 @@ public class User {
     String phoneNumber;
     String nickname;
     Boolean gender;
-    String img;
     String imgLocation;
 }

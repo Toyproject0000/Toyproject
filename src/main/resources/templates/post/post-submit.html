@@ -8,21 +8,19 @@
 <p>요청 url : http://localhost:8080/post/submit</p>
 <p>
   요청 형식<br>
-  {<br>
-    "SessionId" : "로그인시 받은 세션 아이디", <br>
-    "userId" : "아이디",<br>
-    "title" : "제목",<br>
-    "contents" : "내용",<br>
-    "category" : "카테고리",<br>
-    "disclosure" : "공개여부",   <br>
-    "possibleReply" : "String",    <br>
-    "file" : "사진 파일"<br>
-  }
+  var request = http.MultipartRequest('POST', Uri.parse('http://localhost:8080/post/submit'));<br>
+  request.fields.addAll({<br>
+  'userId': 'test1',<br>
+  'contents': '테스트입니다.111111',<br>
+  'title': '테스트',<br>
+  'category': '테스트',<br>
+  'disclosure': '1',<br>
+  'possibleReply': '1'<br>
+  });<br>
+  request.files.add(await http.MultipartFile.fromPath('file', '/C:/Users/kwh87/OneDrive/바탕 화면/히후미.jpg'));<br>
   <br>
+  http.StreamedResponse response = await request.send();<br>
   <br>
-  <br>
-  SessionId -> 일단 비활성화 해놓았습니다. 지금은 안보내도 됩니다 <br>
-  Disclosure, possibleReply -> 공개 비공개 독자에게 공개 생각해서 String으로 넣었습니다.
 </p>
 <p>반환 : ok, 에러발생</p>
 </body>

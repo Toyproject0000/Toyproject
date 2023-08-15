@@ -10,7 +10,9 @@ import java.io.IOException;
 @Service
 public class ImgUploadService {
     public String ProfileImgUpload(MultipartFile file, String userId) throws IOException {
-        String filePath = userId+"/profile/"+file.getOriginalFilename();
+//        String baseUploadPath = "C:/Users/kwh87"; // 절대 경로 설정
+        String baseUploadPath = "/Users/gimmin-ung/ImageServer";
+        String filePath = baseUploadPath + "/" + userId + "/profile/" + file.getOriginalFilename();
         File directory = new File(filePath).getParentFile();
         if (!directory.exists()) {
             directory.mkdirs();
@@ -22,7 +24,7 @@ public class ImgUploadService {
 
     public String PostImgUpload(MultipartFile file, String userId) throws IOException {
 //        String baseUploadPath = "C:/Users/kwh87"; // 절대 경로 설정
-        String baseUploadPath = "/Users/gimmin-ung/ImageServer";; // 절대 경로 설정
+        String baseUploadPath = "/Users/gimmin-ung/ImageServer"; // 절대 경로 설정
         String filePath = baseUploadPath + "/" + userId + "/post/" + file.getOriginalFilename();
         File directory = new File(filePath).getParentFile();
         if (!directory.exists()) {
