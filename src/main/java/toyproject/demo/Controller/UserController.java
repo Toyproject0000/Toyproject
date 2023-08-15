@@ -13,14 +13,11 @@ import toyproject.demo.service.MakeCertificationNumber;
 import toyproject.demo.service.SmsService;
 import toyproject.demo.service.UserService;
 
-import java.io.IOException;
+
 import java.io.UnsupportedEncodingException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
+
 import java.util.Map;
 import java.util.Random;
 
