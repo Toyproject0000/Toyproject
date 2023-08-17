@@ -108,24 +108,24 @@ public class UserController {
         return userService.duplicateNick(user);
     }
 
-    @PostMapping(value = "/authentication", consumes = "application/json")
-    public String authentication(@RequestBody User user) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException{
-        String phoneNumber = user.getPhoneNumber();
-        Random random = new Random();
-        String num = String.valueOf(random.nextInt(100000, 1000000));
-        String number = makeCertificationNumber.makeNumber(num);
-
-        smsService.sendSms(phoneNumber, num);
-
-        return number;
-    }
-
-    @PostMapping(value = "/authentication-check", consumes = "application/json")
-    public Boolean authenticationCheck(@RequestBody Map<String, String> request){
-        String rawNum = request.get("rawNum");
-        String num = request.get("num");
-        return makeCertificationNumber.match(rawNum, num);
-    }
+//    @PostMapping(value = "/authentication", consumes = "application/json")
+//    public String authentication(@RequestBody User user) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException{
+//        String phoneNumber = user.getPhoneNumber();
+//        Random random = new Random();
+//        String num = String.valueOf(random.nextInt(100000, 1000000));
+//        String number = makeCertificationNumber.makeNumber(num);
+//
+//        smsService.sendSms(phoneNumber, num);
+//
+//        return number;
+//    }
+//
+//    @PostMapping(value = "/authentication-check", consumes = "application/json")
+//    public Boolean authenticationCheck(@RequestBody Map<String, String> request){
+//        String rawNum = request.get("rawNum");
+//        String num = request.get("num");
+//        return makeCertificationNumber.match(rawNum, num);
+//    }
 
     @PostMapping(value = "/profile/set")
     public String setProfile(@RequestParam(value = "file", required = false) MultipartFile file,

@@ -60,53 +60,52 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public List<Post> search(Post post, LocalDate formerDate, LocalDate afterDate) {
         List<Object> parameters = new ArrayList<>();
-        StringBuilder queryBuilder = new StringBuilder("SELECT * FROM post WHERE ");
+        StringBuilder queryBuilder = new StringBuilder("SELECT p.*, u.nickname as nickname FROM post p LEFT JOIN user u ON p.user_id = u.id WHERE ");
 
         if (post.getUserId() != null) {
-            queryBuilder.append("user_id = ?");
+            queryBuilder.append("p.user_id = ?");
             parameters.add(post.getUserId());
         }
 
         if (post != null) {
-
-        if (post.getTitle() != null && !post.getTitle().isEmpty()) {
-            queryBuilder.append(" AND ");
-            queryBuilder.append("title LIKE ?");
-            String likePattern = "%" + post.getTitle() + "%";
-            parameters.add(likePattern);
-        }
-
-        if (post.getContents() != null && !post.getContents().isEmpty()) {
             if (post.getTitle() != null && !post.getTitle().isEmpty()) {
                 queryBuilder.append(" AND ");
+                queryBuilder.append("p.title LIKE ?");
+                String likePattern = "%" + post.getTitle() + "%";
+                parameters.add(likePattern);
             }
-                queryBuilder.append("contents LIKE ?");
+
+            if (post.getContents() != null && !post.getContents().isEmpty()) {
+                if (post.getTitle() != null && !post.getTitle().isEmpty()) {
+                    queryBuilder.append(" AND ");
+                }
+                queryBuilder.append("p.contents LIKE ?");
                 String likePattern = "%" + post.getContents() + "%";
                 parameters.add(likePattern);
-        }
+            }
         }
 
-    if (formerDate != null) {
-        if (post.getUserId() != null || (post != null && (post.getTitle() != null || post.getContents() != null))) {
-            queryBuilder.append(" AND ");
+        if (formerDate != null) {
+            if (post.getUserId() != null || (post != null && (post.getTitle() != null || post.getContents() != null))) {
+                queryBuilder.append(" AND ");
+            }
+            queryBuilder.append("p.date >= ?");
+            parameters.add(formerDate);
         }
-        queryBuilder.append("date >= ?");
-        parameters.add(formerDate);
+
+        if (afterDate != null) {
+            if (post.getUserId() != null || (post != null && (post.getTitle() != null || post.getContents() != null)) || formerDate != null) {
+                queryBuilder.append(" AND ");
+            }
+            queryBuilder.append("p.date <= ?");
+            parameters.add(afterDate);
+        }
+
+        String query = queryBuilder.toString();
+        Object[] params = parameters.toArray();
+
+        return jdbcTemplate.query(query, params, rowMapper);
     }
-
-    if (afterDate != null) {
-        if (post.getUserId() != null || (post != null && (post.getTitle() != null || post.getContents() != null)) || formerDate != null) {
-            queryBuilder.append(" AND ");
-        }
-        queryBuilder.append("date <= ?");
-        parameters.add(afterDate);
-    }
-
-    String query = queryBuilder.toString();
-    Object[] params = parameters.toArray();
-
-    return jdbcTemplate.query(query, params, rowMapper);
-}
 
     @Override
     public List<Post> findPost(Post post) {
