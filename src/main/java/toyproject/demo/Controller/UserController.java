@@ -7,17 +7,18 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import toyproject.demo.domain.Post;
 import toyproject.demo.domain.User;
-import toyproject.demo.service.ImgUploadService;
-import toyproject.demo.service.MakeCertificationNumber;
-import toyproject.demo.service.SmsService;
-import toyproject.demo.service.UserService;
+import toyproject.demo.service.*;
 
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -30,6 +31,8 @@ public class UserController {
     private final SmsService smsService;
     private final MakeCertificationNumber makeCertificationNumber;
     private final ImgUploadService imgUploadService;
+
+    private final PostService postService;
 
     @PostMapping(value = "/join", consumes = "application/json")
     public String join(@RequestBody User user){
@@ -150,11 +153,29 @@ public class UserController {
         return "ok";
     }
 
+    @PostMapping(value = "/profile/view")
+    public String ProfileView(@RequestBody User user){
+        try {
+
+        }catch (Exception e){
+            System.out.println("e.getMessage() = " + e.getMessage());
+            return "cancel";
+        }
+        return "ok";
+    }
+
     @PostMapping("/profile")
-    public User ViewProfile(@RequestBody User user) {
+    public List<Object> ViewProfile(@RequestBody User user) throws IOException {
+        List<Object> result = new ArrayList<>();
         User findUser = userService.findUser(user).get(0);
 
-        return findUser;
+        result.add(findUser);
+        Post post = new Post();
+        post.setUserId(user.getId());
+        List<Post> posts = postService.search(post, null, null);
+        result.add(posts);
+
+        return result;
     }
 
 }
