@@ -90,7 +90,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   void GetMainData() async {
-    final data = {'id': 'alsdnd336@naver.com'};
+    
+    final data = {'id' : 'alsdnd336@naver.com'};
     mainData = await mainPageData(data);
     jsonData = jsonDecode(mainData);
     FinishedWidgetList =
@@ -187,6 +188,7 @@ class _HomePageState extends State<HomePage> {
                     ]),
               ),
               // tempWidget
+              
               BuildFinshWidget == null
                   ? Center(
                       child: CircularProgressIndicator(

@@ -12,7 +12,7 @@ import '../main_page/setpage.dart';
 
 class JoinMemdership {
   Future<String?> sendData(data) async {
-    final url = Uri.parse('http://192.168.45.121:8080/join');
+    final url = Uri.parse('http://192.168.0.201:8080/join');
     final headers = {'Content-Type': 'application/json'};
     print(data);
 
@@ -41,7 +41,7 @@ class JoinMemdership {
   }
 
   Future<String?> authenticationNumberCheck(data, context) async {
-    final url = Uri.parse('http://192.168.45.121:8080/authentication-check');
+    final url = Uri.parse('http://192.168.0.201:8080/authentication-check');
     final headers = {'Content-Type': 'application/json'};
 
     try {
@@ -69,7 +69,7 @@ class JoinMemdership {
 }
 
 Future<void> loginSendData(data, BuildContext context, loginCheck) async {
-  final url = Uri.parse('http://192.168.45.121:8080/login');
+  final url = Uri.parse('http://192.168.0.201:8080/login');
   final headers = {'Content-Type': 'application/json'};
 
   try {
@@ -100,7 +100,7 @@ Future<void> loginSendData(data, BuildContext context, loginCheck) async {
 }
 
 Future<String?> nickNameSetUp(data) async {
-  final url = Uri.parse('http://192.168.45.121:8080/edit-user/confirm');
+  final url = Uri.parse('http://192.168.0.201:8080/edit-user/confirm');
   final headers = {'Content-Type': 'application/json'};
   print(data);
   try {
@@ -128,7 +128,7 @@ class numberAuthentiaction {
   String? AuthenticationNumber;
 
   Future<void> sendPhoneNumber(number) async {
-    final url = Uri.parse('http://192.168.45.121:8080/authentication');
+    final url = Uri.parse('http://192.168.0.201:8080/authentication');
     final headers = {'Content-Type': 'application/json'};
     try {
       final response =
@@ -153,7 +153,7 @@ class numberAuthentiaction {
 class ServerFindId {
 
   Future<String?> sendFindId(data, context) async {
-    final url = Uri.parse('http://192.168.45.121:8080/findId');
+    final url = Uri.parse('http://192.168.0.201:8080/findId');
     final headers = {'Content-Type': 'application/json'};
     print(data);
 
@@ -176,7 +176,7 @@ class ServerFindId {
   }
 
   Future<String?> authenticationNumberCheck(data, context) async {
-    final url = Uri.parse('http://192.168.45.121:8080/authentication-check');
+    final url = Uri.parse('http://192.168.0.201:8080/authentication-check');
     final headers = {'Content-Type': 'application/json'};
 
     try {
@@ -205,7 +205,7 @@ class ServerFindId {
 
 class FindPasswordServer {
   Future<String?> sendEmail(email, Function changeScreen) async {
-    final url = Uri.parse('http://192.168.45.121:8080/findPassword/email');
+    final url = Uri.parse('http://192.168.0.201:8080/findPassword/email');
     final headers = {'Content-Type': 'application/json'};
     try {
       final response =
@@ -228,7 +228,7 @@ class FindPasswordServer {
   }
 
   Future<String?> checkdata(data) async {
-    final url = Uri.parse('http://192.168.45.121:8080/findPassword/check');
+    final url = Uri.parse('http://192.168.0.201:8080/findPassword/check');
     final headers = {'Content-Type': 'application/json'};
     try {
       final response =
@@ -249,7 +249,7 @@ class FindPasswordServer {
   }
 
   Future<String?> setupPassword(password, context) async {
-    final url = Uri.parse('http://192.168.45.121:8080/setPassword');
+    final url = Uri.parse('http://192.168.0.201:8080/setPassword');
     final headers = {'Content-Type': 'application/json'};
     print(password);
     try {
@@ -260,7 +260,6 @@ class FindPasswordServer {
         print('요청 성공');
         print(jsonData);
         if (jsonData == 'ok') {
-
           showDialog(context: context, builder: (BuildContext context){
           return AlertDialog(
             contentPadding: EdgeInsets.fromLTRB(15, 15, 15, 0),
@@ -293,7 +292,7 @@ class FindPasswordServer {
 }
 
 Future<String?> authenticationNumberCheck(data) async {
-  final url = Uri.parse('http://192.168.45.121:8080/authentication-check');
+  final url = Uri.parse('http://192.168.0.201:8080/authentication-check');
   final headers = {'Content-Type': 'application/json'};
 
   try {
@@ -320,7 +319,7 @@ Future<String?> authenticationNumberCheck(data) async {
 }
 
 Future<String?> checkNickNameServer(data) async {
-  final url = Uri.parse('http://192.168.45.121:8080/nickname');
+  final url = Uri.parse('http://192.168.0.201:8080/nickname');
   final headers = {'Content-Type': 'application/json'};
 
   try {
@@ -344,7 +343,7 @@ Future<String?> checkNickNameServer(data) async {
 }
 
 Future<String?> AccountRemove(data) async {
-  final url = Uri.parse('http://192.168.45.121:8080/remove');
+  final url = Uri.parse('http://192.168.0.201:8080/remove');
   final headers = {'Content-Type': 'application/json'};
 
   try {
@@ -369,17 +368,20 @@ Future<String?> AccountRemove(data) async {
 }
 
 Future<String?> contentSend(data, imageFile) async {
-  final url = Uri.parse('http://192.168.45.121:8080/post/submit');
+  final url = Uri.parse('http://192.168.0.201:8080/post/submit');
   var request = http.MultipartRequest('POST', url); 
   var multipartFile = await http.MultipartFile.fromPath('file', imageFile.path);
   try {
-    print(data);
     request.fields.addAll(data);
     request.files.add(multipartFile);
     http.StreamedResponse response = await request.send();
     if (response.statusCode == 200) {
       var jsonData = await response.stream.bytesToString();
-      print(jsonData);
+      if(jsonData == 'ok'){
+        return 'ok';
+      }else{
+        return null;
+      }
     } else {
       print('요청 실패: ${response.statusCode}');
     }
@@ -390,7 +392,7 @@ Future<String?> contentSend(data, imageFile) async {
 }
 
 Future<dynamic> mainPageData(email) async {
-  final url = Uri.parse('http://192.168.45.121:8080/main/recommend');
+  final url = Uri.parse('http://192.168.0.201:8080/main/recommend');
   final headers = {'Content-Type': 'application/json'};
   try {
     final response = await http.post(url, headers: headers, body: jsonEncode(email));
@@ -404,5 +406,67 @@ Future<dynamic> mainPageData(email) async {
     // 네트워크 오류 발생
     print('네트워크 오류: $error');
   }
+}
 
+Future<dynamic> profileData(email) async {
+  final url = Uri.parse('http://192.168.0.201:8080/profile');
+  final headers = {'Content-Type': 'application/json'};
+  try {
+    final response = await http.post(url, headers: headers, body: jsonEncode(email));
+    if (response.statusCode == 200) {
+      var jsonData = response.body;
+      return jsonData;
+    } else {
+      print('요청 실패: ${response.statusCode}');
+    }
+  } catch (error) {
+    // 네트워크 오류 발생
+    print('네트워크 오류: $error');
+  }
+}
+
+Future<String?> profileEdit(data, {String imagePath = 'basic'}) async {
+  final url = Uri.parse('http://192.168.0.201:8080/profile/set');
+  final headers = {'Content-Type': 'application/json'};
+  var request = http.MultipartRequest('POST', url); 
+
+  if(imagePath == 'basic'){
+    try {
+      request.fields.addAll(data);
+      http.StreamedResponse response = await request.send();
+      if (response.statusCode == 200) {
+        var jsonData = await response.stream.bytesToString();
+        if(jsonData == 'ok'){
+          return 'ok';
+        } else {
+          return null;
+        }
+      } else {
+        print('요청 실패: ${response.statusCode}');
+      }
+    } catch (error) {
+      print('네트워크 오류: $error');
+    }
+  }else{
+    var multipartFile = await http.MultipartFile.fromPath('file', imagePath);
+    try{
+      request.fields.addAll(data);
+      request.files.add(multipartFile);
+      http.StreamedResponse response = await request.send();
+      if (response.statusCode == 200) {
+        var jsonData = await response.stream.bytesToString();
+        if(jsonData == 'ok'){
+          return 'ok';
+        } else {
+          return null;
+        }
+      } else {
+        print('요청 실패: ${response.statusCode}');
+      }
+
+    } catch(error) {
+      print('네트워크 오류: $error');
+    }
+  }
+  
 }

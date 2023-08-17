@@ -5,12 +5,14 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_summernote/flutter_summernote.dart';
+import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:smart_dongne/main_page/writing_page/writing_page_final.dart';
 import 'package:smart_dongne/server/userId.dart';
 
 class WritingPage extends StatefulWidget {
-  const WritingPage({Key? key}) : super(key: key);
+  const WritingPage(this.changeClass, {Key? key}) : super(key: key);
+  final Function(int index) changeClass;
 
   @override
   State<WritingPage> createState() => _WritingPageState();
@@ -50,18 +52,20 @@ class _WritingPageState extends State<WritingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: InkWell(onTap: (){_keyEditor.currentState!.setEmpty();},child: Icon(Icons.delete, color: Colors.red,)),
         backgroundColor: Colors.white,
         title: SelectableText('새 게시물'),
         elevation: 1,
         actions: [
           TextButton(
             onPressed: () {
-              saveText().then((value) {
+              saveText().then((value) async {
                 if (value != null) {
-                  Navigator.pushNamed(
+                  final response = await Navigator.pushNamed(
                     context, 
                     LastSetting.routeName,
-                    arguments: Contents(value)
+                    arguments: Contents(value, widget.changeClass, _keyEditor),
+                    
                   );
                 }
               });

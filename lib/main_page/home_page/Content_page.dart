@@ -15,6 +15,13 @@ class _ShowaContentsState extends State<ShowaContents> {
   late String PostingContents;
   bool activationThumb = false;
   
+  String webviewHtmlCode = '''
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+  ''';
+
   void buttonshitofComment(){
     showModalBottomSheet(
       shape: RoundedRectangleBorder(
@@ -35,7 +42,8 @@ class _ShowaContentsState extends State<ShowaContents> {
   @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments as ContentArguments;
-    PostingContents = args.content.replaceAll('<p>', '<p style="font-size : 50px;">');
+    // PostingContents = args.content.replaceAll('<p>', '<p style="font-size : 40px;">');
+    PostingContents = webviewHtmlCode + args.content;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -64,9 +72,14 @@ class _ShowaContentsState extends State<ShowaContents> {
           )
         ]),
         actions: [
-          IconButton(
-            onPressed: (){},
-            icon: Icon(Icons.more_horiz))
+          PopupMenuButton(
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                child: InkWell(onTap:(){}, child: Text('신고'))),
+              PopupMenuItem(
+                child: InkWell(onTap: (){},child: Text('차단')))
+            ]
+          )
         ],
       ),
       body: InAppWebView(

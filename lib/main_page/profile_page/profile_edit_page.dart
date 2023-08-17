@@ -8,9 +8,10 @@ import 'package:image_picker/image_picker.dart';
 
 // top snackbar
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-// import 'package:top_snackbar_flutter/safe_area_values.dart';
-// import 'package:top_snackbar_flutter/tap_bounce_container.dart';
+
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
+
+import '../../server/Server.dart';
 
 class ProfileEdit extends StatefulWidget {
   const ProfileEdit({super.key});
@@ -29,6 +30,12 @@ class _ProfileEditState extends State<ProfileEdit> {
   bool introduction = false;
   bool keyboardActivation = false;
   File? imagePath;
+
+  //server data
+  late String userNickName;
+  late String? userIntroduction;
+  late String? userProfileImage;
+  String IntroductionBeforeChange = '';
 
   void showMenuOfPicture(context) {
     showModalBottomSheet(
@@ -178,16 +185,15 @@ class _ProfileEditState extends State<ProfileEdit> {
       return CircleAvatar(radius: 80, backgroundImage: FileImage(imagePath!));
     } else {
       return CircleAvatar(
-        radius: 80,
-        backgroundColor: Colors.grey,
-        child: Image.asset(
-          'image/basicprofile.png',
-          width: 100, // 이미지의 가로 크기 조절
-          height: 100, // 이미지의 세로 크기 조절
-          fit: BoxFit
-              .cover, // 이미지의 크기를 조절하여 CircleAvatar에 맞게 맞출지 결정 (필요에 따라 변경 가능)
-        ),
-      );
+          radius: 80,
+          backgroundColor: Colors.grey,
+          child: Image.asset(
+            'image/basicprofile.png',
+            width: 100, // 이미지의 가로 크기 조절
+            height: 100, // 이미지의 세로 크기 조절
+            fit: BoxFit
+                .cover, // 이미지의 크기를 조절하여 CircleAvatar에 맞게 맞출지 결정 (필요에 따라 변경 가능)
+          ));
     }
   }
 
@@ -196,6 +202,28 @@ class _ProfileEditState extends State<ProfileEdit> {
         await ImageCropper().cropImage(sourcePath: imageFile.path);
     if (croppedImage == null) return null;
     return File(croppedImage.path);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args = ModalRoute.of(context)!.settings.arguments as UserInformation;
+    userNickName = args.userNickName;
+    userIntroduction = args.userIntroduction;
+
+    if (userIntroduction != null) {
+      IntroductionBeforeChange = userIntroduction!;
+    }
+    if(args.userProfileImage != null){
+      imagePath = File(args.userProfileImage!);
+    }
+
+    setState(() {
+      nameTextController.text = userNickName;
+      introductionController.text = userIntroduction == null
+          ? IntroductionBeforeChange
+          : userIntroduction!;
+    });
   }
 
   @override
@@ -218,20 +246,34 @@ class _ProfileEditState extends State<ProfileEdit> {
             child:
                 Text('완료', style: TextStyle(color: Colors.blue, fontSize: 16)),
             onPressed: () {
-              if (imagePath != null) {
-                Navigator.pop(context);
+              if (imagePath != null ||
+                  IntroductionBeforeChange != introductionController.text ||
+                  userNickName != nameTextController.text) {
+                final data = {
+                  'id': 'alsdnd336@naver.com',
+                  'info': introductionController.text,
+                  'nickname': nameTextController.text,
+                };
+                if (imagePath != null) {
+                  profileEdit(data, imagePath: imagePath!.path);
+                } else {
+                  profileEdit(data);
+                }
               } else {
                 Flushbar(
                   margin: EdgeInsets.symmetric(horizontal: 30),
                   flushbarPosition: FlushbarPosition.TOP,
                   duration: Duration(seconds: 2),
-                  message: '변경사항을 입력해주세요.' ,
+                  message: '변경사항을 입력해주세요.',
                   messageSize: 15,
                   borderRadius: BorderRadius.circular(4),
                   backgroundColor: Colors.white,
                   messageColor: Colors.black,
                   boxShadows: [
-                    BoxShadow(color: Colors.grey, blurRadius: 8, ),
+                    BoxShadow(
+                      color: Colors.grey,
+                      blurRadius: 8,
+                    ),
                   ],
                 ).show(context);
               }
@@ -261,7 +303,7 @@ class _ProfileEditState extends State<ProfileEdit> {
             Padding(
               padding: EdgeInsets.only(top: 5),
               child: Text(
-                '사용자 이름',
+                '닉네임',
                 style: TextStyle(color: Colors.black, fontSize: 16),
               ),
             ),
@@ -370,4 +412,13 @@ class _ProfileEditState extends State<ProfileEdit> {
       ),
     );
   }
+}
+
+class UserInformation {
+  final String userNickName;
+  final String? userIntroduction;
+  final String? userProfileImage;
+
+  UserInformation(
+      this.userNickName, this.userIntroduction, this.userProfileImage);
 }

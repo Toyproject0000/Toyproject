@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../server/userId.dart';
 import 'chatting_page/chatting.dart';
 import 'home_page/home_page.dart';
 import 'profile_page/profile.dart';
@@ -17,14 +18,27 @@ class SetPage extends StatefulWidget {
 
 class SetPageState extends State<SetPage> {
   int currentIndex = 0;
-  final screens = [
+  
+  late List<StatefulWidget> screens;
+
+  void changeClass(index) {
+    print('change CurrentIndex 실행 중');
+    setState(() {
+      currentIndex = index;
+    });
+  }
+  
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    screens = [
     HomePage(),
-    WritingPage(),
+    WritingPage(changeClass),
     Chatting(),
     ProfilePage(),
   ];
-
-  void changeClass() {}
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -6,6 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:smart_dongne/login_page/Social_login/kakao_login.dart';
 import 'package:smart_dongne/login_page/Social_login/main_view_model.dart';
+import 'package:smart_dongne/login_page/Social_login/social_login_setting.dart';
+import 'package:smart_dongne/login_page/TermsofService/personalinformaition.dart';
+import 'package:smart_dongne/login_page/TermsofService/termsofservice.dart';
+import 'package:smart_dongne/login_page/TermsofService/userContent.dart';
 import 'package:smart_dongne/login_page/setnickname.dart';
 import 'package:smart_dongne/server/Server.dart';
 import 'package:smart_dongne/login_page/find_password.dart';
@@ -24,7 +28,9 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final viewModel = MainViewModel(KakaoLogin());
-
+  bool termsofservice = false;
+  bool personalInfomation = false;
+  bool allconsend = false;
 
   final _formKey = GlobalKey<FormState>();
   String userEmail = '';
@@ -53,28 +59,25 @@ class _LoginScreenState extends State<LoginScreen> {
     final data = await viewModel.login();
     final kakaoServer = JoinMemdership();
     final jsonData = kakaoServer.sendData(data);
-    if(jsonData == null){
+    if (jsonData == null) {
       Navigator.pushNamed(context, NickName.routeName);
-    }else {
-       Flushbar(
-          margin: EdgeInsets.symmetric(horizontal: 15),
-          flushbarPosition: FlushbarPosition.TOP,
-          duration: Duration(seconds: 2),
-          message: '이미 가입된 사용자 입니다.' ,
-          messageSize: 15,
-          borderRadius: BorderRadius.circular(4),
-          backgroundColor: Colors.white,
-          messageColor: Colors.black,
-          boxShadows: [
-            BoxShadow(color: Colors.black, blurRadius: 8)
-          ],
-        ).show(context);
+    } else {
+      Flushbar(
+        margin: EdgeInsets.symmetric(horizontal: 15),
+        flushbarPosition: FlushbarPosition.TOP,
+        duration: Duration(seconds: 2),
+        message: '이미 가입된 사용자 입니다.',
+        messageSize: 15,
+        borderRadius: BorderRadius.circular(4),
+        backgroundColor: Colors.white,
+        messageColor: Colors.black,
+        boxShadows: [BoxShadow(color: Colors.black, blurRadius: 8)],
+      ).show(context);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: GestureDetector(
@@ -111,7 +114,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Container(
                       padding: EdgeInsets.all(20.0),
                       width: MediaQuery.of(context).size.width - 50,
-                      height: 470,
+                      height: 400,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(5),
                         border: Border.all(
@@ -190,14 +193,18 @@ class _LoginScreenState extends State<LoginScreen> {
                                   child: Text(
                                     '아이디(로그인 전용 아이디) 또는 비밀번호를 잘못 입력했습니다.'
                                     '입력하신 내용을 다시 확인해주세요.',
-                                    style: TextStyle(color: Colors.red, ),
+                                    style: TextStyle(
+                                      color: Colors.red,
+                                    ),
                                   ),
                                 ),
                               // 로그인 버튼
                               ElevatedButton(
                                 onPressed: () {
                                   // _tryValidation();
-                                  Navigator.pushNamed(context, SetPage.routeName);
+                                  Navigator.pushNamed(
+                                      context, SetPage.routeName);
+                                  // Navigator.pushNamed(context, SocialLoginSetting.rotueName);
                                 },
                                 child: Text(
                                   '로그인',
@@ -212,50 +219,41 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               ),
                               Padding(
-                                padding: EdgeInsets.symmetric(vertical: 15),
-                                child: Text('또는', style: TextStyle(fontSize: 16, color: Colors.black),),
-                              ),
-                              Container(
-                                width: double.infinity,
-                                child: ElevatedButton(
-                                  onPressed: () async {
-                                    kakaoAccountServer();
-                                  },
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Image.asset('image/kakao.png', width: 20, height: 20,),
-                                      SizedBox(width: 15,),
-                                      Text('카카오톡 로그인'),
-                                    ],
-                                  ),
-                                  style: ElevatedButton.styleFrom(
-                                      primary: Colors.yellow,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(15))),
+                                padding: EdgeInsets.symmetric(vertical: 20),
+                                child: Text(
+                                  '소셜 로그인',
+                                  style: TextStyle(
+                                      fontSize: 16, color: Colors.grey[600]),
                                 ),
                               ),
-                              Container(
-                                width: double.infinity,
-                                child: ElevatedButton(
-                                  onPressed: ()  {
-                                    login_naver();
-                                  },
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text('N', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),),
-                                      SizedBox(width: 15,),
-                                      Text('네이버로 로그인', style: TextStyle(color: Colors.white),),
-                                    ],
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  InkWell(
+                                    onTap: () {
+                                      login_naver();
+                                    },
+                                    child: CircleAvatar(
+                                      radius: 30,
+                                      backgroundImage:
+                                          AssetImage('image/naverButton.png'),
+                                    ),
                                   ),
-                                  style: ElevatedButton.styleFrom(
-                                      primary: Colors.green,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(15))),
-                                ),
+                                  SizedBox(
+                                    width: 20,
+                                  ),
+                                  InkWell(
+                                    onTap: () {
+                                      kakaoAccountServer();
+                                    },
+                                    child: CircleAvatar(
+                                      backgroundColor: Colors.yellow,
+                                      radius: 30,
+                                      backgroundImage:
+                                          AssetImage('image/kakao.png'),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
@@ -290,8 +288,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       TextButton(
                         onPressed: () {
-                          Navigator.pushNamed(
-                              context, Joinmembership.routeName);
+                          // Navigator.pushNamed(
+                          //     context, Joinmembership.routeName);
+                          // Navigator.pushNamed(context, TermsofService.routeName);
+                          // Navigator.pushNamed(context, PersonalInformation.routeName);
+                          Navigator.pushNamed(context, UserConsent.routeName);
                         },
                         child: Text(
                           '회원가입',

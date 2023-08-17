@@ -21,6 +21,7 @@ class _CoverPageState extends State<CoverPage> {
   TextStyle _textStyle = TextStyle(
       fontSize: 50, fontWeight: FontWeight.bold, color: Colors.blue[300]);
   TextAlign _textAlign = TextAlign.center;
+  late dynamic args;
 
   String imagePath = '';
   bool argumentSend = false;
@@ -34,7 +35,8 @@ class _CoverPageState extends State<CoverPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     if (ModalRoute.of(context)!.settings.arguments != null) {
       setState(() {
         argumentSend = true;
@@ -45,11 +47,15 @@ class _CoverPageState extends State<CoverPage> {
 
       imagePath = args.imagePath;
     }
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: EditAppBar == false
           ? AppBar(
+              leading: IconButton(icon: Icon(Icons.arrow_back_ios, color: Colors.white,), onPressed: (){Navigator.pop(context);},),
               backgroundColor: Colors.black,
               centerTitle: true,
               title: IconButton(

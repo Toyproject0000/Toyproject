@@ -4,16 +4,19 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_summernote/flutter_summernote.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:smart_dongne/main_page/writing_page/cover.dart';
 import 'package:smart_dongne/main_page/writing_page/writing_page.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../server/Server.dart';
+import '../../server/userId.dart';
 
 
 class LastSetting extends StatefulWidget {
   const LastSetting({super.key});
+  
 
   static const routeName = '/LastSetting';
 
@@ -28,6 +31,8 @@ class _LastSettingState extends State<LastSetting> {
   Color backGroundColor = Color(0xFF98DFFF);
   String title = '';
   late String contents;
+  late Function changeCurrentIndex;
+  late GlobalKey<FlutterSummernoteState> summerNoteKey;
   dynamic? finalImage; // 꾸밈까지 맞친 최종 이미지
   late File imageFile;
 
@@ -113,7 +118,13 @@ class _LastSettingState extends State<LastSetting> {
         'disclosure': settingRange[disclosureindex],
         'possibleReply' : settingComment,
       };
-      final response = contentSend(data, finalImageFile);
+      final response = await contentSend(data, finalImageFile);
+      
+      if(response == 'ok'){
+        changeCurrentIndex(0);
+        Navigator.pop(context);
+        summerNoteKey.currentState!.setEmpty();
+      }
     }
   }
 
@@ -322,7 +333,10 @@ class _LastSettingState extends State<LastSetting> {
   @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments as Contents;
+    changeCurrentIndex = args.changCurrentIndex;
     contents = args.content;
+    summerNoteKey = args.summerNoteKey;
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -626,6 +640,8 @@ class _LastSettingState extends State<LastSetting> {
 
 class Contents {
   final String content;
+  final Function(int index) changCurrentIndex;
+  final GlobalKey<FlutterSummernoteState> summerNoteKey;
 
-  Contents(this.content);
+  Contents(this.content, this.changCurrentIndex, this.summerNoteKey);
 }

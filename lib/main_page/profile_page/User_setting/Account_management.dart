@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:smart_dongne/main_page/profile_page/User_setting/phoneNumberChange.dart';
 import 'package:smart_dongne/main_page/profile_page/User_setting/userWithdrawal.dart';
 
 class AccountManagement extends StatefulWidget {
@@ -208,28 +207,6 @@ class _AccountManagementState extends State<AccountManagement> {
                 : _genderWidget,
             SizedBox(
               height: 25,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('전화번호'),
-                    Text(
-                      'userNumber',
-                      style: TextStyle(fontSize: 22),
-                    )
-                  ],
-                ),
-                IconButton(
-                    onPressed: () {
-                      final newPassword = Navigator.pushNamed(context, ChangePhoneNumber.routeName);
-                    },
-                    icon: Icon(
-                      Icons.edit,
-                    ))
-              ],
             ),
             SizedBox(
               height: 40,
