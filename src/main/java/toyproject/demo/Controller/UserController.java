@@ -17,10 +17,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 @RestController
 @RequestMapping("/")
@@ -173,6 +170,7 @@ public class UserController {
         Post post = new Post();
         post.setUserId(user.getId());
         List<Post> posts = postService.search(post, null, null);
+        posts.sort(Comparator.comparing(Post::getDate, Comparator.reverseOrder()));
         result.add(posts);
 
         return result;
