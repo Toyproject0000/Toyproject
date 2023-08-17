@@ -68,11 +68,9 @@ public class PostRepositoryImpl implements PostRepository {
         }
 
         if (post != null) {
-            if (post.getUserId() != null) {
-                queryBuilder.append(" AND ");
-            }
 
         if (post.getTitle() != null && !post.getTitle().isEmpty()) {
+            queryBuilder.append(" AND ");
             queryBuilder.append("title LIKE ?");
             String likePattern = "%" + post.getTitle() + "%";
             parameters.add(likePattern);

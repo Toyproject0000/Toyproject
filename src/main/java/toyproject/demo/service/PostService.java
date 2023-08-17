@@ -47,7 +47,7 @@ public class PostService {
 
     public List<Post> search(Post post, LocalDate formerDate, LocalDate afterDate) throws IOException {
         List<Post> posts = postRepository.search(post, formerDate, afterDate);
-        setPostImg(posts);
+//        setPostImg(posts);
         return posts;
     }
 
@@ -69,10 +69,6 @@ public class PostService {
 
         return posts;
     }
-
-
-
-
 
 
     private static void setPostImg(List<Post> posts) throws IOException {
