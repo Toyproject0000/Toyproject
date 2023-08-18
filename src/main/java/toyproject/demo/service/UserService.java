@@ -1,6 +1,7 @@
 package toyproject.demo.service;
 
 import org.springframework.stereotype.Service;
+import toyproject.demo.domain.DTO.ProfileDTO;
 import toyproject.demo.domain.User;
 import toyproject.demo.repository.UserRepository;
 
@@ -61,8 +62,8 @@ public class UserService {
         }
     }
 
-    public List<User> findUser(User user){
-        return userRepository.findUser(user);
+    public List<User> findUser(String id){
+        return userRepository.findUser(id);
     }
 
 
@@ -89,6 +90,10 @@ public class UserService {
             System.out.println(e.getMessage());
             return "cancel";
         }
+    }
+
+    public List<ProfileDTO> userProfile(String id){
+        return userRepository.userProfile(id);
     }
 
     public void delete(User user){

@@ -4,6 +4,7 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import toyproject.demo.domain.DTO.ProfileDTO;
 import toyproject.demo.domain.User;
 import toyproject.demo.repository.UserRepository;
 
@@ -13,9 +14,11 @@ import java.util.List;
 public class UserRepositoryImpl implements UserRepository {
     private final JdbcTemplate jdbcTemplate;
     private final RowMapper rowMapper;
+    private final RowMapper profileRowMapper;
 
     public UserRepositoryImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+        this.profileRowMapper = BeanPropertyRowMapper.newInstance(ProfileDTO.class);
         this.rowMapper = BeanPropertyRowMapper.newInstance(User.class);
     }
 
@@ -72,7 +75,12 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public List<User> findUser(User user) {
-        return jdbcTemplate.query("select * from user where id = ?", rowMapper, user.getId());
+    public List<User> findUser(String id) {
+        return jdbcTemplate.query("select * from user where id = ?", rowMapper, id);
+    }
+
+    @Override
+    public List<ProfileDTO> userProfile(String id) {
+        return jdbcTemplate.query("select * from user where id = ?", profileRowMapper,id);
     }
 }

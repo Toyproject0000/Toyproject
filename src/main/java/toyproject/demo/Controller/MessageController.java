@@ -3,7 +3,6 @@ package toyproject.demo.Controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.SessionAttribute;
 import toyproject.demo.domain.Message;
 import toyproject.demo.service.MessageService;
 
@@ -23,7 +22,7 @@ public class MessageController {
      */
     private final MessageService messageService;
     @PostMapping("/message/send")
-    public String sendMessage( Message message){
+    public String sendMessage(Message message){
         return messageService.send(message);
     }
     @PostMapping("/message/findAll")
@@ -32,13 +31,11 @@ public class MessageController {
     }
     @PostMapping("/message/user")
     public Optional<List<Message>> Message( Message message){
-
         return messageService.findMessage(message);
     }
 
     @PostMapping("/message/search")
     public Optional<List<Message>> searchMessage( Message message){
-
         return messageService.search(message);
     }
     @PostMapping("/message/deleteAll")

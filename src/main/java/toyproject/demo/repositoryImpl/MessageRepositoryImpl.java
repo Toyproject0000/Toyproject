@@ -9,7 +9,10 @@ import toyproject.demo.domain.Message;
 import toyproject.demo.repository.MessageRepository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 @RequiredArgsConstructor
@@ -23,16 +26,28 @@ public class MessageRepositoryImpl implements MessageRepository {
 
     @Override
     public List<Message> findAll(Message message) {
-        return jdbcTemplate.query("SELECT * FROM message " +
-                "WHERE (sendUser = ? AND acceptUser = ?) " +
-                "   OR (sendUser = ? AND acceptUser = ?) " +
-                "ORDER BY dateTime DESC " +
-                "LIMIT 1;", rowMapper, message.getSendUser(), message.getAcceptUser(), message.getAcceptUser(), message.getSendUser());
+        String query = "SELECT * FROM message " +
+                "WHERE (sendUser = ? OR acceptUser = ?) " +
+                "ORDER BY dateTime DESC;";
+
+        List<Message> messages = jdbcTemplate.query(query, rowMapper, message.getSendUser(), message.getSendUser());
+
+        Map<String, Message> latestMessages = new HashMap<>();
+
+        for (Message findmessage : messages) {
+            String otherUser = findmessage.getSendUser().equals("UserA") ? findmessage.getAcceptUser() : findmessage.getSendUser();
+
+            if (!latestMessages.containsKey(otherUser)) {
+                latestMessages.put(otherUser, findmessage);
+            }
+        }
+
+        return new ArrayList<>(latestMessages.values());
     }
 
     @Override
     public List<Message> findMessage(Message message) {
-        return jdbcTemplate.query("select * from message where senduser = ? and acceptuser = ?", rowMapper, message.getSendUser(), message.getAcceptUser());
+        return jdbcTemplate.query("select * from message where senduser = ? and acceptuser = ?", rowMapper, message.getSendUser(), message.getSendUser());
     }
 
     @Override
@@ -42,12 +57,13 @@ public class MessageRepositoryImpl implements MessageRepository {
 
     @Override
     public List<Message> deleteAll(Message message) {
+        jdbcTemplate.query("delete from message where senduser = ? and acceptuser = ?", rowMapper, message.getAcceptUser(), message.getSendUser());
         return jdbcTemplate.query("delete from message where senduser = ? and acceptuser = ?", rowMapper, message.getSendUser(), message.getAcceptUser());
     }
 
     @Override
     public List<Message> delete(Message message) {
-        return jdbcTemplate.query("delete from message where senduser = ? and acceptuser = ? and message = ?", rowMapper, message.getSendUser(), message.getAcceptUser(), message.getMessage());
+        return jdbcTemplate.query("delete from message where senduser = ? and acceptuser = ? and message = ? and date = ?", rowMapper, message.getSendUser(), message.getAcceptUser(), message.getMessage(), message.getDateTime());
 
     }
 }

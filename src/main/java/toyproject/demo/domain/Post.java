@@ -19,5 +19,6 @@ public class Post {
     String category;
     String disclosure;
     String possibleReply;
+    String visibleLike;
     LocalDateTime date;
 }

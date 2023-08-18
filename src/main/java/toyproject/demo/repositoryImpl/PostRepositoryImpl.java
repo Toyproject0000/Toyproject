@@ -108,14 +108,21 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public List<Post> findPost(Post post) {
-        return jdbcTemplate.query("select * from post where id = ?", rowMapper, post.getId());
+    public List<Post> findByWriter(String id) {
+        return jdbcTemplate.query("select from post where id = ? ORDER BY date DESC", rowMapper, id);
     }
 
     @Override
-    public List<Post> findPostsByCategory(String userId, int page) {
+    public List<Post> recommendByAlgorithm(String userId) {
         String sql = "SELECT p.*, u.nickname As nickname FROM category c LEFT JOIN post p ON c.category = p.category LEFT JOIN user u ON p.user_id = u.id WHERE c.user_id = ?";
 
         return jdbcTemplate.query(sql, rowMapper, userId);
+    }
+
+    @Override
+    public List<Post> recommendByCategory(String category) {
+        String sql = "select * from post where category = ?";
+
+        return jdbcTemplate.query(sql, rowMapper, category);
     }
 }

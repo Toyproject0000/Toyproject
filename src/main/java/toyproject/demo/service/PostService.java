@@ -14,8 +14,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Base64;
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -32,16 +31,20 @@ public class PostService {
         postRepository.insertImg(post);
     }
 
-    public void delete(Post post){
-        Post findPost = postRepository.findPost(post).get(0);
-        String imgLocation = findPost.getImgLocation();
-        new File(imgLocation).delete();
-
-        postRepository.delete(post);
-    }
+//    public void delete(Post post){
+//        Post findPost = postRepository.findPost(post).get(0);
+//        String imgLocation = findPost.getImgLocation();
+//        new File(imgLocation).delete();
+//
+//        postRepository.delete(post);
+//    }
 
     public void modify(Post post){
         postRepository.update(post);
+    }
+
+    public List<Post> findByWriter(String id){
+        return postRepository.findByWriter(id);
     }
 
 
@@ -54,31 +57,54 @@ public class PostService {
 
     public List<Post> findPostByFollower(User user) throws IOException {
         List<Post> posts = postRepository.findPostOfFollower(user);
-        setPostImg(posts);
+
         return posts;
     }
 
     public List<Post> findAllLikePost(User user) throws IOException {
         List<Post> posts = postRepository.findAllLikePost(user);
-        setPostImg(posts);
-        return posts;
-    }
-
-    public List<Post> findByCategory(String userId, Integer page) throws IOException {
-        List<Post> posts = postRepository.findPostsByCategory(userId, page);
 
         return posts;
     }
 
+    public List<Post> recommend(String userId) {
+        List<Post> result = postRepository.recommendByAlgorithm(userId);
 
-    private static void setPostImg(List<Post> posts) throws IOException {
-        for (Post findPost : posts) {
-            Path path = Paths.get(findPost.getImgLocation());
-            byte[] imageBytes = Files.readAllBytes(path);
-            String Image = Base64.getEncoder().encodeToString(imageBytes);
-//            findPost.setImg(Image);
+        List<Post> posts = selectRandomPost(result);
+
+        return posts;
+    }
+
+    public List<Post> recommendWithCategory(String category){
+        List<Post> result = postRepository.recommendByCategory(category);
+
+        List<Post> posts = selectRandomPost(result);
+
+        return posts;
+    }
+
+
+
+    private static List<Post> selectRandomPost(List<Post> result) {
+        int size = result.size()-1;
+
+        Set<Integer> num = new HashSet<>();
+        Random random = new Random();
+
+        while (num.size()<Math.min(10, size)){
+            num.add(random.nextInt(size));
         }
-    }
 
+        List<Post> posts = new ArrayList<>();
+
+        for (int i : num) {
+            if (result.get(i).getId()!=null){
+                posts.add(result.get(i));
+            }
+        }
+
+        posts.sort(Comparator.comparing(Post::getDate, Comparator.reverseOrder()));
+        return posts;
+    }
 
 }
