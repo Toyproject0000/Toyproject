@@ -31,13 +31,18 @@ public class PostService {
         postRepository.insertImg(post);
     }
 
-//    public void delete(Post post){
+    /**
+     *
+     * @param post
+     */
+
+    public void delete(Post post){
 //        Post findPost = postRepository.findPost(post).get(0);
 //        String imgLocation = findPost.getImgLocation();
 //        new File(imgLocation).delete();
-//
+
 //        postRepository.delete(post);
-//    }
+    }
 
     public void modify(Post post){
         postRepository.update(post);
