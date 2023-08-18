@@ -36,6 +36,7 @@ class _ProfileEditState extends State<ProfileEdit> {
   late String? userIntroduction;
   late String? userProfileImage;
   String IntroductionBeforeChange = '';
+  File? ImageFileBeforeChange;
 
   void showMenuOfPicture(context) {
     showModalBottomSheet(
@@ -185,15 +186,15 @@ class _ProfileEditState extends State<ProfileEdit> {
       return CircleAvatar(radius: 80, backgroundImage: FileImage(imagePath!));
     } else {
       return CircleAvatar(
-          radius: 80,
-          backgroundColor: Colors.grey,
-          child: Image.asset(
-            'image/basicprofile.png',
-            width: 100, // 이미지의 가로 크기 조절
-            height: 100, // 이미지의 세로 크기 조절
-            fit: BoxFit
-                .cover, // 이미지의 크기를 조절하여 CircleAvatar에 맞게 맞출지 결정 (필요에 따라 변경 가능)
-          ));
+        radius: 80,
+        backgroundColor: Colors.grey,
+        child: Image.asset(
+          'image/basicprofile.png',
+          width: 100, // 이미지의 가로 크기 조절
+          height: 100, // 이미지의 세로 크기 조절
+          fit: BoxFit
+              .cover, // 이미지의 크기를 조절하여 CircleAvatar에 맞게 맞출지 결정 (필요에 따라 변경 가능)
+      ));
     }
   }
 
@@ -214,8 +215,9 @@ class _ProfileEditState extends State<ProfileEdit> {
     if (userIntroduction != null) {
       IntroductionBeforeChange = userIntroduction!;
     }
-    if(args.userProfileImage != null){
+    if (args.userProfileImage != null) {
       imagePath = File(args.userProfileImage!);
+      ImageFileBeforeChange = File(args.userProfileImage!);
     }
 
     setState(() {
@@ -243,40 +245,46 @@ class _ProfileEditState extends State<ProfileEdit> {
         ),
         actions: [
           TextButton(
-            child:
-                Text('완료', style: TextStyle(color: Colors.blue, fontSize: 16)),
-            onPressed: () {
-              if (imagePath != null ||
-                  IntroductionBeforeChange != introductionController.text ||
-                  userNickName != nameTextController.text) {
-                final data = {
-                  'id': 'alsdnd336@naver.com',
-                  'info': introductionController.text,
-                  'nickname': nameTextController.text,
-                };
-                if (imagePath != null) {
-                  profileEdit(data, imagePath: imagePath!.path);
-                } else {
-                  profileEdit(data);
+            child: Text('완료', style: TextStyle(color: Colors.blue, fontSize: 16)),
+            onPressed: () async {
+              if (imagePath == ImageFileBeforeChange &&
+                  IntroductionBeforeChange == introductionController.text &&
+                  userNickName == nameTextController.text) {
+                  Flushbar(
+                      margin: EdgeInsets.symmetric(horizontal: 30),
+                      flushbarPosition: FlushbarPosition.TOP,
+                      duration: Duration(seconds: 2),
+                      message: '변경사항을 입력해주세요.',
+                      messageSize: 15,
+                      borderRadius: BorderRadius.circular(4),
+                      backgroundColor: Colors.white,
+                      messageColor: Colors.black,
+                      boxShadows: [
+                        BoxShadow(
+                          color: Colors.grey,
+                          blurRadius: 8,
+                        ),
+                      ],
+                    ).show(context);
+                }else{
+                  final data = {
+                    'userId': 'alsdnd336@naver.com',
+                    'info': introductionController.text,
+                    'nickname': nameTextController.text,
+                  };
+                  if (imagePath != null) {
+                    final response = await profileEdit(data, imagePath: imagePath!.path);
+                    if(response != null){
+                      Navigator.pop(context, 'editIt');
+                    }
+                  } else  {
+                    final response = await profileEdit(data);
+                    // print(response);
+                    if(response != null){
+                      Navigator.pop(context, 'editIt');
+                    }
+                  }
                 }
-              } else {
-                Flushbar(
-                  margin: EdgeInsets.symmetric(horizontal: 30),
-                  flushbarPosition: FlushbarPosition.TOP,
-                  duration: Duration(seconds: 2),
-                  message: '변경사항을 입력해주세요.',
-                  messageSize: 15,
-                  borderRadius: BorderRadius.circular(4),
-                  backgroundColor: Colors.white,
-                  messageColor: Colors.black,
-                  boxShadows: [
-                    BoxShadow(
-                      color: Colors.grey,
-                      blurRadius: 8,
-                    ),
-                  ],
-                ).show(context);
-              }
             },
           ),
         ],

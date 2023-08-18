@@ -72,6 +72,21 @@ class _UserSettingState extends State<UserSetting> {
               ),
             ),
           ),
+          SizedBox(
+            height: MediaQuery.of(context).size.height / 4,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextButton(onPressed: (){
+                  Navigator.popUntil(context, ModalRoute.withName('/'));
+                }, child: Text('로그아웃', style: TextStyle(color: Colors.grey),)),
+                TextButton(onPressed: (){
+                  
+                }, child: Text('회원탈퇴', style: TextStyle(color: Colors.grey),))
+
+              ],
+            ),
+          )
         ],
       ),
     );

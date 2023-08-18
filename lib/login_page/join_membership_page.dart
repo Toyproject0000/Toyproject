@@ -20,7 +20,7 @@ class Joinmembership extends StatefulWidget {
 
 class _JoinmembershipState extends State<Joinmembership> {
   final _formKey = GlobalKey<FormState>();
-  final _numberKey = GlobalKey<FormState>();
+  final _emailKey = GlobalKey<FormState>();
 
   TextEditingController textController = TextEditingController();
 
@@ -82,6 +82,13 @@ class _JoinmembershipState extends State<Joinmembership> {
     }
   }
 
+  void _emailValidation(){
+    final isValid = _emailKey.currentState!.validate();
+    if(isValid){
+      _emailKey.currentState!.save();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -123,40 +130,47 @@ class _JoinmembershipState extends State<Joinmembership> {
                         border: Border.all(color: Colors.grey, width: 1),
                         borderRadius: BorderRadius.circular(5),
                       ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: TextFormField(
-                              validator: (value) {
-                                if (value!.isEmpty || !value.contains('@')) {
-                                  return '이메일을 바르게 적어주세요';
-                                }
-                                return null;
-                              },
-                              onSaved: (value) {
-                                userEmail = value!;
-                              },
-                              onChanged: (value) {
-                                userEmail = value;
-                              },
-                              decoration: InputDecoration(
-                                  prefixIcon: Icon(Icons.email),
-                                  focusedBorder: InputBorder.none,
-                                  border: InputBorder.none,
-                                  hintText: '이메일'),
+                      child: Form(
+                        key: _emailKey,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: TextFormField(
+                                validator: (value) {
+                                  if (value!.isEmpty || !value.contains('@')) {
+                                    return '이메일을 바르게 적어주세요';
+                                  }
+                                  return null;
+                                },
+                                onSaved: (value) {
+                                  userEmail = value!;
+                                },
+                                onChanged: (value) {
+                                  userEmail = value;
+                                },
+                                decoration: InputDecoration(
+                                    prefixIcon: Icon(Icons.email),
+                                    focusedBorder: InputBorder.none,
+                                    border: InputBorder.none,
+                                    hintText: '이메일'),
+                              ),
                             ),
-                          ),
-                          TextButton(
-                            onPressed: (){
-                              FocusScope.of(context).requestFocus(_focusNode);
-                            },
-                            child: Text('인증번호 요청', style: TextStyle(
-                              color: Colors.blue
-                            ),))
-                        ],
+                            TextButton(
+                              onPressed: (){
+                                _emailValidation();
+                                FocusScope.of(context).requestFocus(_focusNode);
+                              },
+                              child: Text('인증번호 요청', style: TextStyle(
+                                color: Colors.blue
+                              ),))
+                          ],
+                        ),
                       ),
                     ),
                     TextFormField(
+                      validator: (value){
+                        return null;
+                      },
                       focusNode: _focusNode,
                       decoration: InputDecoration(
                         hintText: '인증번호 입력',
@@ -309,6 +323,27 @@ class _JoinmembershipState extends State<Joinmembership> {
                           ),
                         ],
                       ),
+                    ),
+                    TextFormField(
+                      keyboardType: TextInputType.number,
+                      validator: (value) {
+                        if (value!.length < 11) {
+                          return '전화번호 형식을 올바르게 적어주세요.';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        dateofBirth = value!;
+                      },
+                      onChanged: (value) {
+                        dateofBirth = value;
+                      },
+                      decoration: InputDecoration(
+                          prefixIcon: Icon(Icons.phone_android),
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey),
+                          ),
+                          hintText: '전화번호'),
                     ),
                     SizedBox(
                       height: 25,

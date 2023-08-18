@@ -27,9 +27,7 @@ import 'package:smart_dongne/main_page/setpage.dart';
 import 'login_page/TermsofService/personalinformaition.dart';
 import 'login_page/find_id.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+void main() {
   KakaoSdk.init(nativeAppKey: 'ca6e54286fb5cc0bc83d0320f4cb60d8');
   runApp(const MyApp());
 }

@@ -48,6 +48,7 @@ class _WritingPageState extends State<WritingPage> {
     return null;
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,7 +66,6 @@ class _WritingPageState extends State<WritingPage> {
                     context, 
                     LastSetting.routeName,
                     arguments: Contents(value, widget.changeClass, _keyEditor),
-                    
                   );
                 }
               });
@@ -78,20 +78,17 @@ class _WritingPageState extends State<WritingPage> {
         ],
         automaticallyImplyLeading: false,
       ),
-      body: Container(
-        child:  FlutterSummernote(
+      body: FlutterSummernote(
         key: _keyEditor,
         hint: "내용을 입력하시오....",
         showBottomToolbar: false,
         customToolbar: """
             [
               ['style', ['bold','italic','underline','clear']],
-              ['font', ['fontsize']],
               ['para', ['paragraph']],
             ]
             """,
         ),
-      ),
     );
   }
 }

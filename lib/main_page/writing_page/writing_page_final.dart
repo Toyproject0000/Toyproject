@@ -46,7 +46,6 @@ class _LastSettingState extends State<LastSetting> {
   bool numberoflike = false;
   int disclosureindex = 0;
   
-
   List<String> settingRange = [
     '모두 공개',
     '독자만 공개',
@@ -104,6 +103,7 @@ class _LastSettingState extends State<LastSetting> {
       ));
     } else {
       final settingComment = commentFunc();
+      final settingNumberofLike = likeNumberFunc();
       final selectTopic = topicSelect();
       final tempDir = await getTemporaryDirectory();
       File file = await File('${tempDir.path}/image.png').create();
@@ -142,6 +142,14 @@ class _LastSettingState extends State<LastSetting> {
 
   String commentFunc(){
     if(commentvalue == false){
+      return '활성화';
+    }else{
+      return '비활성화';
+    }
+  }
+
+  String likeNumberFunc(){
+    if(numberoflike == false){
       return '활성화';
     }else{
       return '비활성화';
