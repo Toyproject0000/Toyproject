@@ -22,8 +22,8 @@ public class PostRepositoryImpl implements PostRepository {
     }
     @Override
     public void insert(Post post) {
-        String sql = "INSERT INTO post (user_id, contents, title, category, disclosure, date, possibly_reply, img_location) VALUES (?, ?, ?, ?, ?, ?,?,?)";
-        jdbcTemplate.update(sql, post.getUserId(), post.getContents(), post.getTitle(), post.getCategory(), post.getDisclosure(), post.getDate(), post.getPossiblyReply(), post.getImgLocation());
+        String sql = "INSERT INTO post (user_id, contents, title, category, disclosure, date, possibly_reply, img_location, nickname, visibly_like) VALUES (?, ?, ?, ?, ?, ?,?,?,(SELECT nickname FROM user WHERE id = ?),?)";
+        jdbcTemplate.update(sql, post.getUserId(), post.getContents(), post.getTitle(), post.getCategory(), post.getDisclosure(), post.getDate(), post.getPossiblyReply(), post.getImgLocation(), post.getUserId(), post.getVisiblyLike());
     }
 
     @Override
@@ -120,14 +120,25 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public List<Post> recommendByAlgorithm(String userId) {
-        String sql = "SELECT p.*, u.nickname As nickname FROM category c LEFT JOIN post p ON c.category = p.category LEFT JOIN user u ON p.user_id = u.id WHERE c.user_id = ?";
+        String sql = "SELECT p.*, u.nickname AS nickname, COUNT(pl.post_id) AS likeCount " +
+                "FROM category c " +
+                "LEFT JOIN post p ON c.category = p.category " +
+                "LEFT JOIN user u ON p.user_id = u.id " +
+                "LEFT JOIN postLike pl ON p.id = pl.post_id " +
+                "WHERE c.user_id = ? " +
+                "GROUP BY p.id";
 
         return jdbcTemplate.query(sql, rowMapper, userId);
     }
 
     @Override
     public List<Post> recommendByCategory(String category) {
-        String sql = "select * from post where category = ?";
+        String sql = "SELECT p.*, u.nickname AS nickname, COUNT(pl.post_id) AS likeCount " +
+                "FROM post p " +
+                "LEFT JOIN user u ON p.user_id = u.id " +
+                "LEFT JOIN postLike pl ON p.id = pl.post_id " +
+                "WHERE p.category = ? " +
+                "GROUP BY p.id";
 
         return jdbcTemplate.query(sql, rowMapper, category);
     }

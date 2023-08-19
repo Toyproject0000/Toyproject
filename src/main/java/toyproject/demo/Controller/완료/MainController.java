@@ -6,7 +6,7 @@ import toyproject.demo.domain.Post;
 import toyproject.demo.domain.User;
 import toyproject.demo.service.PostService;
 
-import java.io.IOException;
+
 import java.util.*;
 
 @RestController
@@ -24,7 +24,5 @@ public class MainController {
     public List<Post> recommendWithCategory(@RequestBody String category){
         return postService.recommendWithCategory(category);
     }
-
-
 
 }

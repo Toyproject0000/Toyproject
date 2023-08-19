@@ -23,10 +23,10 @@ public class BlockService {
         return "ok";
     }
 
-    public String blockPost(String userId, Post post) {
+    public String blockPost(String userId, Long postId) {
         try {
-            blockRepository.blockPost(userId, post.getId());
-            algorithm.block(post, userId);
+            blockRepository.blockPost(userId, postId);
+//            algorithm.block(postId, userId);
         }
         catch (Exception e){
             return "cancel";

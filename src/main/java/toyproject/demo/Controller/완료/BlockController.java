@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import toyproject.demo.domain.Post;
+import toyproject.demo.domain.Report;
 import toyproject.demo.domain.User;
 import toyproject.demo.service.BlockService;
 
@@ -17,13 +18,13 @@ import java.util.Optional;
 public class BlockController {
     private final BlockService blockService;
     @PostMapping("/block/user")
-    public String blockUser(@RequestBody User user, @RequestBody String blockingUser){
-        return blockService.blockUser(user.getId(), blockingUser);
+    public String blockUser(@RequestBody Report report){
+        return blockService.blockUser(report.getReportingUserId(), report.getReportedUserId());
     }
 
-    @PostMapping("/blSock/post")
-    public String blockPost(@RequestBody Post post, @RequestBody String blockingUser){
-        return blockService.blockPost(blockingUser,post);
+    @PostMapping("/block/post")
+    public String blockPost(@RequestBody Report report){
+        return blockService.blockPost(report.getReportingUserId(), report.getReportedPostId());
     }
 
     @PostMapping("/report/user")

@@ -5,7 +5,6 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import toyproject.demo.domain.Category;
 import toyproject.demo.domain.Post;
 import toyproject.demo.domain.User;
 import toyproject.demo.repository.BlockRepository;
@@ -48,15 +47,16 @@ public class BlockRepositoryImpl implements BlockRepository {
     public void cancelReportUser(String userId, String id) {
         jdbcTemplate.update("delete from report where reporting_user_id=? and reported_user_id=?", userId, id);
     }
+
     @Override
     public void cancelBlockPost(String userId, Long id) {
         jdbcTemplate.update("delete from block where reporting_user_id=? and reported_post_id=?", userId, id);
     }
+
     @Override
     public void cancelReportPost(String userId, Long id) {
         jdbcTemplate.update("delete from report where reporting_user_id=? and reported_post_id=?", userId, id);
     }
-
 
     @Override
     public List<User> findBlockUser(String userId) {
@@ -66,7 +66,6 @@ public class BlockRepositoryImpl implements BlockRepository {
     @Override
     public List<Post> findBlockPost(String userId) {
         return jdbcTemplate.query("SELECT p.* FROM post p INNER JOIN block b ON p.id = b.blocked_post_id WHERE b.blocking_user_id = ?", postRowMapper, userId);
-
     }
 
     @Override

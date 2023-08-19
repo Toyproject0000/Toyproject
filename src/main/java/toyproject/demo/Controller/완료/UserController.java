@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import toyproject.demo.domain.DTO.ProfileDTO;
+import toyproject.demo.domain.DTO.ProfileViewDTO;
 import toyproject.demo.domain.User;
 import toyproject.demo.service.*;
 
@@ -123,18 +124,19 @@ public class UserController {
         return "ok";
     }
 
-    @PostMapping(value = "/profile/view")
-    public List<User> ProfileView(@RequestBody User user){
-        try {
-            String id = user.getId();
-            List<User> findUser = userService.findUser(id);
-
-            return findUser;
-        }catch (Exception e){
-            System.out.println("e.getMessage() = " + e.getMessage());
-        }
-        return null;
-    }
+//    @PostMapping(value = "/profile/view")
+//    public List<ProfileViewDTO> ProfileView(@RequestBody User user){
+//        try {
+//            String id = user.getId();
+//            User findUser = userService.findUser(id).get(0);
+//            new ProfileViewDTO(findUser.get);
+//
+//            return findUser;
+//        }catch (Exception e){
+//            System.out.println("e.getMessage() = " + e.getMessage());
+//        }
+//        return null;
+//    }
 
     @PostMapping("/profile")
     public List<ProfileDTO> ViewProfile(@RequestBody User user){

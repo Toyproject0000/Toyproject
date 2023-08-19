@@ -8,11 +8,9 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class Report {
-
     String reportingUserId;
     String reportedUserId;
-    String reportedPostId;
+    Long reportedPostId;
     String reason;
     LocalDateTime date;
-
 }
