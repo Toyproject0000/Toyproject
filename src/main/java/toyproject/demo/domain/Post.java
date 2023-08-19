@@ -2,9 +2,7 @@ package toyproject.demo.domain;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.time.LocalDateTime;
 
 @Getter
@@ -20,5 +18,6 @@ public class Post {
     String disclosure;
     String possibleReply;
     String visibleLike;
+    Integer like;
     LocalDateTime date;
 }

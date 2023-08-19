@@ -109,7 +109,7 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public List<Post> findByWriter(String id) {
-        return jdbcTemplate.query("select from post where id = ? ORDER BY date DESC", rowMapper, id);
+        return jdbcTemplate.query("select * from post where user_id = ? ORDER BY date DESC", rowMapper, id);
     }
 
     @Override
