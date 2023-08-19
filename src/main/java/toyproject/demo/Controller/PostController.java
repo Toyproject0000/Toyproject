@@ -53,42 +53,32 @@ public class PostController {
         }
     }
 
-    @PostMapping(value = "/submit/img")
-    public String submitPostImg(@RequestParam MultipartFile file) {
-
-        String userId = "alsdnd336@naver.com";
-        try {
-            String imgUpload = imgUploadService.PostImgUpload(file, userId);
-            Post post = new Post();
-            post.setImgLocation(imgUpload);
-            post.setUserId(userId);
-            postService.submitImg(post);
-
-            return "ok";
-        }catch (Exception e){
-            System.out.println(e.getMessage());
-            return "에러 발생";
-        }
-    }
-
     @PatchMapping(value = "/edit")
-    public String editConfirm(@RequestParam(value = "file", required = false) MultipartFile file, @RequestBody Post post){
+    public String editConfirm(@RequestParam(required = false) MultipartFile file,
+                              @RequestParam String userId,
+                              @RequestParam String contents,
+                              @RequestParam String title,
+                              @RequestParam String category,
+                              @RequestParam String disclosure,
+                              @RequestParam String possibleReply){
         try {
-            String imgLocation = imgUploadService.PostImgUpload(file, post.getUserId());
-            post.setImgLocation(imgLocation);
+            Post post = new Post();
+            post.setUserId(userId);
+            post.setContents(contents);
+            post.setTitle(title);
+            post.setCategory(category);
+            post.setDisclosure(disclosure);
+            post.setPossiblyReply(possibleReply);
+            if(file != null ){
+                String imgLocation = imgUploadService.PostImgUpload(file, userId);
+                post.setImgLocation(imgLocation);}
 
             postService.modify(post);
-
-            return "ok";
         }catch (Exception e){
             return "에러 발생";
         }
+        return "ok";
     }
-
-//    @PostMapping("/read")
-//    public String readPost(){
-//
-//    }
 
     @PostMapping(value = "/delete")
     public String delete(@RequestBody Post post){
@@ -101,7 +91,9 @@ public class PostController {
     }
 
     @PostMapping(value = "/search")
-    public List<Post> search(@RequestBody(required = false) Post post, @RequestBody(required = false) LocalDate formerDate, @RequestBody(required = false) LocalDate afterDate) throws IOException {
+    public List<Post> search(@RequestBody(required = false) Post post,
+                             @RequestBody(required = false) LocalDate formerDate,
+                             @RequestBody(required = false) LocalDate afterDate) throws IOException {
 
         return postService.search(post, formerDate, afterDate);
     }

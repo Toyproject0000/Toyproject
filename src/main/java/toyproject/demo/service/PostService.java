@@ -51,12 +51,11 @@ public class PostService {
 
     public List<Post> search(Post post, LocalDate formerDate, LocalDate afterDate) throws IOException {
         List<Post> posts = postRepository.search(post, formerDate, afterDate);
-//        setPostImg(posts);
+
         return posts;
     }
 
-
-    public List<Post> findPostByFollower(User user) throws IOException {
+    public List<Post> findPostByFollower(User user) {
         List<Post> posts = postRepository.findPostOfFollower(user);
 
         return posts;

@@ -4,11 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.SessionAttribute;
 import toyproject.demo.domain.DTO.BlockUserDTO;
 import toyproject.demo.domain.Post;
 import toyproject.demo.domain.Report;
-import toyproject.demo.domain.User;
 import toyproject.demo.service.BlockService;
 
 import java.util.List;
