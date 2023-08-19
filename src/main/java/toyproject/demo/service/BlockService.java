@@ -2,6 +2,7 @@ package toyproject.demo.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import toyproject.demo.domain.DTO.BlockUserDTO;
 import toyproject.demo.domain.Post;
 import toyproject.demo.domain.User;
 import toyproject.demo.repository.BlockRepository;
@@ -44,10 +45,10 @@ public class BlockService {
         return "ok";
     }
 
-    public String reportPost(String userId, Post post, String reason) {
+    public String reportPost(String userId, Long postId, String reason) {
         try {
-            blockRepository.reportPost(userId, post.getId(), reason);
-            algorithm.block(post, userId);
+            blockRepository.reportPost(userId, postId, reason);
+//            algorithm.block(post, userId);
         }
         catch (Exception e){
             return "cancel";
@@ -95,8 +96,8 @@ public class BlockService {
     }
 
 
-    public List<User> findBlockUser(String userId){
-        List<User> users;
+    public List<BlockUserDTO> findBlockUser(String userId){
+        List<BlockUserDTO> users;
         try {
             users = blockRepository.findBlockUser(userId);
         }
@@ -128,8 +129,8 @@ public class BlockService {
         return posts;
     }
 
-    public List<User> findReportUser(String userId){
-        List<User> users;
+    public List<BlockUserDTO> findReportUser(String userId){
+        List<BlockUserDTO> users;
         try {
             users = blockRepository.findReportUser(userId);
         }

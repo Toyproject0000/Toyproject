@@ -1,5 +1,6 @@
 package toyproject.demo.repository;
 
+import toyproject.demo.domain.DTO.BlockUserDTO;
 import toyproject.demo.domain.Post;
 import toyproject.demo.domain.User;
 
@@ -20,11 +21,11 @@ public interface BlockRepository {
     void cancelBlockPost(String userId, Long postId);
     void cancelReportPost(String userId, Long postId);
 
-    List<User> findBlockUser(String userId);
+    List<BlockUserDTO> findBlockUser(String userId);
 
     List<Post> findBlockPost(String userId);
 
     List<Post> findReportPost(String userId);
 
-    List<User> findReportUser(String userId);
+    List<BlockUserDTO> findReportUser(String userId);
 }

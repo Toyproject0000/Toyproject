@@ -30,36 +30,36 @@ public class BlockControllerHowToUse {
 
     @GetMapping("/cancel/report/user")
     public String cancelReportUser(){
-        return "report/cancel/user";
+        return "report/cancel-user";
     }
 
     @GetMapping("/cancel/block/post")
     public String cancelBlockPost(){
-        return "block/cancel/post";
+        return "block/cancel-post";
     }
 
     @GetMapping("/cancel/report/post")
     public String cancelReportPost(){
-        return "report/cancel/post";
+        return "report/cancel-post";
     }
 
     @GetMapping("/find/block/user")
     public String findBlockUser(){
-        return "block/find/user";
+        return "block/find-user";
     }
 
     @GetMapping("/find/block/post")
     public String findBlockPost(){
-        return "block/find/post";
+        return "block/find-post";
     }
 
     @GetMapping("/find/report/user")
     public String findReportUser(){
-        return "report/find/user";
+        return "report/find-user";
     }
 
     @GetMapping("/find/report/post")
     public String findReportPost(){
-        return "report/find/post";
+        return "report/find-post";
     }
 }
