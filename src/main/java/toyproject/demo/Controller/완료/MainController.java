@@ -15,12 +15,12 @@ import java.util.*;
 public class MainController {
     private final PostService postService;
 
-    @PostMapping(value = "/recommend")
+    @PostMapping(value = "/recommend", produces = "application/json;charset=UTF-8")
     public List<Post> recommend(@RequestBody User user) {
         return postService.recommend(user.getId());
     }
 
-    @PostMapping("/recommend/category")
+    @PostMapping(value = "/recommend/category", produces = "application/json;charset=UTF-8")
     public List<Post> recommendWithCategory(@RequestBody String category){
         return postService.recommendWithCategory(category);
     }

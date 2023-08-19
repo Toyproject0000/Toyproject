@@ -25,12 +25,12 @@ public class UserController {
 
     private final PostService postService;
 
-    @PostMapping(value = "/join", consumes = "application/json")
+    @PostMapping(value = "/join", produces = "application/json;charset=UTF-8")
     public String join(@RequestBody User user){
         return userService.join(user);
     }
 
-    @PostMapping(value = "/login", consumes = "application/json")
+    @PostMapping(value = "/login", produces = "application/json;charset=UTF-8")
     public String login(@RequestBody User user, HttpServletRequest request){
         HttpSession session = request.getSession();
         session.setAttribute("SessionId", user.getId());
@@ -39,22 +39,22 @@ public class UserController {
         return session.getId();
     }
 
-    @PostMapping(value = "/findId", consumes = "application/json")
+    @PostMapping(value = "/findId", produces = "application/json;charset=UTF-8")
     public String findId(@RequestBody User user){
         return userService.findId(user);
     }
 
-    @PostMapping(value = "/findPassword/email", consumes = "application/json")
+    @PostMapping(value = "/findPassword/email", produces = "application/json;charset=UTF-8")
     public Boolean findPasswordEmail(@RequestBody User user){
         return userService.findEmail(user);
     }
 
-    @PostMapping(value = "/findPassword/check", consumes = "application/json")
+    @PostMapping(value = "/findPassword/check", produces = "application/json;charset=UTF-8")
     public String findPassword(@RequestBody User user){
         return userService.findPassword(user);
     }
 
-    @PostMapping(value = "/remove", consumes = "application/json")
+    @PostMapping(value = "/remove", produces = "application/json;charset=UTF-8")
     public String delete(@RequestBody User user){
         String login = userService.login(user);
         if(login=="ok"){
@@ -66,12 +66,12 @@ public class UserController {
         }}
         else return login;
     }
-    @PostMapping(value = "/nickname", consumes = "application/json")
+    @PostMapping(value = "/nickname", produces = "application/json;charset=UTF-8")
     public String duplicateNickname(@RequestBody User user){
         return userService.duplicateNick(user);
     }
 
-    @PostMapping(value = "/authentication", consumes = "application/json")
+    @PostMapping(value = "/authentication", produces = "application/json;charset=UTF-8")
     public String authentication(@RequestParam String id, HttpServletRequest request) {
         try {
             String num = mailService.sendMail(id);
@@ -85,7 +85,7 @@ public class UserController {
         return "cancel";
     }
 
-    @PostMapping(value = "/authentication-check", consumes = "application/json")
+    @PostMapping(value = "/authentication-check", produces = "application/json;charset=UTF-8")
     public Boolean authenticationCheck(@RequestParam String id, String num, HttpServletRequest request){
         HttpSession session = request.getSession(false);
         String realNum = (String)session.getAttribute(id);
@@ -98,7 +98,7 @@ public class UserController {
 
     /**
      */
-    @PostMapping(value = "/profile/set")
+    @PostMapping(value = "/profile/set", produces = "application/json;charset=UTF-8")
     public String setProfile(@RequestParam(value = "file", required = false) MultipartFile file,
                              @RequestParam String userId,
                              @RequestParam(required = false) String info,
@@ -111,7 +111,7 @@ public class UserController {
             user.setNickname(nickname);
             user.setInfo(info);
             user.setPassword(password);
-            if (file!=null)
+            if (file!=null&&!file.isEmpty())
             {
                 String imgUpload = imgUploadService.ProfileImgUpload(file, userId);
                 user.setImgLocation(imgUpload);
@@ -124,7 +124,7 @@ public class UserController {
         return "ok";
     }
 
-    @PostMapping(value = "/profile/view")
+    @PostMapping(value = "/profile/view", produces = "application/json;charset=UTF-8")
     public ProfileViewDTO ProfileView(@RequestBody User user){
         try {
             String id = user.getId();
