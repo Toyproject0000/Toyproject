@@ -15,7 +15,7 @@ import java.util.*;
 public class MainController {
     private final PostService postService;
 
-    @PostMapping("/recommend")
+    @PostMapping(value = "/recommend")
     public List<Post> recommend(@RequestBody User user) {
         return postService.recommend(user.getId());
     }

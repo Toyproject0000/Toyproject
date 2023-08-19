@@ -138,7 +138,7 @@ public class UserController {
         return null;
     }
 
-    @PostMapping("/profile")
+    @PostMapping(value = "/profile", produces = "application/json;charset=UTF-8")
     public List<ProfileDTO> ViewProfile(@RequestBody User user){
         String id = user.getId();
 
