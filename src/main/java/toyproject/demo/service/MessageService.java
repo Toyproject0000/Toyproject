@@ -23,12 +23,9 @@ public class MessageService {
 
     public Optional<List<Message>> findAll(Message message) {
         List<Message> messages;
-        try {
+
             messages = messageRepository.findAll(message);
-        }
-        catch (Exception e){
-            return null;
-        }
+
         return Optional.ofNullable(messages);
     }
 

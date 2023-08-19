@@ -9,10 +9,7 @@ import toyproject.demo.domain.Message;
 import toyproject.demo.repository.MessageRepository;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Repository
 @RequiredArgsConstructor
@@ -26,23 +23,16 @@ public class MessageRepositoryImpl implements MessageRepository {
 
     @Override
     public List<Message> findAll(Message message) {
-        String query = "SELECT * FROM message " +
-                "WHERE (sendUser = ? OR acceptUser = ?) " +
-                "ORDER BY dateTime DESC;";
+        String sql = "SELECT m.* FROM message m " +
+                "WHERE (m.sendUser = ? OR m.acceptUser = ?) " +
+                "AND m.date = (SELECT MAX(date) FROM message " +
+                "              WHERE (sendUser = m.sendUser AND acceptUser = m.acceptUser) " +
+                "                 OR (sendUser = m.acceptUser AND acceptUser = m.sendUser)) " +
+                "GROUP BY m.sendUser, m.acceptUser";
 
-        List<Message> messages = jdbcTemplate.query(query, rowMapper, message.getSendUser(), message.getSendUser());
+        List<Message> messages = jdbcTemplate.query(sql, rowMapper, message.getSendUser(), message.getSendUser());
 
-        Map<String, Message> latestMessages = new HashMap<>();
-
-        for (Message findmessage : messages) {
-            String otherUser = findmessage.getSendUser().equals("UserA") ? findmessage.getAcceptUser() : findmessage.getSendUser();
-
-            if (!latestMessages.containsKey(otherUser)) {
-                latestMessages.put(otherUser, findmessage);
-            }
-        }
-
-        return new ArrayList<>(latestMessages.values());
+        return messages;
     }
 
     @Override

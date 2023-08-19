@@ -1,4 +1,4 @@
-package toyproject.demo.Controller;
+package toyproject.demo.Controller.완료;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -106,10 +106,14 @@ public class PostController {
 
     @PostMapping(value = "/find-likepost")
     public Optional<List<Post>> findLikePost(@RequestBody User user){
-
         return Optional.ofNullable(postService.findAllLikePost(user));
     }
 
+    /**
+     *
+     * @param post
+     * @param userId
+     */
     @PostMapping
     public void read(@RequestBody Post post, @RequestBody String userId){
         algorithm.read(post, userId);

@@ -2,6 +2,7 @@ package toyproject.demo.Controller.완료;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import toyproject.demo.domain.Message;
 import toyproject.demo.service.MessageService;
@@ -22,30 +23,30 @@ public class MessageController {
      */
     private final MessageService messageService;
     @PostMapping("/message/send")
-    public String sendMessage(Message message){
+    public String sendMessage(@RequestBody Message message){
         return messageService.send(message);
     }
     @PostMapping("/message/findAll")
-    public Optional<List<Message>> findAllMessage( Message message){
+    public Optional<List<Message>> findAllMessage(@RequestBody Message message){
         return messageService.findAll(message);
     }
     @PostMapping("/message/user")
-    public Optional<List<Message>> Message( Message message){
+    public Optional<List<Message>> Message(@RequestBody Message message){
         return messageService.findMessage(message);
     }
 
     @PostMapping("/message/search")
-    public Optional<List<Message>> searchMessage( Message message){
+    public Optional<List<Message>> searchMessage(@RequestBody Message message){
         return messageService.search(message);
     }
     @PostMapping("/message/deleteAll")
-    public String deleteAllMessage( Message message){
+    public String deleteAllMessage(@RequestBody Message message){
 
         return messageService.deleteAll(message);
     }
 
     @PostMapping("/message/delete")
-    public String deleteMessage( Message message){
+    public String deleteMessage(@RequestBody Message message){
 
         return messageService.delete(message);
     }

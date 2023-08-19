@@ -47,19 +47,21 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public List<Post> findPostOfFollower(User user) {
-        String sql = "SELECT p.* FROM post p INNER JOIN follower f ON p.userId = f.followedUserId WHERE f.followerUserId = ?";
+        String sql = "SELECT p.*, (SELECT COUNT(*) FROM postLike pl WHERE pl.post_id = p.id) as likeCount FROM post p INNER JOIN follow f ON p.user_id = f.followedUserId WHERE f.followerUserId = ?";
         return jdbcTemplate.query(sql, rowMapper, user.getId());
     }
     @Override
     public List<Post> findAllLikePost(User user) {
-        return jdbcTemplate.query("SELECT * FROM post WHERE id IN (SELECT postId FROM postLike WHERE userId = ?)", rowMapper, user.getId());
+        return jdbcTemplate.query("SELECT p.*, (SELECT COUNT(*) FROM postLike pl WHERE pl.post_id = p.id) as likeCount FROM post p WHERE id IN (SELECT post_id FROM postLike WHERE user_id = ?)", rowMapper, user.getId());
     }
 
 
     @Override
     public List<Post> search(Post post, LocalDate formerDate, LocalDate afterDate) {
         List<Object> parameters = new ArrayList<>();
-        StringBuilder queryBuilder = new StringBuilder("SELECT p.*, u.nickname as nickname FROM post p LEFT JOIN user u ON p.user_id = u.id WHERE ");
+        StringBuilder queryBuilder = new StringBuilder("SELECT p.*, u.nickname as nickname, " +
+                "(SELECT COUNT(*) FROM postLike pl WHERE pl.post_id = p.id) as likeCount " +
+                "FROM post p LEFT JOIN user u ON p.user_id = u.id WHERE ");
 
         if (post.getUserId() != null) {
             queryBuilder.append("p.user_id = ?");
