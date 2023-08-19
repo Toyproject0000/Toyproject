@@ -12,6 +12,7 @@ import toyproject.demo.domain.User;
 import toyproject.demo.service.*;
 
 
+import java.io.IOException;
 import java.util.*;
 
 @RestController
@@ -115,6 +116,9 @@ public class UserController {
             {
                 String imgUpload = imgUploadService.ProfileImgUpload(file, userId);
                 user.setImgLocation(imgUpload);
+            }
+            if (file.getSize()==0){
+                user.setImgLocation("");
             }
             userService.edit(user, userId);
         }catch (Exception e){
