@@ -124,19 +124,19 @@ public class UserController {
         return "ok";
     }
 
-//    @PostMapping(value = "/profile/view")
-//    public List<ProfileViewDTO> ProfileView(@RequestBody User user){
-//        try {
-//            String id = user.getId();
-//            User findUser = userService.findUser(id).get(0);
-//            new ProfileViewDTO(findUser.get);
-//
-//            return findUser;
-//        }catch (Exception e){
-//            System.out.println("e.getMessage() = " + e.getMessage());
-//        }
-//        return null;
-//    }
+    @PostMapping(value = "/profile/view")
+    public ProfileViewDTO ProfileView(@RequestBody User user){
+        try {
+            String id = user.getId();
+            User findUser = userService.findUser(id).get(0);
+            ProfileViewDTO profileView = new ProfileViewDTO(findUser.getNickname(), findUser.getInfo(), findUser.getImgLocation());
+
+            return profileView;
+        }catch (Exception e){
+            System.out.println("e.getMessage() = " + e.getMessage());
+        }
+        return null;
+    }
 
     @PostMapping("/profile")
     public List<ProfileDTO> ViewProfile(@RequestBody User user){

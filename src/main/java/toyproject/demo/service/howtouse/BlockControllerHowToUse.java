@@ -25,7 +25,7 @@ public class BlockControllerHowToUse {
 
     @GetMapping("/cancel/block/user")
     public String cancelBlockUser(){
-        return "block/cancel/user";
+        return "block/cancel-user";
     }
 
     @GetMapping("/cancel/report/user")

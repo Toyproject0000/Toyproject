@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class ProfileViewDTO {
-    String id;
     String nickname;
+    String info;
     String imgLocation;
 }
