@@ -27,13 +27,12 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public void insertImg(Post post) {
-        String updateQuery = "UPDATE post p1" +
-                " INNER JOIN (SELECT id FROM post WHERE user_id = ? ORDER BY date DESC LIMIT 1) p2" +
-                " ON p1.id = p2.id" +
-                " SET p1.img_location = ?";
-        jdbcTemplate.update(updateQuery, post.getUserId(), post.getImgLocation());
+    public List<Post> findPost(Long id) {
+        String sql  = "select * from post where id = ?";
+        return jdbcTemplate.query(sql, rowMapper, id);
     }
+
+
     @Override
     public void update(Post post) {
         String sql = "UPDATE post SET user_id = ?, contents = ? WHERE id = ?";

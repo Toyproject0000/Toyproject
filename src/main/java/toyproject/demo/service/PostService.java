@@ -7,6 +7,7 @@ import toyproject.demo.domain.Post;
 import toyproject.demo.domain.User;
 import toyproject.demo.repository.PostRepository;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -23,21 +24,18 @@ public class PostService {
         postRepository.insert(post);
         algorithm.write(post);
     }
-    public void submitImg(Post post){
-        postRepository.insertImg(post);
-    }
-
     /**
      *
      * @param post
      */
 
     public void delete(Post post){
-//        Post findPost = postRepository.findPost(post).get(0);
-//        String imgLocation = findPost.getImgLocation();
-//        new File(imgLocation).delete();
+        Long id = post.getId();
+        Post findPost = postRepository.findPost(id).get(0);
+        String imgLocation = findPost.getImgLocation();
+        new File(imgLocation).delete();
 
-//        postRepository.delete(post);
+        postRepository.delete(post);
     }
 
     public void modify(Post post){

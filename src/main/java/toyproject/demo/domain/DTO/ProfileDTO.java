@@ -11,6 +11,7 @@ import java.util.List;
 public class ProfileDTO {
     String id;
     String nickname;
+    String info;
     String imgLocation;
     List<Post> posts;
 }

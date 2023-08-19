@@ -32,8 +32,8 @@ public class PostController {
                              @RequestParam String category,
                              @RequestParam String disclosure,
                              @RequestParam String possibleReply) {
+        Post post = new Post();
         try {
-            Post post = new Post();
             post.setUserId(userId);
             post.setContents(contents);
             post.setTitle(title);
@@ -61,8 +61,8 @@ public class PostController {
                               @RequestParam String category,
                               @RequestParam String disclosure,
                               @RequestParam String possibleReply){
+        Post post = new Post();
         try {
-            Post post = new Post();
             post.setUserId(userId);
             post.setContents(contents);
             post.setTitle(title);
@@ -71,7 +71,8 @@ public class PostController {
             post.setPossiblyReply(possibleReply);
             if(file != null ){
                 String imgLocation = imgUploadService.PostImgUpload(file, userId);
-                post.setImgLocation(imgLocation);}
+                post.setImgLocation(imgLocation);
+            }
 
             postService.modify(post);
         }catch (Exception e){
@@ -99,12 +100,12 @@ public class PostController {
     }
 
     @PostMapping(value = "/find-follower")
-    public Optional<List<Post>> findPostOfFollower(@RequestBody User user) throws IOException {
+    public Optional<List<Post>> findPostOfFollower(@RequestBody User user){
         return Optional.ofNullable(postService.findPostByFollower(user));
     }
 
     @PostMapping(value = "/find-likepost")
-    public Optional<List<Post>> findLikePost(@RequestBody User user) throws IOException {
+    public Optional<List<Post>> findLikePost(@RequestBody User user){
 
         return Optional.ofNullable(postService.findAllLikePost(user));
     }
