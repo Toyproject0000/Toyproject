@@ -105,7 +105,7 @@ public class UserController {
                              @RequestParam(required = false) String info,
                              @RequestParam(required = false) String nickname,
                              @RequestParam(required = false) String password,
-                             @RequestParam(required = false) Boolean basicImage
+                             @RequestParam(required = false, defaultValue = "false") String basicImage
                              ){
         try {
             User user = new User();
@@ -118,7 +118,7 @@ public class UserController {
                 String imgUpload = imgUploadService.ProfileImgUpload(file, userId);
                 user.setImgLocation(imgUpload);
             }
-            if (basicImage){
+            if (basicImage.equals("true")){
                 user.setImgLocation("");
             }
             userService.edit(user, userId);
