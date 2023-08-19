@@ -10,11 +10,10 @@ import java.util.List;
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    private final SmsService smsService;
 
-    public UserService(UserRepository userRepository, SmsService smsService) {
+
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.smsService = smsService;
     }
 
     public String join(User user){

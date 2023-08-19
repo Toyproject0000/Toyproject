@@ -39,7 +39,7 @@ public class PostController {
             post.setTitle(title);
             post.setCategory(category);
             post.setDisclosure(disclosure);
-            post.setPossibleReply(possibleReply);
+            post.setPossiblyReply(possibleReply);
             if(file != null ){
             String imgLocation = imgUploadService.PostImgUpload(file, userId);
             post.setImgLocation(imgLocation);}

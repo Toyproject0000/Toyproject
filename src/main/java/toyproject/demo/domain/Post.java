@@ -16,8 +16,8 @@ public class Post {
     String imgLocation;
     String category;
     String disclosure;
-    String possibleReply;
-    String visibleLike;
-    Integer like;
+    String possiblyReply;
+    String visiblyLike;
+    Integer likeCount;
     LocalDateTime date;
 }
