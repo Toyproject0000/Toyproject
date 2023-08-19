@@ -1,23 +1,15 @@
 package toyproject.demo.Controller.완료;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import toyproject.demo.domain.DTO.ProfileDTO;
-import toyproject.demo.domain.Mail;
-import toyproject.demo.domain.Post;
 import toyproject.demo.domain.User;
 import toyproject.demo.service.*;
 
-
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 
 import java.util.*;
 
@@ -28,7 +20,6 @@ public class UserController {
 
     private final UserService userService;
     private final MailService mailService;
-    private final MakeCertificationNumber makeCertificationNumber;
     private final ImgUploadService imgUploadService;
 
     private final PostService postService;
@@ -133,9 +124,12 @@ public class UserController {
     }
 
     @PostMapping(value = "/profile/view")
-    public List<User> ProfileView(@RequestBody String id){
+    public List<User> ProfileView(@RequestBody User user){
         try {
-            return userService.findUser(id);
+            String id = user.getId();
+            List<User> findUser = userService.findUser(id);
+
+            return findUser;
         }catch (Exception e){
             System.out.println("e.getMessage() = " + e.getMessage());
         }
@@ -143,7 +137,8 @@ public class UserController {
     }
 
     @PostMapping("/profile")
-    public List<ProfileDTO> ViewProfile(@RequestParam String id){
+    public List<ProfileDTO> ViewProfile(@RequestBody User user){
+        String id = user.getId();
 
         List<ProfileDTO> profile = userService.userProfile(id);
 
