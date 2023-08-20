@@ -37,7 +37,7 @@ public class MessageRepositoryImpl implements MessageRepository {
 
     @Override
     public List<Message> findMessage(Message message) {
-        return jdbcTemplate.query("select * from message where senduser = ? and acceptuser = ?", rowMapper, message.getSendUser(), message.getSendUser());
+        return jdbcTemplate.query("select * from message where (senduser = ? and acceptuser = ?) or (senduser = ? and acceptuser = ?) ORDER BY date desc", rowMapper, message.getSendUser(), message.getAcceptUser(), message.getAcceptUser(), message.getSendUser());
     }
 
     @Override
