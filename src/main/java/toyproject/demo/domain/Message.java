@@ -12,5 +12,5 @@ public class Message {
     String sendUser;
     String acceptUser;
     String Message;
-    LocalDateTime dateTime;
+    LocalDateTime date;
 }

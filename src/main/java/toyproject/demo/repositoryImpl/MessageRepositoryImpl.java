@@ -53,7 +53,7 @@ public class MessageRepositoryImpl implements MessageRepository {
 
     @Override
     public List<Message> delete(Message message) {
-        return jdbcTemplate.query("delete from message where senduser = ? and acceptuser = ? and message = ? and date = ?", rowMapper, message.getSendUser(), message.getAcceptUser(), message.getMessage(), message.getDateTime());
+        return jdbcTemplate.query("delete from message where senduser = ? and acceptuser = ? and message = ? and date = ?", rowMapper, message.getSendUser(), message.getAcceptUser(), message.getMessage(), message.getDate());
 
     }
 }
