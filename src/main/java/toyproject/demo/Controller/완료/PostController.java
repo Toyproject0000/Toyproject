@@ -24,7 +24,7 @@ public class PostController {
     private final ImgUploadService imgUploadService;
     private final FindAlgorithm algorithm;
 
-    @PostMapping(value = "/submit")
+    @PostMapping(value = "/submit", produces = "application/json;charset=UTF-8")
     public String submitPost(@RequestParam(required = false) MultipartFile file,
                              @RequestParam String userId,
                              @RequestParam String contents,
@@ -53,7 +53,7 @@ public class PostController {
         }
     }
 
-    @PatchMapping(value = "/edit")
+    @PatchMapping(value = "/edit", produces = "application/json;charset=UTF-8")
     public String editConfirm(@RequestParam(required = false) MultipartFile file,
                               @RequestParam String userId,
                               @RequestParam String contents,
@@ -81,7 +81,7 @@ public class PostController {
         return "ok";
     }
 
-    @PostMapping(value = "/delete")
+    @PostMapping(value = "/delete", produces = "application/json;charset=UTF-8")
     public String delete(@RequestBody Post post){
         try {
             postService.delete(post);
@@ -91,7 +91,7 @@ public class PostController {
         }
     }
 
-    @PostMapping(value = "/search")
+    @PostMapping(value = "/search", produces = "application/json;charset=UTF-8")
     public List<Post> search(@RequestBody(required = false) Post post,
                              @RequestBody(required = false) LocalDate formerDate,
                              @RequestBody(required = false) LocalDate afterDate) throws IOException {
@@ -99,12 +99,12 @@ public class PostController {
         return postService.search(post, formerDate, afterDate);
     }
 
-    @PostMapping(value = "/find-follower")
+    @PostMapping(value = "/find-follower", produces = "application/json;charset=UTF-8")
     public Optional<List<Post>> findPostOfFollower(@RequestBody User user){
         return Optional.ofNullable(postService.findPostByFollower(user));
     }
 
-    @PostMapping(value = "/find-likepost")
+    @PostMapping(value = "/find-likepost", produces = "application/json;charset=UTF-8")
     public Optional<List<Post>> findLikePost(@RequestBody User user){
         return Optional.ofNullable(postService.findAllLikePost(user));
     }

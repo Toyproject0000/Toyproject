@@ -22,30 +22,30 @@ public class MessageController {
      * 대화 일부 삭제?
      */
     private final MessageService messageService;
-    @PostMapping("/message/send")
+    @PostMapping(value = "/message/send", produces = "application/json;charset=UTF-8")
     public String sendMessage(@RequestBody Message message){
         return messageService.send(message);
     }
-    @PostMapping("/message/findAll")
+    @PostMapping(value = "/message/findAll", produces = "application/json;charset=UTF-8")
     public Optional<List<Message>> findAllMessage(@RequestBody Message message){
         return messageService.findAll(message);
     }
-    @PostMapping("/message/user")
+    @PostMapping(value = "/message/user", produces = "application/json;charset=UTF-8")
     public Optional<List<Message>> Message(@RequestBody Message message){
         return messageService.findMessage(message);
     }
 
-    @PostMapping("/message/search")
+    @PostMapping(value = "/message/search", produces = "application/json;charset=UTF-8")
     public Optional<List<Message>> searchMessage(@RequestBody Message message){
         return messageService.search(message);
     }
-    @PostMapping("/message/deleteAll")
+    @PostMapping(value = "/message/deleteAll", produces = "application/json;charset=UTF-8")
     public String deleteAllMessage(@RequestBody Message message){
 
         return messageService.deleteAll(message);
     }
 
-    @PostMapping("/message/delete")
+    @PostMapping(value = "/message/delete", produces = "application/json;charset=UTF-8")
     public String deleteMessage(@RequestBody Message message){
 
         return messageService.delete(message);
