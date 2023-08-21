@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 Future<dynamic> chattingMainPageData(nickname) async {
-  final url = Uri.parse('http://192.168.0.16:8080/message/findAll');
+  final url = Uri.parse('http://192.168.0.200:8080/message/findAll');
   final headers = {'Content-Type': 'application/json'};
   try {
     final response = await http.post(url, headers: headers, body: jsonEncode(nickname));
@@ -19,7 +19,7 @@ Future<dynamic> chattingMainPageData(nickname) async {
 }
 
 Future<dynamic> chattingSearchPageData(nickname) async {
-  final url = Uri.parse('http://192.168.0.16:8080/message/search');
+  final url = Uri.parse('http://192.168.0.200:8080/message/search');
   final headers = {'Content-Type': 'application/json'};
   try {
     final response = await http.post(url, headers: headers, body: jsonEncode(nickname));
@@ -36,7 +36,7 @@ Future<dynamic> chattingSearchPageData(nickname) async {
 }
 
 Future<dynamic> aConversationWithaParticularPerson(sendUser) async {
-  final url = Uri.parse('http://192.168.0.16:8080/message/user');
+  final url = Uri.parse('http://192.168.0.200:8080/message/user');
   final headers = {'Content-Type': 'application/json'};
   try {
     final response = await http.post(url, headers: headers, body: jsonEncode(sendUser));
@@ -52,7 +52,7 @@ Future<dynamic> aConversationWithaParticularPerson(sendUser) async {
 }
 
 Future<dynamic> chattingContentSearch(data) async {
-  final url = Uri.parse('http://192.168.0.16:8080/message/search');
+  final url = Uri.parse('http://192.168.0.200:8080/message/search');
   final headers = {'Content-Type': 'application/json'};
   try {
     final response = await http.post(url, headers: headers, body: jsonEncode(data));
@@ -69,8 +69,7 @@ Future<dynamic> chattingContentSearch(data) async {
 }
 
 Future<dynamic> sendChattingContent(data) async {
-  print(data);
-  final url = Uri.parse('http://192.168.0.16:8080/message/send');
+  final url = Uri.parse('http://192.168.0.200:8080/message/send');
   final headers = {'Content-Type': 'application/json'};
   try {
     final response = await http.post(url, headers: headers, body: jsonEncode(data));

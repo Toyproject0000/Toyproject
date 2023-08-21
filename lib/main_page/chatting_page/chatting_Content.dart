@@ -19,8 +19,9 @@ class _ChattingContentState extends State<ChattingContent> {
   bool searchMode = false;
   bool activationSendButton = false;
   ScrollController scrollController = ScrollController();
-  // List<Map<String, dynamic>>? reverseList;
-  dynamic reverseList;
+  List? jsonData;
+  List? reverseList;
+
 
 
   late AppBar searchAppBar;
@@ -43,14 +44,20 @@ class _ChattingContentState extends State<ChattingContent> {
   }
 
   void SendMessage(content) async {
+
     final data = {
       "sendUser" : sendUser,
       "acceptUser" : acceptUser,
       "message" : content
     };
+    chattingBarController.clear();
     final response = await sendChattingContent(data);
     if(response != null){
-      chattingBarController.clear();
+       scrollController.animateTo(
+        0.0,
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
       bringbackDataofMessage();
     }
   }
@@ -107,18 +114,67 @@ class _ChattingContentState extends State<ChattingContent> {
     }
   }
 
+  Widget chatBubbleWidget(index) {
+    if(jsonData![index]['sendUser'] == sendUser){
+      return ChatBubble(
+        clipper: ChatBubbleClipper1(type: BubbleType.sendBubble),
+        alignment: Alignment.topRight,
+        margin: EdgeInsets.only(top: 20),
+        backGroundColor: Colors.blue,
+        child: Container(
+          constraints: BoxConstraints(
+            maxWidth: MediaQuery.of(context).size.width * 0.7,
+          ),
+          child: Text(
+            jsonData![index]['message'] == null ? 'null' : jsonData![index]['message'],
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+      );
+    } else {
+      return Container(
+        margin: EdgeInsets.only(top: 20),
+        child: Row(
+          children: [
+            CircleAvatar(
+              backgroundColor: Colors.grey,
+            ),
+            SizedBox(width: 5,),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(jsonData![index]['acceptUser'], style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),),
+                ChatBubble(
+                  clipper: ChatBubbleClipper1(type: BubbleType.receiverBubble),
+                  backGroundColor: Color(0xffE7E7ED),
+                  margin: EdgeInsets.only(top: 5),
+                  child: Container(
+                    constraints: BoxConstraints(
+                      maxWidth: MediaQuery.of(context).size.width * 0.7,
+                    ),
+                    child: Text(
+                      jsonData![index]['message'],
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+    }
+  } 
+
   void bringbackDataofMessage() async {
     final data = {
       'sendUser' : sendUser,
       'acceptUser' : acceptUser
     };
     final response = await aConversationWithaParticularPerson(data);
-    final List jsonData = jsonDecode(response);
-    final List<Widget> ChattingWidgetList = jsonData.map((data) => MakeaChattingContentWidget(data)).toList();
-    final List<Widget> reverseList = ChattingWidgetList.reversed.toList();
-    setState(() {
-      ChattingContentColumn = Column(children: reverseList);
-    });
+    jsonData = jsonDecode(response);
+    reverseList = jsonData!.reversed.toList();
+    setState(() {});
   }
 
   @override
@@ -185,19 +241,21 @@ class _ChattingContentState extends State<ChattingContent> {
     return Scaffold(
       appBar: searchMode == true ? searchAppBar : basicAppBar,
       body: SafeArea(
-        child: ChattingContentColumn == null ? Center(child: CircularProgressIndicator(color: Colors.blue,),) :
+        child: jsonData == null ? Center(child: CircularProgressIndicator(color: Colors.blue,),) :
         Column(
           children: [
             Expanded(
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 15),
-                child: ListView(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(10,0,10,10),
+                child: ListView.builder(
                   controller: scrollController,
-                  children: [
-                    ChattingContentColumn!
-                  ],
+                  reverse: true,
+                  itemCount: jsonData!.length ,
+                  itemBuilder:(context, index){
+                    return chatBubbleWidget(index);
+                  }
                 ),
-              ),
+              )
             ),
             if(searchMode == false)
             Container(
@@ -238,16 +296,12 @@ class _ChattingContentState extends State<ChattingContent> {
                         ),
                         hintText: '메세지를 입력해주세요.'
                       ),
+                      cursorColor: Colors.blue,
                     )
                   ),
                   IconButton(
                     onPressed: activationSendButton == false ? null : (){
                     SendMessage(chattingBarController.text);
-                    scrollController.animateTo(
-                      scrollController.position.maxScrollExtent,
-                      duration: Duration(milliseconds: 1000),
-                      curve: Curves.easeInOut,
-                    );
                   }, icon: Icon(Icons.send, color: Colors.blue,),
                   )
                 ],
