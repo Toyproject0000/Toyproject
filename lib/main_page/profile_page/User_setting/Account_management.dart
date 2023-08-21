@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:smart_dongne/main_page/profile_page/User_setting/userWithdrawal.dart';
 
 class AccountManagement extends StatefulWidget {
@@ -21,37 +22,13 @@ class _AccountManagementState extends State<AccountManagement> {
   late Row _genderWidget;
 
   TextEditingController _nameController = TextEditingController();
-  late TextFormField _nameTextFormField;
   TextEditingController _birthdayController = TextEditingController();
-  late TextFormField _birthdayTextFormField;
   late String currentOption;
   
   @override
   void initState() {
     super.initState();
     currentOption = options[0];
-    _nameTextFormField = TextFormField(
-      controller: _nameController,
-      cursorColor: Colors.black,
-      decoration: InputDecoration(
-        focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: Colors.black, width: 1.0)),
-        border:
-            UnderlineInputBorder(borderSide: BorderSide(color: Colors.black)),
-      ),
-    );
-    _birthdayTextFormField = TextFormField(
-      maxLength: 8,
-      controller: _birthdayController,
-      cursorColor: Colors.black,
-      decoration: InputDecoration(
-        focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: Colors.black, width: 1.0)),
-        border:
-            UnderlineInputBorder(borderSide: BorderSide(color: Colors.black)),
-      ),
-    );
-
   }
 
   @override
@@ -62,6 +39,7 @@ class _AccountManagementState extends State<AccountManagement> {
         Expanded(
           child: RadioListTile(
             value: options[0],
+            activeColor: Colors.blue,
             groupValue: currentOption,
             title: Text(options[0]),
             onChanged: (value){
@@ -74,6 +52,7 @@ class _AccountManagementState extends State<AccountManagement> {
         Expanded(
           child: RadioListTile(
             value: options[1],
+            activeColor: Colors.blue,
             groupValue: currentOption,
             title: Text(options[1]),
             onChanged: (value){
@@ -121,101 +100,81 @@ class _AccountManagementState extends State<AccountManagement> {
             SizedBox(
               height: 25,
             ),
-            nameChange == false
-                ? Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('이름'),
-                          Text(
-                            'userName',
-                            style: TextStyle(fontSize: 22),
-                          ),
-                        ],
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('이름', style: TextStyle(fontSize: 15, color: Colors.black),),
+                TextFormField(
+                  controller: _nameController,
+                  decoration: InputDecoration(
+                    border: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        width: 1,
+                        color: Colors.grey
+                      )
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.grey,
+                        width: 1
                       ),
-                      IconButton(
-                          onPressed: () {
-                            setState(() {
-                              nameChange = !nameChange;
-                            });
-                          },
-                          icon: Icon(
-                            Icons.edit,
-                          ))
-                    ],
-                  )
-                : _nameTextFormField,
+                    )
+                  ),
+                  cursorColor: Colors.blue,
+                ),
+              ],
+            ),
             SizedBox(
               height: 25,
             ),
-            birthdayChange == false
-                ? Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('생년월일'),
-                          Text(
-                            'birthday',
-                            style: TextStyle(fontSize: 22),
-                          )
-                        ],
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('생년월일', style: TextStyle(fontSize: 15, color: Colors.black),),
+                TextFormField(
+                  maxLength: 8,
+                  inputFormatters: <TextInputFormatter>[
+                    FilteringTextInputFormatter.allow(RegExp(r'[0-9]')), // 숫자만 허용
+                  ],
+                  controller: _birthdayController,
+                  decoration: InputDecoration(
+                    border: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        width: 1,
+                        color: Colors.grey
+                      )
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.grey,
+                        width: 1
                       ),
-                      IconButton(
-                          onPressed: () {
-                            setState(() {
-                              birthdayChange = !birthdayChange;
-                            });
-                          },
-                          icon: Icon(
-                            Icons.edit,
-                          ))
-                    ],
-                  )
-                : _birthdayTextFormField,
+                    )
+                  ),
+                  cursorColor: Colors.blue,
+                ),
+              ],
+            ),
             SizedBox(
               height: 25,
             ),
-            genderChange == false
-                ? Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('성별'),
-                          Text(
-                            'userGender',
-                            style: TextStyle(fontSize: 22),
-                          )
-                        ],
-                      ),
-                      IconButton(
-                          onPressed: () {
-                            setState(() {
-                              genderChange = true;
-                            });
-                          },
-                          icon: Icon(
-                            Icons.edit,
-                          ))
-                    ],
-                  )
-                : _genderWidget,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('성별', style: TextStyle(fontSize: 15, color: Colors.black),),
+                _genderWidget,
+                Divider(
+                  height: 1,
+                  color: Colors.grey,
+                  thickness: 1,
+                ),
+              ],
+            ),
+
             SizedBox(
-              height: 25,
+              height: 60,
             ),
-            SizedBox(
-              height: 40,
-            ),
-            Divider(
-              height: 1,
-              color: Colors.black,
-              thickness: 1,
-            ),
+            
             InkWell(
               onTap: () {
                 Navigator.pushNamed(context, UserWithDrawal.rotueName);

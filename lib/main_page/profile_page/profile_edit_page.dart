@@ -1,16 +1,14 @@
+import 'dart:convert';
+
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
-
-// top snackbar
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
-
+import 'package:smart_dongne/main_page/setpage.dart';
 import '../../server/Server.dart';
 
 class ProfileEdit extends StatefulWidget {
@@ -29,20 +27,19 @@ class _ProfileEditState extends State<ProfileEdit> {
   bool nameCancelButton = false;
   bool introduction = false;
   bool keyboardActivation = false;
-  File? imagePath;
+  String imagePath = '';
+  String imageBeforeChange = '';
 
   //server data
   late String userNickName;
-  late String? userIntroduction;
-  late String? userProfileImage;
-  String IntroductionBeforeChange = '';
-  File? ImageFileBeforeChange;
+  late String userIntroduction;
+  late String userProfileImage;
 
   void showMenuOfPicture(context) {
     showModalBottomSheet(
         context: context,
         builder: ((context) => Container(
-              height: MediaQuery.of(context).size.height * 0.2,
+              height: MediaQuery.of(context).size.height * 0.35,
               width: MediaQuery.of(context).size.width * 0.8,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20.0),
@@ -124,6 +121,35 @@ class _ProfileEditState extends State<ProfileEdit> {
                       ),
                     ),
                   )),
+                  Expanded(
+                      child: GestureDetector(
+                    onTap: () {
+                      imagePath = '';
+                      Navigator.pop(context);
+                      setState(() {});
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(10.0),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(color: Colors.grey, width: 1.0),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Icon(Icons.account_circle),
+                          SizedBox(width: 20),
+                          Text('기본사진 설정',
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.black,
+                                decoration: TextDecoration.none,
+                              )),
+                        ],
+                      ),
+                    ),
+                  )),
                 ],
               ),
             )));
@@ -160,9 +186,12 @@ class _ProfileEditState extends State<ProfileEdit> {
     if (galleryFile != null) {
       final img = await _cropImage(imageFile: File(galleryFile.path));
       Navigator.pop(context);
-      setState(() {
-        imagePath = img;
-      });
+      if (img == null) {
+      } else {
+        setState(() {
+          imagePath = img.path;
+        });
+      }
     }
   }
 
@@ -174,27 +203,29 @@ class _ProfileEditState extends State<ProfileEdit> {
       final img = await _cropImage(imageFile: File(cameraFile.path));
 
       Navigator.pop(context);
-      setState(() {
-        // imagePath = File(cameraFile.path);
-        imagePath = img;
-      });
+      if (img == null) {
+      } else {
+        setState(() {
+          imagePath = img.path;
+        });
+      }
     }
   }
 
   Widget imageSetting() {
-    if (imagePath != null) {
-      return CircleAvatar(radius: 80, backgroundImage: FileImage(imagePath!));
+    if (imagePath != '') {
+      return CircleAvatar(
+          radius: 80, backgroundImage: FileImage(File(imagePath!)));
     } else {
       return CircleAvatar(
-        radius: 80,
-        backgroundColor: Colors.grey,
-        child: Image.asset(
-          'image/basicprofile.png',
-          width: 100, // 이미지의 가로 크기 조절
-          height: 100, // 이미지의 세로 크기 조절
-          fit: BoxFit
-              .cover, // 이미지의 크기를 조절하여 CircleAvatar에 맞게 맞출지 결정 (필요에 따라 변경 가능)
-      ));
+          radius: 80,
+          backgroundColor: Colors.grey,
+          backgroundImage: Image.asset(
+            'image/basicprofile.png',
+            width: 100, // 이미지의 가로 크기 조절
+            height: 100, // 이미지의 세로 크기 조절
+            fit: BoxFit.cover, // 이미지의 크기를 조절하여 CircleAvatar에 맞게 맞출지 결정 (필요에 따라 변경 가능)
+          ).image);
     }
   }
 
@@ -205,27 +236,26 @@ class _ProfileEditState extends State<ProfileEdit> {
     return File(croppedImage.path);
   }
 
+  void getProfileViewData() async {
+    final email = {'id': 'alsdnd336@naver.com'};
+    final response = await profileViewData(email);
+    final jsonData = jsonDecode(response);
+    userNickName = jsonData['nickname'];
+    userIntroduction = jsonData['info'];
+    userProfileImage = jsonData['imgLocation'];
+    nameTextController.text = userNickName;
+    introductionController.text = userIntroduction;
+    imagePath = userProfileImage;
+    if (imagePath != '') {
+      imageBeforeChange = imagePath!;
+    }
+    setState(() {});
+  }
+
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final args = ModalRoute.of(context)!.settings.arguments as UserInformation;
-    userNickName = args.userNickName;
-    userIntroduction = args.userIntroduction;
-
-    if (userIntroduction != null) {
-      IntroductionBeforeChange = userIntroduction!;
-    }
-    if (args.userProfileImage != null) {
-      imagePath = File(args.userProfileImage!);
-      ImageFileBeforeChange = File(args.userProfileImage!);
-    }
-
-    setState(() {
-      nameTextController.text = userNickName;
-      introductionController.text = userIntroduction == null
-          ? IntroductionBeforeChange
-          : userIntroduction!;
-    });
+  void initState() {
+    getProfileViewData();
+    super.initState();
   }
 
   @override
@@ -245,46 +275,58 @@ class _ProfileEditState extends State<ProfileEdit> {
         ),
         actions: [
           TextButton(
-            child: Text('완료', style: TextStyle(color: Colors.blue, fontSize: 16)),
+            child:
+                Text('완료', style: TextStyle(color: Colors.blue, fontSize: 16)),
             onPressed: () async {
-              if (imagePath == ImageFileBeforeChange &&
-                  IntroductionBeforeChange == introductionController.text &&
+              if (imagePath == imageBeforeChange &&
+                  userIntroduction == introductionController.text &&
                   userNickName == nameTextController.text) {
+                if (nameTextController.text == '') {
                   Flushbar(
-                      margin: EdgeInsets.symmetric(horizontal: 30),
-                      flushbarPosition: FlushbarPosition.TOP,
-                      duration: Duration(seconds: 2),
-                      message: '변경사항을 입력해주세요.',
-                      messageSize: 15,
-                      borderRadius: BorderRadius.circular(4),
-                      backgroundColor: Colors.white,
-                      messageColor: Colors.black,
-                      boxShadows: [
-                        BoxShadow(
-                          color: Colors.grey,
-                          blurRadius: 8,
-                        ),
-                      ],
-                    ).show(context);
-                }else{
-                  final data = {
-                    'userId': 'alsdnd336@naver.com',
-                    'info': introductionController.text,
-                    'nickname': nameTextController.text,
-                  };
-                  if (imagePath != null) {
-                    final response = await profileEdit(data, imagePath: imagePath!.path);
-                    if(response != null){
-                      Navigator.pop(context, 'editIt');
-                    }
-                  } else  {
-                    final response = await profileEdit(data);
-                    // print(response);
-                    if(response != null){
-                      Navigator.pop(context, 'editIt');
-                    }
-                  }
+                    margin: EdgeInsets.symmetric(horizontal: 30),
+                    flushbarPosition: FlushbarPosition.TOP,
+                    duration: Duration(seconds: 2),
+                    message: '닉네임을 입력해주세요.',
+                    messageSize: 15,
+                    borderRadius: BorderRadius.circular(4),
+                    backgroundColor: Colors.white,
+                    messageColor: Colors.black,
+                    boxShadows: [
+                      BoxShadow(
+                        color: Colors.grey,
+                        blurRadius: 8,
+                      ),
+                    ],
+                  ).show(context);
+                } else {
+                  Flushbar(
+                    margin: EdgeInsets.symmetric(horizontal: 30),
+                    flushbarPosition: FlushbarPosition.TOP,
+                    duration: Duration(seconds: 2),
+                    message: '변경사항을 입력해주세요.',
+                    messageSize: 15,
+                    borderRadius: BorderRadius.circular(4),
+                    backgroundColor: Colors.white,
+                    messageColor: Colors.black,
+                    boxShadows: [
+                      BoxShadow(
+                        color: Colors.grey,
+                        blurRadius: 8,
+                      ),
+                    ],
+                  ).show(context);
                 }
+              } else {
+                final data = {
+                  'userId': 'alsdnd336@naver.com',
+                  'info': introductionController.text,
+                  'nickname': nameTextController.text,
+                };
+                final response = await profileEdit(data, imagePath);
+                if(response != null){
+                  Navigator.pop(context, 'editIt');
+                }
+              }
             },
           ),
         ],
@@ -420,13 +462,4 @@ class _ProfileEditState extends State<ProfileEdit> {
       ),
     );
   }
-}
-
-class UserInformation {
-  final String userNickName;
-  final String? userIntroduction;
-  final String? userProfileImage;
-
-  UserInformation(
-      this.userNickName, this.userIntroduction, this.userProfileImage);
 }

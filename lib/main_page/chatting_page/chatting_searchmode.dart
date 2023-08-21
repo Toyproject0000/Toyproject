@@ -14,10 +14,19 @@ class _ChatSearchModeState extends State<ChatSearchMode> {
   final TextEditingController textController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
 
+  void SearchUser(){
+    final data = {
+      'sendUser' : 'minwung',
+      'acceptUser' : textController.text,
+    };
+    
+  }
+
+
   @override
   void didChangeDependencies() {
-    super.didChangeDependencies();
     FocusScope.of(context).requestFocus(_focusNode);
+    super.didChangeDependencies();
   }
 
   @override
@@ -36,28 +45,37 @@ class _ChatSearchModeState extends State<ChatSearchMode> {
         ),
         leadingWidth: 30,
         backgroundColor: Colors.white,
-        title: Container(
-          margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
-          padding: EdgeInsets.symmetric(horizontal: 15,),
-          decoration: BoxDecoration(
-              color: Colors.grey[300], borderRadius: BorderRadius.circular(15)),
-          child: Row(
-            children: [
-              Icon(Icons.search),
-              SizedBox(
-                width: 5,
-              ),
-              Expanded(
-                  child: TextFormField(
-                controller: textController,
-                focusNode: _focusNode,
-                cursorColor: Colors.black,
-                decoration: InputDecoration(
-                    hintText: '검색',
-                    focusedBorder: InputBorder.none,
-                    enabledBorder: InputBorder.none),
-              )),
-            ],
+        title: InkWell(
+          onTap: (){
+            
+          },
+          child: Container(
+            margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
+            padding: EdgeInsets.symmetric(horizontal: 15,),
+            decoration: BoxDecoration(
+                color: Colors.grey[300], borderRadius: BorderRadius.circular(15)),
+            child: Row(
+              children: [
+                Icon(Icons.search),
+                SizedBox(
+                  width: 5,
+                ),
+                Expanded(
+                    child: TextFormField(
+                  controller: textController,
+                  focusNode: _focusNode,
+                  cursorColor: Colors.black,
+                  decoration: InputDecoration(
+                      hintText: '검색',
+                      focusedBorder: InputBorder.none,
+                      enabledBorder: InputBorder.none),
+        
+                  onChanged: (value){
+                    
+                  },
+                )),
+              ],
+            ),
           ),
         ),
       ),

@@ -1,22 +1,15 @@
 import 'dart:io';
 import 'package:another_flushbar/flushbar.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:smart_dongne/login_page/Social_login/kakao_login.dart';
 import 'package:smart_dongne/login_page/Social_login/main_view_model.dart';
-import 'package:smart_dongne/login_page/Social_login/social_login_setting.dart';
-import 'package:smart_dongne/login_page/TermsofService/personalinformaition.dart';
-import 'package:smart_dongne/login_page/TermsofService/termsofservice.dart';
 import 'package:smart_dongne/login_page/TermsofService/userContent.dart';
 import 'package:smart_dongne/login_page/setnickname.dart';
 import 'package:smart_dongne/server/Server.dart';
 import 'package:smart_dongne/login_page/find_password.dart';
-import 'package:smart_dongne/login_page/join_membership_page.dart';
 import 'package:smart_dongne/main_page/setpage.dart';
 import 'Social_login/naver_login.dart';
-import 'find_id.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);

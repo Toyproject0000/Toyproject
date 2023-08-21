@@ -39,6 +39,15 @@ class _HomePageState extends State<HomePage> {
             padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
             child: Row(
               children: [
+                data['imgLocation'] == '' ? CircleAvatar(
+                  backgroundImage: FileImage(data['imgLocation']),
+                ) : CircleAvatar(
+                  backgroundImage: Image.asset('image/basicprofile.png',fit: BoxFit.cover).image,
+                  backgroundColor: Colors.grey,
+                ),
+                SizedBox(
+                  width: 10,
+                ),
                 Text(data['nickname'], style: TextStyle(fontSize: 18)),
               ],
             ),
@@ -90,10 +99,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   void GetMainData() async {
-    
-    final data = {'id' : 'alsdnd336@naver.com'};
+    final data = {'id': 'alsdnd336@naver.com'};
     mainData = await mainPageData(data);
     jsonData = jsonDecode(mainData);
+    // jsonData = jsonDecode(utfData);
     FinishedWidgetList =
         jsonData.map<Container>((data) => MakeaPosting(data)).toList();
     setState(() {
@@ -187,8 +196,6 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ]),
               ),
-              // tempWidget
-              
               BuildFinshWidget == null
                   ? Center(
                       child: CircularProgressIndicator(
@@ -197,7 +204,6 @@ class _HomePageState extends State<HomePage> {
                       ),
                     )
                   : BuildFinshWidget!
-              // tempWidget
             ],
           ),
         ),

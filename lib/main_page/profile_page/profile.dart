@@ -1,3 +1,4 @@
+// import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
@@ -28,19 +29,19 @@ class _ProfilePageState extends State<ProfilePage> {
   Column? BuildFinshWidget;
 
   Widget imageSetting() {
-    if (jsonDataofprofile['imgLocation'] != null) {
+    if (jsonDataofprofile['imgLocation'] != '') {
       return CircleAvatar(radius: 80, backgroundImage: FileImage(File(jsonDataofprofile['imgLocation'])));
     } else {
       return CircleAvatar(
         radius: 80,
         backgroundColor: Colors.grey,
-        child: Image.asset(
+        backgroundImage: Image.asset(
           'image/basicprofile.png',
           width: 100, // 이미지의 가로 크기 조절
           height: 100, // 이미지의 세로 크기 조절
           fit: BoxFit
               .cover, // 이미지의 크기를 조절하여 CircleAvatar에 맞게 맞출지 결정 (필요에 따라 변경 가능)
-        ),
+        ).image,
       );
     }
   }
@@ -48,7 +49,6 @@ class _ProfilePageState extends State<ProfilePage> {
   Container MakeaPosting(data) {
     final contentsDate = data['date'];
     final PostingContent = data['contents'];
-
     return Container(
       child: Column(
         children: [
@@ -111,14 +111,11 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<void> callProfileData() async {
-    // jsonData = null;
     final email = {'id': 'alsdnd336@naver.com'};
     final response = await profileData(email);
     jsonData = jsonDecode(response);
     jsonDataofprofile = jsonData[0];
-
-
-    userPosts = jsonData[1];
+    userPosts = jsonDataofprofile['posts'];
     FinishedWidgetList =
         userPosts!.map<Container>((data) => MakeaPosting(data)).toList();
     BuildFinshWidget = Column(children: FinishedWidgetList);
@@ -141,16 +138,14 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     ) : Scaffold(
       appBar: AppBar(
+        leading: Container(),
         title: Text('프로필'),
+        centerTitle: true,
         backgroundColor: Colors.white,
         actions: [
           TextButton(
               onPressed: () async {
-                final EditPageResponse = await Navigator.pushNamed(context, ProfileEdit.routeName,
-                    arguments: UserInformation(
-                        jsonDataofprofile['nickname'],
-                        jsonDataofprofile['info'],
-                        jsonDataofprofile['imgLocation']));
+                final EditPageResponse = await Navigator.pushNamed(context, ProfileEdit.routeName);
                 if(EditPageResponse != null){
                   callProfileData();
                 }
@@ -266,12 +261,21 @@ class _ProfilePageState extends State<ProfilePage> {
                   DropdownMenuItem<String>(
                     value: dropDownList[0],
                     child: Text(dropDownList[0]),
-                    onTap: (){}, 
+                    onTap: (){
+                      setState(() {
+                        BuildFinshWidget = Column(children :FinishedWidgetList);
+                      });
+                    }, 
                   ),
                   DropdownMenuItem<String>(
                     value: dropDownList[1],
                     child: Text(dropDownList[1]),
-                    onTap: (){},
+                     onTap: (){
+                        Iterable<Container> reversedNumbers = FinishedWidgetList.reversed;
+                      setState(() {
+                        BuildFinshWidget = Column(children: reversedNumbers.toList(),);
+                      });
+                    },
                   ),
                 ],  
               )

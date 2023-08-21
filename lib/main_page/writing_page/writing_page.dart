@@ -44,10 +44,8 @@ class _WritingPageState extends State<WritingPage> {
         backgroundColor: Colors.blue[400],
       ));
     }
-
     return null;
   }
-
 
   @override
   Widget build(BuildContext context) {

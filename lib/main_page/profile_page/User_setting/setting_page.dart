@@ -80,9 +80,6 @@ class _UserSettingState extends State<UserSetting> {
                 TextButton(onPressed: (){
                   Navigator.popUntil(context, ModalRoute.withName('/'));
                 }, child: Text('로그아웃', style: TextStyle(color: Colors.grey),)),
-                TextButton(onPressed: (){
-                  
-                }, child: Text('회원탈퇴', style: TextStyle(color: Colors.grey),))
 
               ],
             ),

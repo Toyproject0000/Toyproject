@@ -1,4 +1,3 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:smart_dongne/login_page/Social_login/social_login_setting.dart';
@@ -9,7 +8,9 @@ import 'package:smart_dongne/login_page/find_password_2.dart';
 import 'package:smart_dongne/login_page/join_membership_page.dart';
 import 'package:smart_dongne/login_page/login_page.dart';
 import 'package:smart_dongne/login_page/setnickname.dart';
+import 'package:smart_dongne/main_page/chatting_page/chatting_Content.dart';
 import 'package:smart_dongne/main_page/chatting_page/chatting_searchmode.dart';
+import 'package:smart_dongne/main_page/home_page/Comment_page.dart';
 import 'package:smart_dongne/main_page/home_page/Content_page.dart';
 import 'package:smart_dongne/main_page/profile_page/User_setting/Account_management.dart';
 import 'package:smart_dongne/main_page/profile_page/User_setting/setting_page.dart';
@@ -67,6 +68,8 @@ class MyApp extends StatelessWidget {
         TermsofService.routeName: (context) => TermsofService(),
         PersonalInformation.routeName: (context) => PersonalInformation(),
         UserConsent.routeName: (context) => UserConsent(),
+        CommentPage.routeName: (context) => CommentPage(),
+        ChattingContent.routeName: (context) => ChattingContent(),
       },
     );
   }
