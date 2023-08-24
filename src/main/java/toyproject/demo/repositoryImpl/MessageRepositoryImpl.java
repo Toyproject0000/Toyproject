@@ -42,18 +42,18 @@ public class MessageRepositoryImpl implements MessageRepository {
 
     @Override
     public List<Message> search(Message message) {
-        return jdbcTemplate.query("select * from message where senduser = ? and acceptuser = ? and message = ?", rowMapper, message.getSendUser(), message.getAcceptUser(), message.getMessage());
+        return jdbcTemplate.query("select * from message where (senduser = ? and acceptuser = ? and message = ?) or (senduser = ? and acceptuser = ? and message = ?) ORDER BY date desc", rowMapper, message.getSendUser(), message.getAcceptUser(), message.getMessage(), message.getAcceptUser(), message.getSendUser(), message.getMessage());
     }
 
     @Override
-    public List<Message> deleteAll(Message message) {
-        jdbcTemplate.query("delete from message where senduser = ? and acceptuser = ?", rowMapper, message.getAcceptUser(), message.getSendUser());
-        return jdbcTemplate.query("delete from message where senduser = ? and acceptuser = ?", rowMapper, message.getSendUser(), message.getAcceptUser());
+    public void deleteAll(Message message) {
+        jdbcTemplate.update("delete from message where senduser = ? and acceptuser = ?", message.getAcceptUser(), message.getSendUser());
+        jdbcTemplate.update("delete from message where senduser = ? and acceptuser = ?", message.getSendUser(), message.getAcceptUser());
     }
 
     @Override
     public List<Message> delete(Message message) {
-        return jdbcTemplate.query("delete from message where senduser = ? and acceptuser = ? and message = ? and date = ?", rowMapper, message.getSendUser(), message.getAcceptUser(), message.getMessage(), message.getDate());
-
+        jdbcTemplate.update("delete from message where senduser = ? and acceptuser = ? and message = ? and date = ?", message.getSendUser(), message.getAcceptUser(), message.getMessage(), message.getDate());
+        return null;
     }
 }

@@ -1,16 +1,16 @@
-package toyproject.demo.domain;
+package toyproject.demo.domain.DTO;
 
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class Follow {
+public class FollowWithTokenDTO {
     Long id;
     String followingUserId; //팔로잉하는사람
     String followedUserId; //팔로잉받는사람
     LocalDateTime date;
+    String token;
 }

@@ -1,17 +1,24 @@
 package toyproject.demo.Controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import toyproject.demo.converter.PostConverter;
+import toyproject.demo.converter.ReplyConverter;
+import toyproject.demo.domain.DTO.PostWithTokenDTO;
+import toyproject.demo.domain.DTO.ReplyWithTokenDTO;
 import toyproject.demo.domain.Follow;
 import toyproject.demo.domain.Post;
 import toyproject.demo.domain.Reply;
 import toyproject.demo.domain.User;
+import toyproject.demo.service.JwtTokenUtil;
 import toyproject.demo.service.ReplyService;
 
 @RestController
 @RequestMapping("/reply")
+@RequiredArgsConstructor
 public class ReplyController {
 
     /*
@@ -22,13 +29,19 @@ public class ReplyController {
     * 유저가 쓴 답글 찾기
     * */
     private final ReplyService replyService;
-
-    public ReplyController(ReplyService replyService) {
-        this.replyService = replyService;
-    }
+    private final JwtTokenUtil tokenUtil;
+    private final ReplyConverter replyConverter;
+    private final PostConverter postConverter;
 
     @PostMapping("/add")
-    public String add(@RequestBody Reply reply){
+    public String add(@RequestBody ReplyWithTokenDTO tokenReply){
+        try {
+            tokenUtil.parseJwtToken(tokenReply.getToken());
+        }catch (Exception e){
+            return "잘못된 접근입니다.";
+        }
+        Reply reply = replyConverter.convert(tokenReply);
+
         try {
             replyService.add(reply);
             return "ok";
@@ -38,7 +51,13 @@ public class ReplyController {
     }
 
     @PostMapping("/delete")
-    public String delete(@RequestBody Reply reply){
+    public String delete(@RequestBody ReplyWithTokenDTO tokenReply){
+        try {
+            tokenUtil.parseJwtToken(tokenReply.getToken());
+        }catch (Exception e){
+            return "잘못된 접근입니다.";
+        }
+        Reply reply = replyConverter.convert(tokenReply);
         try {
             replyService.delete(reply);
             return "ok";
@@ -47,7 +66,14 @@ public class ReplyController {
         }
     }
     @PostMapping("/edit")
-    public String edit(@RequestBody Reply reply){
+    public String edit(@RequestBody ReplyWithTokenDTO tokenReply){
+        try {
+            tokenUtil.parseJwtToken(tokenReply.getToken());
+        }catch (Exception e){
+            return "잘못된 접근입니다.";
+        }
+        Reply reply = replyConverter.convert(tokenReply);
+
         try {
             replyService.edit(reply);
             return "ok";
@@ -56,8 +82,14 @@ public class ReplyController {
         }
     }
 
-    @PostMapping("/myReply")
-    public String findPost(@RequestBody Post post){
+    @PostMapping("/post")
+    public String findPost(@RequestBody PostWithTokenDTO tokenPost){
+        try {
+            tokenUtil.parseJwtToken(tokenPost.getToken());
+        }catch (Exception e){
+            return "잘못된 접근입니다.";
+        }
+        Post post = postConverter.convert(tokenPost);
         try {
             replyService.findReplyOfPost(post);
             return "ok";

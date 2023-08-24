@@ -1,4 +1,4 @@
-package toyproject.demo.Controller.완료;
+package toyproject.demo.Controller;
 
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -6,13 +6,13 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import toyproject.demo.converter.UserConverter;
 import toyproject.demo.domain.DTO.ProfileDTO;
 import toyproject.demo.domain.DTO.ProfileViewDTO;
+import toyproject.demo.domain.DTO.UserWithTokenDTO;
 import toyproject.demo.domain.User;
 import toyproject.demo.service.*;
 
-
-import java.io.IOException;
 import java.util.*;
 
 @RestController
@@ -23,8 +23,9 @@ public class UserController {
     private final UserService userService;
     private final MailService mailService;
     private final ImgUploadService imgUploadService;
-
     private final PostService postService;
+    private final JwtTokenUtil tokenUtil;
+    private final UserConverter userConverter;
 
     @PostMapping(value = "/join", produces = "application/json;charset=UTF-8")
     public String join(@RequestBody User user){
@@ -32,12 +33,11 @@ public class UserController {
     }
 
     @PostMapping(value = "/login", produces = "application/json;charset=UTF-8")
-    public String login(@RequestBody User user, HttpServletRequest request){
-        HttpSession session = request.getSession();
-        session.setAttribute("SessionId", user.getId());
+    public String login(@RequestBody User user){
+        String token = tokenUtil.createToken(user.getId());
         String result = userService.login(user);
         if(!result.equals("ok")) return result;
-        return session.getId();
+        return token;
     }
 
     @PostMapping(value = "/findId", produces = "application/json;charset=UTF-8")
@@ -56,7 +56,15 @@ public class UserController {
     }
 
     @PostMapping(value = "/remove", produces = "application/json;charset=UTF-8")
-    public String delete(@RequestBody User user){
+    public String delete(@RequestBody UserWithTokenDTO tokenUser){
+        try {
+            tokenUtil.parseJwtToken(tokenUser.getToken());
+        }catch (Exception e){
+            return "잘못된 요청입니다.";
+        }
+
+        User user = userConverter.convert(tokenUser);
+
         String login = userService.login(user);
         if(login=="ok"){
         try {
@@ -105,8 +113,15 @@ public class UserController {
                              @RequestParam(required = false) String info,
                              @RequestParam(required = false) String nickname,
                              @RequestParam(required = false) String password,
+                             @RequestParam String token,
                              @RequestParam(required = false, defaultValue = "false") String basicImage
                              ){
+        try {
+            tokenUtil.parseJwtToken(token);
+        }catch (Exception e){
+            return "잘못된 요청입니다.";
+        }
+
         try {
             User user = new User();
             user.setId(userId);
@@ -130,7 +145,13 @@ public class UserController {
     }
 
     @PostMapping(value = "/profile/view", produces = "application/json;charset=UTF-8")
-    public ProfileViewDTO ProfileView(@RequestBody User user){
+    public ProfileViewDTO ProfileView(@RequestBody UserWithTokenDTO tokenUser){
+        try {
+            tokenUtil.parseJwtToken(tokenUser.getToken());
+        }catch (Exception e){
+            return null;
+        }
+        User user = userConverter.convert(tokenUser);
         try {
             String id = user.getId();
             User findUser = userService.findUser(id).get(0);
@@ -144,7 +165,14 @@ public class UserController {
     }
 
     @PostMapping(value = "/profile", produces = "application/json;charset=UTF-8")
-    public List<ProfileDTO> ViewProfile(@RequestBody User user){
+    public List<ProfileDTO> ViewProfile(@RequestBody UserWithTokenDTO tokenUser){
+        try {
+            tokenUtil.parseJwtToken(tokenUser.getToken());
+        }catch (Exception e){
+            return null;
+        }
+        User user = userConverter.convert(tokenUser);
+
         String id = user.getId();
 
         List<ProfileDTO> profile = userService.userProfile(id);

@@ -9,7 +9,7 @@ public interface MessageRepository {
     List<Message> findAll(Message message);
     List<Message> findMessage(Message message);
     List<Message> search(Message message);
-    List<Message> deleteAll(Message message);
+    void deleteAll(Message message);
     List<Message> delete(Message message);
 
 }

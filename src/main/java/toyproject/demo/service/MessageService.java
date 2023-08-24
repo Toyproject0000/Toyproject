@@ -46,6 +46,7 @@ public class MessageService {
             messages = messageRepository.search(message);
         }
         catch (Exception e){
+            System.out.println("e.getMessage() = " + e.getMessage());
             return null;
         }
         return Optional.ofNullable(messages);
@@ -55,6 +56,7 @@ public class MessageService {
         try {
             messageRepository.deleteAll(message);
         }catch (Exception e){
+            System.out.println("e.getMessage() = " + e.getMessage());
             return "cancel";
         }
         return "ok";

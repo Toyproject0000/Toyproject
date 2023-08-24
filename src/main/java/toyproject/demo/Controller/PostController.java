@@ -1,13 +1,18 @@
-package toyproject.demo.Controller.완료;
+package toyproject.demo.Controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import toyproject.demo.converter.PostConverter;
+import toyproject.demo.converter.UserConverter;
+import toyproject.demo.domain.DTO.PostWithTokenDTO;
+import toyproject.demo.domain.DTO.UserWithTokenDTO;
 import toyproject.demo.domain.Post;
 import toyproject.demo.domain.User;
 import toyproject.demo.service.FindAlgorithm;
 import toyproject.demo.service.ImgUploadService;
+import toyproject.demo.service.JwtTokenUtil;
 import toyproject.demo.service.PostService;
 
 import java.io.IOException;
@@ -23,6 +28,9 @@ public class PostController {
     private final PostService postService;
     private final ImgUploadService imgUploadService;
     private final FindAlgorithm algorithm;
+    private final JwtTokenUtil tokenUtil;
+    private final PostConverter postConverter;
+    private final UserConverter userConverter;
 
     @PostMapping(value = "/submit", produces = "application/json;charset=UTF-8")
     public String submitPost(@RequestParam(required = false) MultipartFile file,
@@ -31,7 +39,14 @@ public class PostController {
                              @RequestParam String title,
                              @RequestParam String category,
                              @RequestParam String disclosure,
-                             @RequestParam String possibleReply) {
+                             @RequestParam String possibleReply,
+                             @RequestParam String token) {
+        try {
+            tokenUtil.parseJwtToken(token);
+        }catch (Exception e){
+            return null;
+        }
+
         Post post = new Post();
         try {
             post.setUserId(userId);
@@ -56,11 +71,17 @@ public class PostController {
     @PatchMapping(value = "/edit", produces = "application/json;charset=UTF-8")
     public String editConfirm(@RequestParam(required = false) MultipartFile file,
                               @RequestParam String userId,
-                              @RequestParam String contents,
-                              @RequestParam String title,
-                              @RequestParam String category,
-                              @RequestParam String disclosure,
-                              @RequestParam String possibleReply){
+                              @RequestParam(required = false) String contents,
+                              @RequestParam(required = false) String title,
+                              @RequestParam(required = false) String category,
+                              @RequestParam(required = false) String disclosure,
+                              @RequestParam(required = false) String possibleReply,
+                              @RequestParam String token){
+        try {
+            tokenUtil.parseJwtToken(token);
+        }catch (Exception e){
+            return null;
+        }
         Post post = new Post();
         try {
             post.setUserId(userId);
@@ -82,7 +103,13 @@ public class PostController {
     }
 
     @PostMapping(value = "/delete", produces = "application/json;charset=UTF-8")
-    public String delete(@RequestBody Post post){
+    public String delete(@RequestBody PostWithTokenDTO tokenPost){
+        try {
+            tokenUtil.parseJwtToken(tokenPost.getToken());
+        }catch (Exception e){
+            return null;
+        }
+        Post post = postConverter.convert(tokenPost);
         try {
             postService.delete(post);
             return "ok";
@@ -92,31 +119,50 @@ public class PostController {
     }
 
     @PostMapping(value = "/search", produces = "application/json;charset=UTF-8")
-    public List<Post> search(@RequestBody(required = false) Post post,
+    public List<Post> search(@RequestBody(required = false) PostWithTokenDTO tokenPost,
                              @RequestBody(required = false) LocalDate formerDate,
                              @RequestBody(required = false) LocalDate afterDate) throws IOException {
+        try {
+            tokenUtil.parseJwtToken(tokenPost.getToken());
+        }catch (Exception e){
+            return null;
+        }
+        Post post = postConverter.convert(tokenPost);
 
         return postService.search(post, formerDate, afterDate);
     }
 
     @PostMapping(value = "/find-follower", produces = "application/json;charset=UTF-8")
-    public Optional<List<Post>> findPostOfFollower(@RequestBody User user){
+    public Optional<List<Post>> findPostOfFollower(@RequestBody UserWithTokenDTO tokenUser){
+        try {
+            tokenUtil.parseJwtToken(tokenUser.getToken());
+        }catch (Exception e){
+            return null;
+        }
+        User user = userConverter.convert(tokenUser);
+
+
         return Optional.ofNullable(postService.findPostByFollower(user));
     }
 
     @PostMapping(value = "/find-likepost", produces = "application/json;charset=UTF-8")
-    public Optional<List<Post>> findLikePost(@RequestBody User user){
+    public Optional<List<Post>> findLikePost(@RequestBody UserWithTokenDTO tokenUser){
+        try {
+            tokenUtil.parseJwtToken(tokenUser.getToken());
+        }catch (Exception e){
+            return null;
+        }
+        User user = userConverter.convert(tokenUser);
         return Optional.ofNullable(postService.findAllLikePost(user));
     }
 
     /**
      *
      * @param post
-     * @param userId
      */
     @PostMapping
-    public void read(@RequestBody Post post, @RequestBody String userId){
-        algorithm.read(post, userId);
+    public void read(@RequestBody Post post){
+        algorithm.read(post, post.getUserId());
     }
 
 }
