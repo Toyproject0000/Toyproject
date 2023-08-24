@@ -1,4 +1,4 @@
-package toyproject.demo.Controller;
+package toyproject.demo.Controller.완료;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +19,6 @@ import java.util.*;
 @RequiredArgsConstructor
 public class MainController {
     private final PostService postService;
-    private final PostConverter postConverter;
     private final JwtTokenUtil tokenUtil;
 
     @PostMapping(value = "/recommend", produces = "application/json;charset=UTF-8")
@@ -39,7 +38,6 @@ public class MainController {
         }catch (Exception e){
             return null;
         }
-
         return postService.recommendWithCategory(tokenPost.getCategory());
     }
 

@@ -32,8 +32,4 @@ public class ReplyService {
     public List<Reply> findReplyOfPost(Post post){
         return replyRepository.findReplyOfPost(post);
     }
-
-    public List<Reply> findReplyOfUser(User user){
-        return replyRepository.findReplyOfUser(user);
-    }
 }

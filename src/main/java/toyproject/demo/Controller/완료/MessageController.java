@@ -1,4 +1,4 @@
-package toyproject.demo.Controller;
+package toyproject.demo.Controller.완료;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RestController;
 import toyproject.demo.converter.MessageConverter;
 import toyproject.demo.domain.DTO.MessageWithTokenDTO;
 import toyproject.demo.domain.Message;
-import toyproject.demo.domain.User;
 import toyproject.demo.service.JwtTokenUtil;
 import toyproject.demo.service.MessageService;
 

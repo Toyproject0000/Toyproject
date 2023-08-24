@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<p>요청 url : http://localhost:8080/post/submit</p>
+<p>
+  요청 형식<br>
+  var request = http.MultipartRequest('POST', Uri.parse('http://localhost:8080/post/submit'));<br>
+  request.fields.addAll({<br>
+  "token":"토큰",<br>
+  'userId': 'test1',<br>
+  'contents': '테스트입니다.111111',<br>
+  'title': '테스트',<br>
+  'category': '테스트',<br>
+  'disclosure': '1',<br>
+  'possibleReply': '1'<br>
+  });<br>
+  request.files.add(await http.MultipartFile.fromPath('file', '/C:/Users/kwh87/OneDrive/바탕 화면/히후미.jpg'));<br>
+  <br>
+  http.StreamedResponse response = await request.send();<br>
+  <br>
+</p>
+<p>반환 : ok, 에러발생</p>
+</body>
+</html>

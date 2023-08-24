@@ -1,4 +1,4 @@
-package toyproject.demo.Controller;
+package toyproject.demo.Controller.완료;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -117,6 +117,15 @@ public class PostController {
             return "에러 발생";
         }
     }
+
+    /**
+     *
+     * @param tokenPost
+     * @param formerDate
+     * @param afterDate
+     * @return
+     * @throws IOException
+     */
 
     @PostMapping(value = "/search", produces = "application/json;charset=UTF-8")
     public List<Post> search(@RequestBody(required = false) PostWithTokenDTO tokenPost,

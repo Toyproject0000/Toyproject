@@ -24,8 +24,8 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public void insert(User user) {
-        jdbcTemplate.update("INSERT INTO user (id, password, name, phoneNumber,  gender) " +
-                "VALUES (?, ?, ?, ?, ?, ?)", user.getId(), user.getPassword(), user.getName(), user.getPhoneNumber(), user.getGender());
+        jdbcTemplate.update("INSERT INTO user (id, password, name, phoneNumber,  gender, nickname) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?)", user.getId(), user.getPassword(), user.getName(), user.getPhoneNumber(), user.getGender(), user.getNickname());
     }
 
     @Override
@@ -34,6 +34,11 @@ public class UserRepositoryImpl implements UserRepository {
                 user.getPassword(), user.getNickname(), user.getInfo(), user.getImgLocation(), userId);
     }
 
+    /**
+     *
+     * @param user
+     * 삭제하면 관련된 정보들 다 삭제되게 수정해야함.
+     */
     @Override
     public void delete(User user) {
         jdbcTemplate.update("delete from user where id = ?", user.getId());

@@ -1,4 +1,4 @@
-package toyproject.demo.Controller;
+package toyproject.demo.Controller.완료;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -9,10 +9,8 @@ import toyproject.demo.converter.PostConverter;
 import toyproject.demo.converter.ReplyConverter;
 import toyproject.demo.domain.DTO.PostWithTokenDTO;
 import toyproject.demo.domain.DTO.ReplyWithTokenDTO;
-import toyproject.demo.domain.Follow;
 import toyproject.demo.domain.Post;
 import toyproject.demo.domain.Reply;
-import toyproject.demo.domain.User;
 import toyproject.demo.service.JwtTokenUtil;
 import toyproject.demo.service.ReplyService;
 

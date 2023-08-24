@@ -7,78 +7,91 @@
 <body>
 <p>user 관련</p>
 <a href="http://localhost:8080/profile">프로필 보기</a>
-<br><br>
+<br>
 <a href="http://localhost:8080/profile/set">프로필 수정</a>
-<!--<br><br>-->
-<!--<a href="http://localhost:8080/findId">아이디 찾기</a>-->
-<!--<br><br>-->
-<!--<a href="http://localhost:8080/findPassword/email">비번찾기 - 이메일 검증</a>-->
-<!--<br><br>-->
-<!--<a href="http://localhost:8080/findPassword/check">비번찾기 - 정보 입력</a>-->
-<!--<br><br>-->
-<!--<a href="http://localhost:8080/setPassword">비번 찾기 - 새 비번 입력</a>-->
-<!--<br><br>-->
-<!--<a href="http://localhost:8080/edit-user/confirm">회원정보 수정/정보입력</a>-->
-<!--<br><br>-->
-<!--<a href="http://localhost:8080/edit-user">회원정보 수정/정보확인</a>-->
-<!--<br><br>-->
-<!--<a href="http://localhost:8080/remove">회원탈퇴</a>-->
-<!--<br><br>-->
-<!--<a href="http://localhost:8080/nickname">닉네임 중복 확인</a>-->
-<!--<br><br>-->
-<!--<a href="http://localhost:8080/authentication">인증번호 요청</a>-->
-<!--<br><br>-->
-<!--<a href="http://localhost:8080/authentication-check">인증번호 검증</a>-->
-<!--<br><br>-->
+<br>
+<a href="http://localhost:8080/join">프로필 보기</a>
+<br>
+<a href="http://localhost:8080/login">프로필 보기</a>
+<br>
+<a href="http://localhost:8080/remove">프로필 보기</a>
+<br>
+<a href="http://localhost:8080/nickname">프로필 보기</a>
+<br>
 
-<br><br>
+<br>
 <p>Post 관련</p>
 <a href="http://localhost:8080/post/submit">글 쓰기</a>
-<br><br>
+<br>
+<a href="http://localhost:8080/post/post-edit">글 수정</a>
+<br>
+<a href="http://localhost:8080/post/delete">글 삭제</a>
+<br>
+<a href="http://localhost:8080/post/search">글 검색</a> -> 수정할 예정
+<br>
+<a href="http://localhost:8080/post/find-follower">팔로우한 사람의 글 모두 보기</a> -> 수정할 예정
+<br>
+<a href="http://localhost:8080/post/find-likepost">좋아요한 글 보기</a> -> 수정할 예정
+<br>
 <a href="http://localhost:8080/main/recommend">메인</a>
-<br><br>
-<!--<a href="http://localhost:8080/post/read">글 읽기</a>-->
-<!--<br><br>-->
-<!--<a href="http://localhost:8080/post/edit">글 수정</a>-->
-<!--<br><br>-->
-<!--<a href="http://localhost:8080/post/delete">글 삭제</a>-->
-<!--<br><br>-->
-<!--<a href="http://localhost:8080/post/search">검색</a>-->
-<!--<br><br>-->
-<!--<a href="http://localhost:8080/post/find-mypost-bycontent">내가 쓴 글</a>-->
-<!--<br><br>-->
-<!--<a href="http://localhost:8080/post/find-follower">팔로워 글</a>-->
-<!--<br><br>-->
-<!--<a href="http://localhost:8080/post/find-likepost">좋아요한 글 보기</a>-->
-<!--<br><br>-->
+<br>
+<a href="http://localhost:8080/main/recommend/category">카테고리 추천</a>
+<br>
 
-<br><br>
+
+<br>
 <p>메세지 관련</p>
 <a href="http://localhost:8080/message/send">보내기</a>
-<br><br>
+<br>
 <a href="http://localhost:8080/message/findAll">모든 대화</a>
-<br><br>
+<br>
 <a href="http://localhost:8080/message/user">특정 사람과 나눈 대화</a>
-<br><br>
+<br>
 <a href="http://localhost:8080/message/search">검색</a>
-<br><br>
+<br>
 <a href="http://localhost:8080/message/deleteAll">대화방 지우기</a>
-<br><br>
+<br>
 <a href="http://localhost:8080/message/delete">특정 메세지만 지우기</a>
 
-<br><br>
+<br>
 <p>차단/신고 관련</p>
 <a href="http://localhost:8080/block/user">차단</a>
-<br><br>
+<br>
 <a href="http://localhost:8080/report/user">신고</a>
-<br><br>
+<br>
 <a href="http://localhost:8080/cancel/block/user">차단 풀기</a>
-<br><br>
+<br>
 <a href="http://localhost:8080/cancel/report/user">신고 출기</a>
-<br><br>
+<br>
 <a href="http://localhost:8080/find/block/user">차단한 유저 찾기</a>
-<br><br>
+<br>
 <a href="http://localhost:8080/find/report/user">신고한 유저 찾기</a>
-<br><br>
+<br>
+
+<p>팔로우 관련</p>
+<a href="http://localhost:8080/follow/add">팔로우 추가</a>
+<br>
+<a href="http://localhost:8080/follow/remove">팔로우 취소</a>
+<br>
+<a href="http://localhost:8080/follow/find-follower">나를 팔로우한 사람 찾기</a>
+<br>
+<a href="http://localhost:8080/follow/find-following">내가 팔로우한 사람 찾기</a>
+<br>
+
+<p>게시물 좋아요 관련</p>
+<a href="http://localhost:8080/post-like/add">게시물 좋아요하기</a>
+<br>
+<a href="http://localhost:8080/post-like/remove">게시물 좋아요 취소</a>
+<br>
+
+<p>댓글 관련</p>
+<a href="http://localhost:8080/reply/add">댓글 남기기</a>
+<br>
+<a href="http://localhost:8080/reply/delete">댓글 삭제</a>
+<br>
+<a href="http://localhost:8080/reply/edit">댓글 수정</a>
+<br>
+<a href="http://localhost:8080/reply/post">게시물의 댓글 보기</a>
+<br>
 </body>
 </html>

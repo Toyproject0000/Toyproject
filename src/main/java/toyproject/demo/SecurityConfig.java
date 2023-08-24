@@ -37,7 +37,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(
-                                "/version", "/login/google"
+                                "*"
                         )
                         .permitAll()
                 )

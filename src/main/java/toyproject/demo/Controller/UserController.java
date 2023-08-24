@@ -65,15 +65,13 @@ public class UserController {
 
         User user = userConverter.convert(tokenUser);
 
-        String login = userService.login(user);
-        if(login=="ok"){
+
         try {
             userService.delete(user);
-            return "ok";
         }catch (Exception e){
             return "에러발생";
-        }}
-        else return login;
+        }
+        return "ok";
     }
     @PostMapping(value = "/nickname", produces = "application/json;charset=UTF-8")
     public String duplicateNickname(@RequestBody User user){

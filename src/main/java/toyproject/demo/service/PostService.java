@@ -32,8 +32,9 @@ public class PostService {
     public void delete(Post post){
         Long id = post.getId();
         Post findPost = postRepository.findPost(id).get(0);
+        if (findPost.getImgLocation()!=null){
         String imgLocation = findPost.getImgLocation();
-        new File(imgLocation).delete();
+        new File(imgLocation).delete();}
 
         postRepository.delete(post);
     }

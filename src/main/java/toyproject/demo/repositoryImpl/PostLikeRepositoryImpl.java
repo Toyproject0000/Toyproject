@@ -16,13 +16,13 @@ public class PostLikeRepositoryImpl implements PostLikeRepository {
 
     @Override
     public void insert(PostLike postlike) {
-        jdbcTemplate.update("insert into post (postId, userId) values (?,?)"
+        jdbcTemplate.update("insert into post (post_id, user_id) values (?,?)"
                 , postlike.getPostId(), postlike.getUserId());
     }
 
     @Override
     public void delete(PostLike postLike) {
-        jdbcTemplate.update("delete from postLike where postId = ? And userID = ?", postLike.getPostId(), postLike.getUserId());
+        jdbcTemplate.update("delete from postLike where post_id = ? And user_id = ?", postLike.getPostId(), postLike.getUserId());
     }
 
 }

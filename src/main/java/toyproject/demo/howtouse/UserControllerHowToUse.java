@@ -1,4 +1,4 @@
-package toyproject.demo.service.howtouse;
+package toyproject.demo.howtouse;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -10,56 +10,51 @@ public class UserControllerHowToUse {
 
     @GetMapping(value = "/join")
     public String join(){
-        return "user/user-join";
+        return "user/join";
     }
 
     @GetMapping(value = "/login")
     public String login(){
-        return "user/user-login";
+        return "user/login";
     }
 
     @GetMapping(value = "/findId")
     public String findId(){
-        return "user/user-findID";
+        return "user/findID";
     }
 
     @GetMapping(value = "/findPassword/email")
     public String findPasswordEmail(){
-        return "user/user-findPassword-email";
+        return "user/findPassword-email";
     }
 
     @GetMapping(value = "/findPassword/check")
     public String findPassword(){
-        return "user/user-findPassword-check";
+        return "user/findPassword-check";
     }
 
     @GetMapping(value = "/setPassword")
     public String setPassword(){
-        return "user/user-setPassword";
+        return "user/setPassword";
     }
-
-//    @GetMapping(value = "/edit-user/user")
-//    public String edit(){
-//        return "user/user-edit";
-//    }
 
     @GetMapping(value = "/remove")
     public String delete(){
-            return "user/user-remove";
+            return "user/remove";
     }
     @GetMapping(value = "/nickname")
     public String duplicateNickname(){
-        return "user/user-nickname";
+        return "user/nickname";
     }
 
     @GetMapping(value = "/authentication")
     public String authentication(){
-        return "user/user-authentication";
+        return "user/authentication";
     }
 
     @GetMapping(value = "/authentication-check")
     public String check(){
-        return "user/user-authentication-check";
+        return "user/authentication-check";
     }
 
     @GetMapping(value = "/profile")
