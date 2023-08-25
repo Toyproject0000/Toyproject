@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("follow")
+@RequestMapping("/follow")
 public class FollowControllerHowToUse {
     @GetMapping("/add")
     public String add(){
