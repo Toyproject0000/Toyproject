@@ -35,13 +35,9 @@ public class SecurityConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                .authorizeHttpRequests(request -> request
-                        .requestMatchers(
-                                "*"
-                        )
-                        .permitAll()
-                )
-                .authorizeHttpRequests(request -> request.anyRequest().authenticated());
+                .authorizeHttpRequests(authorize -> authorize
+                        .anyRequest().permitAll() // 모든 요청에 대해 허용
+                );
 
         return http.build();
     }

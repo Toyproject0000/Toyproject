@@ -1,7 +1,9 @@
 package toyproject.demo.howtouse;
 
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
+@Controller
 public class BlockControllerHowToUse {
     @GetMapping("/block/user")
     public String blockUser(){
