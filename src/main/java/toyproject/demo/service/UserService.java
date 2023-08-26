@@ -22,6 +22,7 @@ public class UserService {
             return "ok";
         }
         catch (Exception e){
+            System.out.println(e.getMessage());
             return "cancel";
         }
     }

@@ -7,6 +7,7 @@ import lombok.Setter;
 @Setter
 public class UserWithTokenDTO {
     String id;
+    String root;
     String password;
     String name;
     String info;
