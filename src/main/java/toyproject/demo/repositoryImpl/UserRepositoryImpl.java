@@ -30,8 +30,8 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public void update(User user, String userId) {
-        jdbcTemplate.update("UPDATE user SET password = COALESCE(?, password),  nickname = COALESCE(?, nickname), info = COALESCE(?, info), img_location = coalesce(?, img_location) WHERE id = ?",
-                user.getPassword(), user.getNickname(), user.getInfo(), user.getImgLocation(), userId);
+        jdbcTemplate.update("UPDATE user SET password = COALESCE(?, password),  nickname = COALESCE(?, nickname), info = COALESCE(?, info), img_location = coalesce(?, img_location), name = coalesce(?, name), phone_number = coalesce(?, phone_number), gender = coalesce(?, gender) WHERE id = ?",
+                user.getPassword(), user.getNickname(), user.getInfo(), user.getImgLocation(),user.getName(),user.getPhoneNumber(),user.getGender(), userId);
     }
 
     /**

@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import toyproject.demo.converter.UserConverter;
+import toyproject.demo.domain.Authentication;
 import toyproject.demo.domain.DTO.ProfileDTO;
 import toyproject.demo.domain.DTO.ProfileViewDTO;
 import toyproject.demo.domain.DTO.UserWithTokenDTO;
@@ -79,8 +80,9 @@ public class UserController {
     }
 
     @PostMapping(value = "/authentication", produces = "application/json;charset=UTF-8")
-    public String authentication(@RequestParam String id, HttpServletRequest request) {
+    public String authentication(@RequestBody User user, HttpServletRequest request) {
         try {
+            String id = user.getId();
             String num = mailService.sendMail(id);
             HttpSession session = request.getSession();
             session.setAttribute(id, num);
@@ -93,7 +95,9 @@ public class UserController {
     }
 
     @PostMapping(value = "/authentication-check", produces = "application/json;charset=UTF-8")
-    public Boolean authenticationCheck(@RequestParam String id, String num, HttpServletRequest request){
+    public Boolean authenticationCheck(@RequestBody Authentication data, HttpServletRequest request){
+        String id = data.getId();
+        String num = data.getNum();
         HttpSession session = request.getSession(false);
         String realNum = (String)session.getAttribute(id);
         if (realNum.equals(num)){
@@ -102,7 +106,6 @@ public class UserController {
         }
         return false;
     }
-
     /**
      */
     @PostMapping(value = "/profile/set", produces = "application/json;charset=UTF-8")
