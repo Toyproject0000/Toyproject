@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import toyproject.demo.domain.Post;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -13,5 +14,5 @@ public class ProfileDTO {
     String nickname;
     String info;
     String imgLocation;
-    List<Post> posts;
+    List<Post> posts = new ArrayList<>();
 }
