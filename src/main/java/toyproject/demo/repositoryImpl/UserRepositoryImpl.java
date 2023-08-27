@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import toyproject.demo.domain.DTO.ProfileDTO;
+import toyproject.demo.domain.DTO.ProfileViewDTO;
 import toyproject.demo.domain.User;
 import toyproject.demo.repository.UserRepository;
 
@@ -15,9 +16,11 @@ public class UserRepositoryImpl implements UserRepository {
     private final JdbcTemplate jdbcTemplate;
     private final RowMapper rowMapper;
     private final RowMapper profileRowMapper;
+    private final RowMapper profileViewRowMapper;
 
     public UserRepositoryImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+        this.profileViewRowMapper = BeanPropertyRowMapper.newInstance(ProfileViewDTO.class);
         this.profileRowMapper = BeanPropertyRowMapper.newInstance(ProfileDTO.class);
         this.rowMapper = BeanPropertyRowMapper.newInstance(User.class);
     }
@@ -80,8 +83,13 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public List<User> findUser(String id) {
-        return jdbcTemplate.query("select * from user where id = ?", rowMapper, id);
+    public List<ProfileViewDTO> findUser(String id) {
+        return jdbcTemplate.query(
+                "SELECT u.*, " +
+                        "(SELECT COUNT(*) FROM follow f1 WHERE f1.followedUserId = u.id) AS following, " +
+                        "(SELECT COUNT(*) FROM follow f2 WHERE f2.followingUserId = u.id) AS follower " +
+                        "FROM user u " +
+                        "WHERE u.id = ?", profileViewRowMapper, id);
     }
 
     @Override

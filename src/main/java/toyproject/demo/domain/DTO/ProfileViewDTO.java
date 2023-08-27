@@ -6,9 +6,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
 public class ProfileViewDTO {
     String nickname;
     String info;
     String imgLocation;
+    String follower;
+    String following;
 }

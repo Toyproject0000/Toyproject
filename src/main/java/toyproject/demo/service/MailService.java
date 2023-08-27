@@ -1,9 +1,11 @@
 package toyproject.demo.service;
 
+import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import toyproject.demo.domain.Mail;
 
@@ -19,16 +21,21 @@ public class MailService {
         mail.setAddress(id);
         Random random = new Random();
         String num = String.valueOf(random.nextInt(100000, 1000000));
-        mail.setContent(num);
-        sendSimpleMessage(mail);
+        mail.setContentForJoin(num);
+        sendHtmlMail(mail);
         return num;
     }
 
-    private void sendSimpleMessage(Mail mail) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(mail.getAddress());
-        message.setSubject(mail.getTitle());
-        message.setText(mail.getContent());
-        mailSender.send(message);
+    public void sendHtmlMail(Mail mail) {
+        MimeMessage message = mailSender.createMimeMessage();
+        try {
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            helper.setTo(mail.getAddress());
+            helper.setSubject(mail.getTitle());
+            helper.setText(mail.getContent(), true);
+            mailSender.send(message);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 }

@@ -41,6 +41,12 @@ public class UserController {
         return token;
     }
 
+    /**
+     *
+     * @param user
+     * @return
+     */
+
     @PostMapping(value = "/findId", produces = "application/json;charset=UTF-8")
     public String findId(@RequestBody User user){
         return userService.findId(user);
@@ -155,8 +161,7 @@ public class UserController {
         User user = userConverter.convert(tokenUser);
         try {
             String id = user.getId();
-            User findUser = userService.findUser(id).get(0);
-            ProfileViewDTO profileView = new ProfileViewDTO(findUser.getNickname(), findUser.getInfo(), findUser.getImgLocation());
+            ProfileViewDTO profileView = userService.findUser(id).get(0);
 
             return profileView;
         }catch (Exception e){
