@@ -104,9 +104,13 @@ public class UserController {
     public Boolean authenticationCheck(@RequestBody Authentication data, HttpServletRequest request){
         try {
             String id = data.getId();
+            System.out.println("id = " + id);
             String num = data.getNum();
+            System.out.println("num = " + num);
             HttpSession session = request.getSession(false);
+            System.out.println("session = " + session.toString());
             String realNum = (String)session.getAttribute(id);
+            System.out.println("realNum = " + realNum);
             if (realNum.equals(num)){
                 session.invalidate();
                 return true;
