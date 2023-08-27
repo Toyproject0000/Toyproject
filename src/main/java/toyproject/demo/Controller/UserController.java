@@ -102,17 +102,22 @@ public class UserController {
 
     @PostMapping(value = "/authentication-check", produces = "application/json;charset=UTF-8")
     public Boolean authenticationCheck(@RequestBody Authentication data, HttpServletRequest request){
-        String id = data.getId();
-        String num = data.getNum();
-        HttpSession session = request.getSession(false);
-        String realNum = (String)session.getAttribute(id);
-        if (realNum.equals(num)){
-            session.invalidate();
-            return true;
+        try {
+            String id = data.getId();
+            String num = data.getNum();
+            HttpSession session = request.getSession(false);
+            String realNum = (String)session.getAttribute(id);
+            if (realNum.equals(num)){
+                session.invalidate();
+                return true;
+            }
+        }catch (Exception e){
+            System.out.println(e.getMessage());
         }
         return false;
     }
     /**
+     *
      */
     @PostMapping(value = "/profile/set", produces = "application/json;charset=UTF-8")
     public String setProfile(@RequestParam(value = "file", required = false) MultipartFile file,
