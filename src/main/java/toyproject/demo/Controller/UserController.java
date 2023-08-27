@@ -37,8 +37,9 @@ public class UserController {
     public String login(@RequestBody User user){
         String token = tokenUtil.createToken(user.getId());
         String result = userService.login(user);
-        if(!result.equals("ok")) return result;
-        return token;
+        if(result.equals("id 오류")||result.equals("비번 오류")||result.equals("닉네임 설정 안됨")) return result;
+
+        return "token : " + token + "\nnickname : "+result;
     }
 
     /**

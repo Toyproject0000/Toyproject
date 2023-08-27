@@ -78,7 +78,7 @@ public class UserService {
             return "비번 오류";
         }
         if (findUser.get(0).getNickname()==null) return "닉네임 설정 안됨";
-        return "ok";
+        return findUser.get(0).getNickname();
     }
 
 
