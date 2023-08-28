@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
 import 'package:smart_dongne/server/chatServer.dart';
+import 'package:smart_dongne/server/userId.dart';
 
 class ChattingContent extends StatefulWidget {
   const ChattingContent({super.key});
@@ -21,8 +22,8 @@ class _ChattingContentState extends State<ChattingContent> {
   ScrollController scrollController = ScrollController();
   List? jsonData;
   List? reverseList;
-
-
+  RichText? finshedFindWidget;
+  List<TextSpan>? fintWordTextSpanList;
 
   late AppBar searchAppBar;
   late AppBar basicAppBar;
@@ -37,10 +38,36 @@ class _ChattingContentState extends State<ChattingContent> {
       "sendUser" : sendUser,
       "acceptUser" : acceptUser,
       "message" : content,
+      'token' : jwtToken,
     };
 
     final response = await chattingContentSearch(data);
     final jsonData = jsonDecode(response);
+    print(jsonData);
+  }
+
+  void findWord(String value){
+    print(value);
+    for(int i = 0; i <= jsonData!.length - 1; i++){
+      String message = jsonData![i]['message'];
+      List<String> findWordList = message.split(value);
+      fintWordTextSpanList = findWordList.map((word) => findWordRichText(word, value)).toList();
+      finshedFindWidget = RichText(
+        text: TextSpan(
+          style: TextStyle(color: Colors.white),
+          children: fintWordTextSpanList
+      ),);
+      setState(() { });
+    }
+  }
+
+  TextSpan findWordRichText(word, value){
+    if(word == value){
+      return TextSpan(text: value, style: TextStyle(color: Colors.red, background: Paint()..color = Colors.red));
+    }else{
+      return TextSpan(text: word, style: TextStyle(color: Colors.white),);  
+    }
+
   }
 
   void SendMessage(content) async {
@@ -63,6 +90,9 @@ class _ChattingContentState extends State<ChattingContent> {
   }
 
   Widget MakeaChattingContentWidget(data){
+
+    
+
     if(data['sendUser'] == sendUser){
       return ChatBubble(
         clipper: ChatBubbleClipper1(type: BubbleType.sendBubble),
@@ -73,10 +103,19 @@ class _ChattingContentState extends State<ChattingContent> {
           constraints: BoxConstraints(
             maxWidth: MediaQuery.of(context).size.width * 0.7,
           ),
-          child: Text(
-            data['message'] == null ? 'null' : data['message'],
-            style: TextStyle(color: Colors.white),
-          ),
+          // child: Text(
+          //   data['message'] == null ? 'null' : data['message'],
+          //   style: TextStyle(color: Colors.white),
+          // ),
+          child: finshedFindWidget == null ? RichText(
+            text: TextSpan(
+              style: TextStyle(color: Colors.white),
+              children: fintWordTextSpanList == null ? [
+                TextSpan(
+                  text :data['message'] == null ? 'null' : data['message'], style: TextStyle(color: Colors.white),)
+              ] : fintWordTextSpanList
+            ) 
+          ) : finshedFindWidget,
         ),
       );
     }else {
@@ -103,6 +142,7 @@ class _ChattingContentState extends State<ChattingContent> {
                     child: Text(
                       data['message'],
                       style: TextStyle(color: Colors.black),
+                      
                     ),
                   ),
                 ),
@@ -128,7 +168,7 @@ class _ChattingContentState extends State<ChattingContent> {
           child: Text(
             jsonData![index]['message'] == null ? 'null' : jsonData![index]['message'],
             style: TextStyle(color: Colors.white),
-          ),
+          )
         ),
       );
     } else {
@@ -169,44 +209,48 @@ class _ChattingContentState extends State<ChattingContent> {
   void bringbackDataofMessage() async {
     final data = {
       'sendUser' : sendUser,
-      'acceptUser' : acceptUser
+      'acceptUser' : acceptUser,
+      'token' : jwtToken,
     };
     final response = await aConversationWithaParticularPerson(data);
     jsonData = jsonDecode(response);
-    reverseList = jsonData!.reversed.toList();
-    setState(() {});
+    setState(() {
+      reverseList = jsonData!.reversed.toList();
+    });
   }
 
   @override
   void initState() {
     searchAppBar = AppBar(
     elevation: 0,
-    backgroundColor: Colors.white,
-    leading: IconButton(
-      icon: Icon(Icons.arrow_back_ios, color: Colors.black,),
-      onPressed: (){
-        setState(() {
-          searchMode = false;
+    backgroundColor: Colors.grey[100],
+    leading: Icon(Icons.search, color: Colors.black,),
+    actions: [
+      TextButton(
+        onPressed: (){
+          setState(() {
+            searchMode = false;
           });
-        },
-      ),
+        }, 
+        child: Text('취소', style: TextStyle(color: Colors.black),))
+    ],
       title: Container(
-        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 15),
         decoration: BoxDecoration(
-          color: Colors.grey[100],
           borderRadius: BorderRadius.circular(5),
         ),
-        child: EditableText(
+        child: TextFormField(
+          onFieldSubmitted: (value) => findWord(value),
           controller: searchController,
           focusNode: _focusNode,
-          cursorColor: Colors.blue, 
+          cursorColor: Colors.blue,
           style: TextStyle(
             color: Colors.black
-          ), 
-          backgroundCursorColor: Colors.blue,
-          onSubmitted: (value){
-            sendSearchDataServer(value);
-          },
+          ),
+          decoration: InputDecoration(
+            border: InputBorder.none,
+            focusedBorder: InputBorder.none,
+            hintText: '내용을 입력하시오.'
+          ),
         ),
       ),
     );
@@ -217,7 +261,7 @@ class _ChattingContentState extends State<ChattingContent> {
       actions: [
         IconButton(onPressed: (){
           setState(() {
-            searchMode = true;
+            searchMode = true;            
           });
         }, icon: Icon(Icons.search))
       ],
@@ -225,6 +269,14 @@ class _ChattingContentState extends State<ChattingContent> {
       backgroundColor: Colors.white,
     );
     super.initState();
+  }
+
+  @override
+  void setState(VoidCallback fn) {
+    // TODO: implement setState
+    if(mounted){
+      super.setState(fn);
+    }
   }
 
   @override
@@ -245,17 +297,22 @@ class _ChattingContentState extends State<ChattingContent> {
         Column(
           children: [
             Expanded(
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(10,0,10,10),
-                child: ListView.builder(
-                  controller: scrollController,
-                  reverse: true,
-                  itemCount: jsonData!.length ,
-                  itemBuilder:(context, index){
-                    return chatBubbleWidget(index);
-                  }
+              child: GestureDetector(
+                onTap: (){
+                  FocusScope.of(context).unfocus();
+                },
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(10,0,10,10),
+                  child: ListView.builder(
+                    controller: scrollController,
+                    reverse: true,
+                    itemCount: jsonData!.length ,
+                    itemBuilder:(context, index){
+                      return chatBubbleWidget(index);
+                    }
+                  ),
                 ),
-              )
+              ),
             ),
             if(searchMode == false)
             Container(
@@ -302,7 +359,7 @@ class _ChattingContentState extends State<ChattingContent> {
                   IconButton(
                     onPressed: activationSendButton == false ? null : (){
                     SendMessage(chattingBarController.text);
-                  }, icon: Icon(Icons.send, color: Colors.blue,),
+                  }, icon: Icon(Icons.send, color: activationSendButton == false ? null : Colors.blue,),
                   )
                 ],
               ),

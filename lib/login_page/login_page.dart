@@ -1,19 +1,20 @@
-import 'dart:io';
-import 'package:another_flushbar/flushbar.dart';
+import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_dongne/login_page/Social_login/kakao_login.dart';
 import 'package:smart_dongne/login_page/Social_login/main_view_model.dart';
-import 'package:smart_dongne/login_page/TermsofService/userContent.dart';
-import 'package:smart_dongne/login_page/setnickname.dart';
+import 'package:smart_dongne/login_page/TermsofService/agreement.dart';
 import 'package:smart_dongne/server/Server.dart';
 import 'package:smart_dongne/login_page/find_password.dart';
 import 'package:smart_dongne/main_page/setpage.dart';
+import 'package:smart_dongne/server/userId.dart';
 import 'Social_login/naver_login.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
   static const routeName = '/';
+  static bool autoLogin = false;
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -25,20 +26,34 @@ class _LoginScreenState extends State<LoginScreen> {
   bool personalInfomation = false;
   bool allconsend = false;
 
+  bool stayLoggedIn = false;
+
   final _formKey = GlobalKey<FormState>();
   String userEmail = '';
   String userPassword = '';
   bool loginError = true;
 
-  void _tryValidation() {
+  void upDateEmailAndPassword() {}
+
+  void _tryValidation() async {
     final isValid = _formKey.currentState!.validate();
-    if (isValid) {
+    if (isValid == true) {
       _formKey.currentState!.save();
       var data = {
         'id': userEmail,
         'password': userPassword,
+        'root' : 'local'
       };
-      loginSendData(data, context, loginCheck);
+      final response = await loginSendData(data, context);
+      final jsonData = jsonDecode(response);
+      if (response != null) {
+        globalUserId = jsonData['id'];
+        jwtToken = jsonData['token'];
+        globalNickName = jsonData['nickname'];
+        Navigator.pushNamed(context, SetPage.routeName);
+      } else {
+        loginCheck();
+      }
     }
   }
 
@@ -48,25 +63,29 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
+  // auto Login lmplementation
+  void upDateEmailandPassword() async {
+    final SharedPreferences pref = await SharedPreferences.getInstance();
+    pref.setString('useremail', userEmail);
+    pref.setString('userPassword', userPassword);
+  }
+
+  void setData() async {
+    final SharedPreferences pref = await SharedPreferences.getInstance();
+    try {
+      StayLogin stayLoginInstance = StayLogin();
+      stayLoginInstance.userEmail = pref.getString('useremail');
+      stayLoginInstance.userPassword = pref.getString('userPassword');
+    } catch (e) {
+      print('에러 : $e');
+    }
+  }
+
   void kakaoAccountServer() async {
     final data = await viewModel.login();
-    final kakaoServer = JoinMemdership();
-    final jsonData = kakaoServer.sendData(data);
-    if (jsonData == null) {
-      Navigator.pushNamed(context, NickName.routeName);
-    } else {
-      Flushbar(
-        margin: EdgeInsets.symmetric(horizontal: 15),
-        flushbarPosition: FlushbarPosition.TOP,
-        duration: Duration(seconds: 2),
-        message: '이미 가입된 사용자 입니다.',
-        messageSize: 15,
-        borderRadius: BorderRadius.circular(4),
-        backgroundColor: Colors.white,
-        messageColor: Colors.black,
-        boxShadows: [BoxShadow(color: Colors.black, blurRadius: 8)],
-      ).show(context);
-    }
+    globalUserId = data['id'];
+    LoginRoot = data['root'];
+    Navigator.pushNamed(context, UserConsent.routeName);
   }
 
   @override
@@ -107,7 +126,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Container(
                       padding: EdgeInsets.all(20.0),
                       width: MediaQuery.of(context).size.width - 50,
-                      height: 400,
+                      height: 430,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(5),
                         border: Border.all(
@@ -123,9 +142,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               TextFormField(
                                 validator: (value) {
                                   if (value!.isEmpty) {
-                                    loginError = false;
+                                    return '이메일 형식에 맞게 작성해주세요.';
                                   } else if (!value.contains('@')) {
-                                    loginError = false;
+                                    return '이메일 형식에 맞게 작성해주세요.';
                                   }
                                   return null;
                                 },
@@ -146,7 +165,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               TextFormField(
                                 validator: (value) {
                                   if (value!.isEmpty) {
-                                    loginError = false;
+                                    return '비밀번호가 틀렸습니다.';
                                   }
                                   return null;
                                 },
@@ -170,8 +189,18 @@ class _LoginScreenState extends State<LoginScreen> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     IconButton(
-                                      onPressed: () {},
-                                      icon: Icon(Icons.check_circle, size: 20),
+                                      onPressed: () {
+                                        setState(() {
+                                          stayLoggedIn = !stayLoggedIn;
+                                        });
+                                      },
+                                      icon: Icon(
+                                        Icons.check_circle,
+                                        size: 20,
+                                        color: stayLoggedIn == false
+                                            ? Colors.grey
+                                            : Colors.blue,
+                                      ),
                                     ),
                                     Text(
                                       '로그인 상태를 유지',
@@ -180,23 +209,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ],
                                 ),
                               ),
-                              if (loginError == false)
-                                Padding(
-                                  padding: EdgeInsets.only(bottom: 10),
-                                  child: Text(
-                                    '아이디(로그인 전용 아이디) 또는 비밀번호를 잘못 입력했습니다.'
-                                    '입력하신 내용을 다시 확인해주세요.',
-                                    style: TextStyle(
-                                      color: Colors.red,
-                                    ),
-                                  ),
-                                ),
+                              
                               // 로그인 버튼
                               ElevatedButton(
                                 onPressed: () {
-                                  // _tryValidation();
-                                  Navigator.pushNamed(
-                                      context, SetPage.routeName);
+                                  _tryValidation();
+                                  // Navigator.pushNamed(
+                                  //     context, SetPage.routeName);
                                   // Navigator.pushNamed(context, SocialLoginSetting.rotueName);
                                 },
                                 child: Text(
@@ -257,17 +276,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // TextButton(
-                      //   onPressed: () {
-                      //     Navigator.pushNamed(context, FindId.routeName);
-                      //   },
-                      //   child: Text(
-                      //     '아이디 찾기',
-                      //     style: TextStyle(
-                      //       color: Colors.grey,
-                      //     ),
-                      //   ),
-                      // ),
                       TextButton(
                         onPressed: () {
                           Navigator.pushNamed(context, FindPassword.routeName);
@@ -281,10 +289,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       TextButton(
                         onPressed: () {
-                          // Navigator.pushNamed(
-                          //     context, Joinmembership.routeName);
-                          // Navigator.pushNamed(context, TermsofService.routeName);
-                          // Navigator.pushNamed(context, PersonalInformation.routeName);
+                          LoginRoot = 'local';
                           Navigator.pushNamed(context, UserConsent.routeName);
                         },
                         child: Text(

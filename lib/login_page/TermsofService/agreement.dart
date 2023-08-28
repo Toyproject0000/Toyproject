@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_dongne/login_page/Social_login/social_login_setting.dart';
 import 'package:smart_dongne/login_page/TermsofService/termsofservice.dart';
 import 'package:smart_dongne/login_page/join_membership_page.dart';
+import 'package:smart_dongne/server/userId.dart';
 
 class UserConsent extends StatefulWidget {
   const UserConsent({super.key});
@@ -15,9 +17,8 @@ class _UserConsentState extends State<UserConsent> {
   bool allconsend = false;
   bool termsofservice = false;
   bool personalInfomation = false;
-
+  dynamic args;
   bool isLoading = false;
-  
 
   @override
   Widget build(BuildContext context) {
@@ -35,26 +36,26 @@ class _UserConsentState extends State<UserConsent> {
           style: TextStyle(color: Colors.blue, fontSize: 25),
         ),
       ),
-      body:  Container(
+      body: Container(
         padding: EdgeInsets.symmetric(vertical: 25, horizontal: 15),
         child: Column(
           children: [
             Row(children: [
               IconButton(
                 onPressed: () {
-                  if(allconsend == false){
-                      setState(() {
-                        allconsend = true;
-                        termsofservice = true;
-                        personalInfomation = true;
-                      });
-                    }else{
-                      setState(() {
-                        allconsend = false;
-                        termsofservice = false;
-                        personalInfomation = false;
-                      });
-                    }
+                  if (allconsend == false) {
+                    setState(() {
+                      allconsend = true;
+                      termsofservice = true;
+                      personalInfomation = true;
+                    });
+                  } else {
+                    setState(() {
+                      allconsend = false;
+                      termsofservice = false;
+                      personalInfomation = false;
+                    });
+                  }
                 },
                 icon: Icon(
                   Icons.check_circle_outline,
@@ -82,9 +83,10 @@ class _UserConsentState extends State<UserConsent> {
                       onPressed: () {
                         setState(() {
                           termsofservice = !termsofservice;
-                          if(termsofservice == true && personalInfomation == true){
+                          if (termsofservice == true &&
+                              personalInfomation == true) {
                             allconsend = true;
-                          }else{
+                          } else {
                             allconsend = false;
                           }
                         });
@@ -92,7 +94,8 @@ class _UserConsentState extends State<UserConsent> {
                       icon: Icon(
                         Icons.check_circle_outline,
                         size: 25,
-                        color: termsofservice == false ? Colors.grey : Colors.blue,
+                        color:
+                            termsofservice == false ? Colors.grey : Colors.blue,
                       ),
                     ),
                     SizedBox(
@@ -105,10 +108,12 @@ class _UserConsentState extends State<UserConsent> {
                   ],
                 ),
                 IconButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, TermsofService.routeName);
-                    },
-                    icon: Icon(Icons.arrow_forward_ios), color: Colors.grey,),
+                  onPressed: () {
+                    Navigator.pushNamed(context, TermsofService.routeName);
+                  },
+                  icon: Icon(Icons.arrow_forward_ios),
+                  color: Colors.grey,
+                ),
               ],
             ),
             Row(
@@ -120,9 +125,10 @@ class _UserConsentState extends State<UserConsent> {
                       onPressed: () {
                         setState(() {
                           personalInfomation = !personalInfomation;
-                          if(termsofservice == true && personalInfomation == true){
+                          if (termsofservice == true &&
+                              personalInfomation == true) {
                             allconsend = true;
-                          }else{
+                          } else {
                             allconsend = false;
                           }
                         });
@@ -130,7 +136,9 @@ class _UserConsentState extends State<UserConsent> {
                       icon: Icon(
                         Icons.check_circle_outline,
                         size: 25,
-                        color: personalInfomation == false ? Colors.grey : Colors.blue,
+                        color: personalInfomation == false
+                            ? Colors.grey
+                            : Colors.blue,
                       ),
                     ),
                     SizedBox(
@@ -141,25 +149,38 @@ class _UserConsentState extends State<UserConsent> {
                       style: TextStyle(fontSize: 20),
                     ),
                   ],
-                ), 
+                ),
                 IconButton(
-                    onPressed: () async {
-                      await Navigator.pushNamed(context, TermsofService.routeName);
-                    },
-                    icon: Icon(Icons.arrow_forward_ios), color: Colors.grey,),
+                  onPressed: () async {
+                    await Navigator.pushNamed(
+                        context, TermsofService.routeName);
+                  },
+                  icon: Icon(Icons.arrow_forward_ios),
+                  color: Colors.grey,
+                ),
               ],
             ),
-            SizedBox(height: 20,),
+            SizedBox(
+              height: 20,
+            ),
             Container(
               width: double.infinity,
               child: ElevatedButton(
-                child: Text('완료', style: TextStyle(color: Colors.white, fontSize: 20),),
-                onPressed: allconsend == true ? (){
-                  Navigator.pushNamed(context, Joinmembership.routeName);
-                } : null,            
-                style: ElevatedButton.styleFrom(
-                  primary: Colors.blue
+                child: Text(
+                  '완료',
+                  style: TextStyle(color: Colors.white, fontSize: 20),
                 ),
+                onPressed: allconsend == true
+                    ? () {
+                      if(LoginRoot == 'local'){
+                        Navigator.pushNamed(
+                              context, Joinmembership.routeName);
+                      }else{
+                        Navigator.pushNamed(context, SocialLoginSetting.routeName);
+                      }
+                      }
+                    : null,
+                style: ElevatedButton.styleFrom(primary: Colors.blue),
               ),
             )
           ],
@@ -168,3 +189,4 @@ class _UserConsentState extends State<UserConsent> {
     );
   }
 }
+

@@ -1,14 +1,9 @@
 // import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_summernote/flutter_summernote.dart';
-import 'package:http/http.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:smart_dongne/main_page/writing_page/writing_page_final.dart';
-import 'package:smart_dongne/server/userId.dart';
 
 class WritingPage extends StatefulWidget {
   const WritingPage(this.changeClass, {Key? key}) : super(key: key);
@@ -26,7 +21,7 @@ class _WritingPageState extends State<WritingPage> {
     fontSize: 15,
     color: Colors.black,
   );
-  bool keyboardActivation = false;
+  // bool keyboardActivation = false;
 
   Future<String?> saveText() async {
     final value = await _keyEditor.currentState?.getText();
@@ -43,8 +38,8 @@ class _WritingPageState extends State<WritingPage> {
         ),
         backgroundColor: Colors.blue[400],
       ));
+      return null;
     }
-    return null;
   }
 
   @override
@@ -77,6 +72,9 @@ class _WritingPageState extends State<WritingPage> {
         automaticallyImplyLeading: false,
       ),
       body: FlutterSummernote(
+        decoration: BoxDecoration(
+          border: Border.all(width: 0),
+        ),
         key: _keyEditor,
         hint: "내용을 입력하시오....",
         showBottomToolbar: false,

@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:smart_dongne/login_page/Social_login/social_login.dart';
 
@@ -15,10 +16,9 @@ class MainViewModel {
     isLogined = await _socialLogin.login();
     if (isLogined) {
       user = await UserApi.instance.me();
-      
       final data = {
         'id' : user!.kakaoAccount?.email,
-        'name' : user!.kakaoAccount?.profile?.nickname
+        'root' : 'kakao'
       };
       return data;
     }

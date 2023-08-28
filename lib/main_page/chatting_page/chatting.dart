@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:smart_dongne/main_page/chatting_page/chatting_Content.dart';
 import 'package:smart_dongne/main_page/chatting_page/chatting_searchmode.dart';
 import 'package:smart_dongne/server/chatServer.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:smart_dongne/server/userId.dart';
 
 class Chatting extends StatefulWidget {
   const Chatting({super.key});
@@ -18,54 +20,60 @@ class _ChattingState extends State<Chatting> {
   List? jsonData;
   late Column ChattingListColumn;
 
-  InkWell MakeAChattingWidget(data){
-    return InkWell(
-      onTap: (){
-        Navigator.pushNamed(context, ChattingContent.routeName, arguments: SendUserData(data['sendUser'], data['acceptUser']));
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                CircleAvatar(
-                  backgroundColor: Colors.grey,
-                  radius: 25,
+  void _onDismissed(sendUser, acceptUser, index) async {
+    final data = {
+      'sendUser' : sendUser,
+      'acceptUser' : acceptUser,
+      'token' : jwtToken
+    };
+    final response = await deleteChatting(data);
+    if(response != null){
+      setState(() {});
+    }
+  }
 
-                ),
-                SizedBox(width: 10,),
-                Container(
-                  width: MediaQuery.of(context).size.width - 200,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(data['sendUser'], overflow: TextOverflow.ellipsis, style: TextStyle(color: Colors.black, fontSize: 17),),
-                      SizedBox(height: 5),
-                      Text(data['message'] == null ? 'null' : data['message'], overflow: TextOverflow.ellipsis, maxLines: null,style: TextStyle(color: Colors.grey, fontSize: 15),)
-                    ],
-                  ),
-                )
-              ],
-            ),
-            Text(data['dateTime'] == null ? '5:18' : data['dateTime'], style: TextStyle(fontSize: 15, color: Colors.grey),)
-          ],
+
+  Slidable makeWidgetChatting(index){
+    return Slidable(
+      endActionPane: ActionPane(
+
+        motion: const BehindMotion(),
+        children: [
+          SlidableAction(
+            backgroundColor: Colors.red,
+            icon: Icons.delete,
+            onPressed: (context) => _onDismissed(jsonData![index]['sendUser'], jsonData![index]['acceptUser'], index)
+          ),
+        ],
+      ),
+      child: ListTile(
+        contentPadding: EdgeInsets.all(10),
+        title: Text(jsonData![index]['sendUser'], style: TextStyle(color: Colors.black),),
+        subtitle: Text(jsonData![index]['message'], overflow: TextOverflow.ellipsis),
+        leading: CircleAvatar(
+          backgroundColor: Colors.grey,
+          radius: 25,
         ),
+        trailing: Text(jsonData![index]['dateTime'] == null ? '5:18' : jsonData![index]['dateTime'], style: TextStyle(color: Colors.black),),
+        onTap: (){
+          Navigator.pushNamed(context, ChattingContent.routeName,
+            arguments: SendUserData(jsonData![index]['sendUser'], jsonData![index]['acceptUser']));
+        },
       ),
     );
   }
+  
 
+  
   void getChatdata() async {
-    final data = {'sendUser' : 'minwung'};
-    final response = await chattingMainPageData(data);
-    jsonData = await jsonDecode(response);
-    final List<InkWell> ChattingWidget = jsonData!.map((data) => MakeAChattingWidget(data)).toList();
-    ChattingListColumn = Column(children: ChattingWidget,);
-    setState(() { });
+    final data = {'sendUser': globalNickName, 'token' : jwtToken};
+    final response = await ServerResponseJsonDataTemplate('/message/findAll', data);
+    jsonData = await jsonDecode(response!);
+    print(jsonData);
+    setState(() {});
   }
 
-  @override 
+  @override
   void initState() {
     getChatdata();
     super.initState();
@@ -74,27 +82,33 @@ class _ChattingState extends State<Chatting> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: SafeArea(
-          child: jsonData != null ? Container(
-            child: Container(
-              padding: EdgeInsets.all(10),
-              child: ListView(
-                children: [
-                  Text('메세지', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 17),),
-                  SizedBox(height: 10,),
-                  ChattingListColumn
-                ],
+      body: SafeArea(
+        child: jsonData != null ?
+            Container(
+               child: Container(
+                  padding: EdgeInsets.all(10),
+                  child: ListView.builder(
+                    itemCount: jsonData!.length,
+                    itemBuilder: (context, index){
+                      return makeWidgetChatting(index);
+                    } 
+                  ),
+                )
+            )
+            : Center(
+                child: Text('대화 메시지가 없습니다.'),
               ),
-            ),
-          ) : Center(child: Text('대화 메시지가 없습니다.'),),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(context, ChatSearchMode.routeName);
+        },
+        child: Icon(
+          Icons.search,
+          color: Colors.white,
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.pushNamed(context, ChatSearchMode.routeName);
-          },
-          child: Icon(Icons.search, color: Colors.white,), 
-          backgroundColor: Colors.blue,
-        ),
-      );
+        backgroundColor: Colors.blue,
+      ),
+    );
   }
 }

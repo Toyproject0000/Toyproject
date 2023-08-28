@@ -4,7 +4,7 @@ import 'package:smart_dongne/server/Server.dart';
 
 class UserWithDrawal extends StatefulWidget {
   const UserWithDrawal({super.key});
-  static const rotueName = '/userSetting/accountManagement/withdrawal';
+  static const routeName = '/userSetting/accountManagement/withdrawal';
 
   @override
   State<UserWithDrawal> createState() => _UserWithDrawalState();

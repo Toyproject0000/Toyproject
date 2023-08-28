@@ -4,6 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_dongne/main_page/home_page/Content_page.dart';
 import 'package:smart_dongne/main_page/home_page/search_bar.dart';
+import 'package:smart_dongne/server/chatServer.dart';
+import 'package:smart_dongne/server/userId.dart';
 
 import '../../server/Server.dart';
 
@@ -19,7 +21,7 @@ class _HomePageState extends State<HomePage> {
   late Map<String, dynamic> firstPosting;
   late List<Container> FinishedWidgetList;
   Column? BuildFinshWidget;
-  late dynamic jsonData;
+  dynamic jsonData;
 
   // 게시물에 쓸 데이터들
   Container PostingWidget = Container();
@@ -77,7 +79,7 @@ class _HomePageState extends State<HomePage> {
           InkWell(
             onTap: () {
               Navigator.pushNamed(context, ShowaContents.routeName,
-                  arguments: ContentArguments(PostingContent));
+                  arguments: ContentArguments(PostingContent['content'], PostingContent['userId'], PostingContent['id'],));
             },
             child: AspectRatio(
               aspectRatio: 4 / 4,
@@ -99,11 +101,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   void GetMainData() async {
-    final data = {'id': 'alsdnd336@naver.com'};
-    mainData = await mainPageData(data);
+    final data = {'id': globalUserId, 'token' : jwtToken};
+    mainData = await ServerResponseJsonDataTemplate('/main/recommend' ,data);
     jsonData = jsonDecode(mainData);
-    // jsonData = jsonDecode(utfData);
-    FinishedWidgetList =
+    FinishedWidgetList = 
         jsonData.map<Container>((data) => MakeaPosting(data)).toList();
     setState(() {
       BuildFinshWidget = Column(children: FinishedWidgetList);
@@ -121,7 +122,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 10),
+          padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
           child: ListView(
             children: [
               Padding(

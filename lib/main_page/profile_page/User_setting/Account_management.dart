@@ -24,6 +24,10 @@ class _AccountManagementState extends State<AccountManagement> {
   TextEditingController _nameController = TextEditingController();
   TextEditingController _birthdayController = TextEditingController();
   late String currentOption;
+
+  void togetServerData() async {
+
+  }
   
   @override
   void initState() {
@@ -177,7 +181,7 @@ class _AccountManagementState extends State<AccountManagement> {
             
             InkWell(
               onTap: () {
-                Navigator.pushNamed(context, UserWithDrawal.rotueName);
+                Navigator.pushNamed(context, UserWithDrawal.routeName);
               },
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 15),

@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
-import '../server/userId.dart';
 import 'chatting_page/chatting.dart';
 import 'home_page/home_page.dart';
 import 'profile_page/profile.dart';
@@ -22,7 +20,6 @@ class SetPageState extends State<SetPage> {
   late List<StatefulWidget> screens;
 
   void changeClass(index) {
-    print('change CurrentIndex 실행 중');
     setState(() {
       currentIndex = index;
     });

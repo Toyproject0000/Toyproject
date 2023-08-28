@@ -3,8 +3,11 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_dongne/login_page/TermsofService/postTemplate.dart';
 import 'package:smart_dongne/main_page/profile_page/profile_edit_page.dart';
 import 'package:smart_dongne/main_page/profile_page/User_setting/setting_page.dart';
+import 'package:smart_dongne/server/chatServer.dart';
+import 'package:smart_dongne/server/userId.dart';
 
 import '../../server/Server.dart';
 import '../home_page/Content_page.dart';
@@ -26,7 +29,7 @@ class _ProfilePageState extends State<ProfilePage> {
   List<String> dropDownList = ['최신순', '오래된 순'];
 
   late List<Container> FinishedWidgetList;
-  Column? BuildFinshWidget;
+  Widget? BuildFinshWidget;
 
   Widget imageSetting() {
     if (jsonDataofprofile['imgLocation'] != '') {
@@ -46,83 +49,23 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
-  Container MakeaPosting(data) {
-    final contentsDate = data['date'];
-    final PostingContent = data['contents'];
-    return Container(
-      child: Column(
-        children: [
-          Divider(
-            color: Colors.black,
-            height: 0,
-          ),
-          Container(
-            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-            child: Row(
-              children: [
-                Text(data['nickname'], style: TextStyle(fontSize: 18)),
-              ],
-            ),
-          ),
-          Divider(
-            color: Colors.grey,
-            height: 0,
-          ),
-          Container(
-            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-            child: Row(
-              children: [
-                Text(
-                  '제목:',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(
-                  width: 5,
-                ),
-                Text(
-                  data['title'],
-                  style: TextStyle(fontSize: 15),
-                ),
-              ],
-            ),
-          ),
-          InkWell(
-            onTap: () {
-              Navigator.pushNamed(context, ShowaContents.routeName,
-                  arguments: ContentArguments(PostingContent));
-            },
-            child: AspectRatio(
-              aspectRatio: 4 / 4,
-              child: Image.file(
-                File(data['imgLocation']),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          Container(
-              margin: EdgeInsets.only(bottom: 15),
-              padding: EdgeInsets.all(7),
-              child: Row(
-                children: [Text(contentsDate.substring(0, 10))],
-              )),
-        ],
-      ),
-    );
-  }
-
   Future<void> callProfileData() async {
-    final email = {'id': 'alsdnd336@naver.com'};
-    final response = await profileData(email);
-    jsonData = jsonDecode(response);
+    final email = {'id': globalUserId, 'token' : jwtToken};
+    final response = await ServerResponseJsonDataTemplate('/profile', email);
+    jsonData = jsonDecode(response!);
     jsonDataofprofile = jsonData[0];
     userPosts = jsonDataofprofile['posts'];
-    FinishedWidgetList =
-        userPosts!.map<Container>((data) => MakeaPosting(data)).toList();
-    BuildFinshWidget = Column(children: FinishedWidgetList);
-    setState(() {});
+    if(userPosts != []){
+      FinishedWidgetList =
+        userPosts!.map<Container>((data) => MakeaPosting(data, context)).toList();
+      BuildFinshWidget = Column(children: FinishedWidgetList);
+      setState(() {});
+    }else{
+      setState(() {
+        BuildFinshWidget = Center(child: Text('게시물이 없습니다.'),);
+      });
+    }
   }
-
-  
 
   @override
   void initState() {
@@ -187,12 +130,12 @@ class _ProfilePageState extends State<ProfilePage> {
                     Container(
                       width: MediaQuery.of(context).size.width * 0.4,
                       child: Text(
-                        jsonDataofprofile['info'] == null
+                        jsonDataofprofile['info'] == ''
                             ? '소개글을 입력해주세요'
                             : jsonDataofprofile['info'],
                         maxLines: null,
                         textAlign: TextAlign.start,
-                        style: jsonDataofprofile['info'] == null
+                        style: jsonDataofprofile['info'] == ''
                             ? TextStyle(fontSize: 15, color: Colors.grey)
                             : TextStyle(
                                 fontSize: 15, color: Colors.black87),
@@ -204,7 +147,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(vertical: 12),
+            padding: EdgeInsets.fromLTRB(0,12,0,0),
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
@@ -284,7 +227,7 @@ class _ProfilePageState extends State<ProfilePage> {
           BuildFinshWidget == null ? Center(child: CircularProgressIndicator(
             color: Colors.blue,
             backgroundColor: Colors.grey,
-          ),) : BuildFinshWidget!,
+          ),) :  BuildFinshWidget!
         ],
       ),
     );

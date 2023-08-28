@@ -2,16 +2,13 @@
 import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_summernote/flutter_summernote.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:smart_dongne/main_page/writing_page/cover.dart';
-import 'package:smart_dongne/main_page/writing_page/writing_page.dart';
 import 'package:path_provider/path_provider.dart';
-
+import 'package:smart_dongne/server/userId.dart';
 import '../../server/Server.dart';
-import '../../server/userId.dart';
 
 
 class LastSetting extends StatefulWidget {
@@ -117,6 +114,7 @@ class _LastSettingState extends State<LastSetting> {
         'category' : selectTopic,
         'disclosure': settingRange[disclosureindex],
         'possibleReply' : settingComment,
+        'token' : jwtToken!
       };
       final response = await contentSend(data, finalImageFile);
       

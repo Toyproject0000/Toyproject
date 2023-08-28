@@ -2,13 +2,14 @@ import 'dart:convert';
 
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
-import 'package:smart_dongne/main_page/setpage.dart';
+import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
+import 'package:smart_dongne/server/chatServer.dart';
+import 'package:smart_dongne/server/userId.dart';
 import '../../server/Server.dart';
 
 class ProfileEdit extends StatefulWidget {
@@ -237,9 +238,9 @@ class _ProfileEditState extends State<ProfileEdit> {
   }
 
   void getProfileViewData() async {
-    final email = {'id': 'alsdnd336@naver.com'};
-    final response = await profileViewData(email);
-    final jsonData = jsonDecode(response);
+    final email = {'id': globalUserId, 'token' : jwtToken};
+    final response = await ServerResponseOKTemplate('/profile/view' ,email);
+    final jsonData = jsonDecode(response!);
     userNickName = jsonData['nickname'];
     userIntroduction = jsonData['info'];
     userProfileImage = jsonData['imgLocation'];
@@ -321,8 +322,10 @@ class _ProfileEditState extends State<ProfileEdit> {
                   'userId': 'alsdnd336@naver.com',
                   'info': introductionController.text,
                   'nickname': nameTextController.text,
+                  'token' : jwtToken!
                 };
-                final response = await profileEdit(data, imagePath);
+                final response = await ServerSendImageDataTemplate('/profile/set', data, imagePath);
+                print(response);
                 if(response != null){
                   Navigator.pop(context, 'editIt');
                 }

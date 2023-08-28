@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:smart_dongne/login_page/Social_login/social_login_setting.dart';
+import 'package:smart_dongne/login_page/TermsofService/agreement.dart';
 import 'package:smart_dongne/login_page/TermsofService/termsofservice.dart';
-import 'package:smart_dongne/login_page/TermsofService/userContent.dart';
 import 'package:smart_dongne/login_page/find_password.dart';
 import 'package:smart_dongne/login_page/find_password_2.dart';
 import 'package:smart_dongne/login_page/join_membership_page.dart';
@@ -25,6 +25,7 @@ import 'package:smart_dongne/main_page/writing_page/cover.dart';
 import 'package:smart_dongne/main_page/profile_page/profile_edit_page.dart';
 import 'package:smart_dongne/main_page/writing_page/writing_page_final.dart';
 import 'package:smart_dongne/main_page/setpage.dart';
+import 'package:smart_dongne/server/userId.dart';
 import 'login_page/TermsofService/personalinformaition.dart';
 import 'login_page/find_id.dart';
 
@@ -40,7 +41,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: '/',
+      initialRoute: '/' ,
       theme: ThemeData(primarySwatch: Colors.lightGreen),
       routes: {
         LoginScreen.routeName: (context) => LoginScreen(),
@@ -57,14 +58,14 @@ class MyApp extends StatelessWidget {
         UserSetting.routeName: (context) => UserSetting(),
         AccountManagement.routeName: (context) => AccountManagement(),
         UserNameChange.routeName: (context) => UserNameChange(),
-        UserWithDrawal.rotueName: (context) => UserWithDrawal(),
+        UserWithDrawal.routeName: (context) => UserWithDrawal(),
         AccountNotification.routeName: (context) => AccountNotification(),
         LikeAndPost.routeName: (context) => LikeAndPost(),
         ReaderNotification.routeName: (context) => ReaderNotification(),
         Cutoff.routeName: (context) => Cutoff(),
         Search_Page_bar.routeName: (context) => Search_Page_bar(),
         ShowaContents.routeName: (context) => ShowaContents(),
-        SocialLoginSetting.rotueName: (context) => SocialLoginSetting(),
+        SocialLoginSetting.routeName: (context) => SocialLoginSetting(),
         TermsofService.routeName: (context) => TermsofService(),
         PersonalInformation.routeName: (context) => PersonalInformation(),
         UserConsent.routeName: (context) => UserConsent(),
