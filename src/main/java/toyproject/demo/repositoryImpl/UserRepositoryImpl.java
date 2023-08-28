@@ -49,8 +49,8 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public List<User> findById(String id) {
-        return jdbcTemplate.query("select * from user where id = ?", rowMapper, id);
+    public List<User> findById(String id, String userRoot) {
+        return jdbcTemplate.query("select * from user where id = ? AND root = ?", rowMapper, id, userRoot);
     }
 
     @Override

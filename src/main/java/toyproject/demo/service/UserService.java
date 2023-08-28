@@ -70,7 +70,7 @@ public class UserService {
 
 
     public String login(User user){
-        List<User> findUser = userRepository.findById(user.getId());
+        List<User> findUser = userRepository.findById(user.getId(), user.getRoot());
         if(findUser.size()!=1||!findUser.get(0).getId().equals(user.getId())){
             return "id 오류";
         }
@@ -83,7 +83,7 @@ public class UserService {
     }
 
     public String socialLogin(User user){
-        List<User> findUser = userRepository.findById(user.getId());
+        List<User> findUser = userRepository.findById(user.getId(), user.getRoot());
         if(findUser.size()!=1||!findUser.get(0).getId().equals(user.getId())){
             return "id 오류";
         }
