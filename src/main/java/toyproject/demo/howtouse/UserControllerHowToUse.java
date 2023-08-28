@@ -17,6 +17,10 @@ public class UserControllerHowToUse {
     public String login(){
         return "user/login";
     }
+    @GetMapping(value = "/socialLogin")
+    public String socialLogin(){
+        return "user/socialLogin";
+    }
 
     @GetMapping(value = "/findId")
     public String findId(){
