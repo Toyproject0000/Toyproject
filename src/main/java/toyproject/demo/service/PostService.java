@@ -85,7 +85,7 @@ public class PostService {
 
 
     private static List<Post> selectRandomPost(List<Post> result) {
-        int size = result.size()-1;
+        int size = Math.max(1, result.size()-1);
 
         Set<Integer> num = new HashSet<>();
         Random random = new Random();

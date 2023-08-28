@@ -8,7 +8,7 @@ import lombok.Setter;
 public class User {
     String id;
     String root;
-    String password;
+    String password = "소셜로그인회원";
     String name;
     String info;
     String phoneNumber;

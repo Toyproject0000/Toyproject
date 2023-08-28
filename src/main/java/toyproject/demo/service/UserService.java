@@ -1,25 +1,25 @@
 package toyproject.demo.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import toyproject.demo.domain.DTO.ProfileDTO;
 import toyproject.demo.domain.DTO.ProfileViewDTO;
 import toyproject.demo.domain.User;
+import toyproject.demo.repository.CategoryRepository;
 import toyproject.demo.repository.UserRepository;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-
-
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    private final CategoryRepository categoryRepository;
 
     public String join(User user){
         try {
             userRepository.insert(user);
+            categoryRepository.insert(user.getId());
             return "ok";
         }
         catch (Exception e){
@@ -79,7 +79,20 @@ public class UserService {
         }
         if (findUser.get(0).getNickname()==null) return "닉네임 설정 안됨";
 
-        return "\nid : "+findUser.get(0).getId()+"\nnickname : "+findUser.get(0).getNickname()+"}";
+        return ",\nid : "+findUser.get(0).getId()+",\nnickname : "+findUser.get(0).getNickname()+"}";
+    }
+
+    public String socialLogin(User user){
+        List<User> findUser = userRepository.findById(user.getId());
+        if(findUser.size()!=1||!findUser.get(0).getId().equals(user.getId())){
+            return "id 오류";
+        }
+        if (findUser.get(0).getRoot().equals(user.getRoot())){
+            return "잘못된 접근입니다.";
+        }
+        if (findUser.get(0).getNickname()==null) return "닉네임 설정 안됨";
+
+        return ",\nid : "+findUser.get(0).getId()+",\nnickname : "+findUser.get(0).getNickname()+"}";
     }
 
 
