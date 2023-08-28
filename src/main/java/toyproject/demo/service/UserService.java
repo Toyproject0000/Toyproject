@@ -19,7 +19,7 @@ public class UserService {
     public String join(User user){
         try {
             userRepository.insert(user);
-            categoryRepository.insert(user.getId());
+            categoryRepository.insert(user.getId(), user.getRoot());
             return "ok";
         }
         catch (Exception e){

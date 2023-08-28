@@ -122,6 +122,10 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public List<Post> recommendByAlgorithm(String userId) {
         List<String> categories = jdbcTemplate.queryForList("select category from category where user_id = ?", String.class, userId);
+        System.out.println(categories.size());
+        for (String category : categories) {
+            System.out.println("category = " + category);
+        }
         ArrayList<Post> posts = new ArrayList<>();
         for (String category : categories) {
             posts.addAll(jdbcTemplate.query("SELECT p.*, u.nickname AS nickname, COUNT(pl.post_id) AS likeCount FROM post p LEFT JOIN user u ON p.user_id = u.id LEFT JOIN postLike pl ON p.id = pl.post_id WHERE p.category = ? GROUP BY p.id", rowMapper, category));

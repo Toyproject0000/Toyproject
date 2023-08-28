@@ -10,5 +10,5 @@ public interface CategoryRepository {
      void plus(Post post,String userId ,Integer score);
      void minus(Post post,String userId, Integer score);
      List<Category> findByUser(String userId);
-     void insert(String userId);
+     void insert(String userId, String userRoot);
 }
