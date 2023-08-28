@@ -39,7 +39,7 @@ public class UserController {
         String result = userService.login(user);
         if(result.equals("id 오류")||result.equals("비번 오류")||result.equals("닉네임 설정 안됨")) return result;
 
-        return "{token : " + token + result;
+        return "{\"token\" : \"" + token+"\""+ result;
     }
 
     @PostMapping(value = "/socialLogin", produces = "application/json;charset=UTF-8")
@@ -48,7 +48,7 @@ public class UserController {
         String result = userService.socialLogin(user);
         if(result.equals("id 오류")||result.equals("닉네임 설정 안됨")) return result;
 
-        return "{token : " + token + result;
+        return "{\"token\" : \"" + token+"\""+ result;
     }
 
     /**

@@ -79,7 +79,7 @@ public class UserService {
         }
         if (findUser.get(0).getNickname()==null) return "닉네임 설정 안됨";
 
-        return ",\nid : "+findUser.get(0).getId()+",\nnickname : "+findUser.get(0).getNickname()+"}";
+        return ",\n\"id\" : \""+findUser.get(0).getId()+"\",\n\"nickname\" : \""+findUser.get(0).getNickname()+"\"}";
     }
 
     public String socialLogin(User user){
@@ -87,12 +87,12 @@ public class UserService {
         if(findUser.size()!=1||!findUser.get(0).getId().equals(user.getId())){
             return "id 오류";
         }
-        if (findUser.get(0).getRoot().equals(user.getRoot())){
+        if (!findUser.get(0).getRoot().equals(user.getRoot())){
             return "잘못된 접근입니다.";
         }
         if (findUser.get(0).getNickname()==null) return "닉네임 설정 안됨";
 
-        return ",\nid : "+findUser.get(0).getId()+",\nnickname : "+findUser.get(0).getNickname()+"}";
+        return ",\n\"id\" : \""+findUser.get(0).getId()+"\",\n\"nickname\" : \""+findUser.get(0).getNickname()+"\"}";
     }
 
 
