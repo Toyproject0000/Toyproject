@@ -105,7 +105,6 @@ class _LastSettingState extends State<LastSetting> {
       final tempDir = await getTemporaryDirectory();
       File file = await File('${tempDir.path}/image.png').create();
       final finalImageFile = await file.writeAsBytes(finalImage); 
-      print(finalImageFile.path);
       // 서버에 데이터 보내기
       final data = {
         'userId' : 'alsdnd336@naver.com',

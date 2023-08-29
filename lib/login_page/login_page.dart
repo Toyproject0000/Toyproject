@@ -1,14 +1,19 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_naver_login/flutter_naver_login.dart';
+import 'package:smart_dongne/component/my_Text_Form_Field.dart';
 import 'package:smart_dongne/login_page/Social_login/kakao_login.dart';
 import 'package:smart_dongne/login_page/Social_login/main_view_model.dart';
+import 'package:smart_dongne/login_page/Social_login/social_login.dart';
+import 'package:smart_dongne/login_page/Social_login/social_login_setting.dart';
 import 'package:smart_dongne/login_page/TermsofService/agreement.dart';
+import 'package:smart_dongne/login_page/join_membership_page.dart';
+import 'package:smart_dongne/login_page/setnickname.dart';
 import 'package:smart_dongne/server/Server.dart';
 import 'package:smart_dongne/login_page/find_password.dart';
 import 'package:smart_dongne/main_page/setpage.dart';
 import 'package:smart_dongne/server/userId.dart';
-import 'Social_login/naver_login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -25,49 +30,65 @@ class _LoginScreenState extends State<LoginScreen> {
   bool termsofservice = false;
   bool personalInfomation = false;
   bool allconsend = false;
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
 
   bool stayLoggedIn = false;
 
-  final _formKey = GlobalKey<FormState>();
   String userEmail = '';
   String userPassword = '';
-  bool loginError = true;
+  bool loginError = false;
 
   void upDateEmailAndPassword() {}
 
-  void _tryValidation() async {
-    final isValid = _formKey.currentState!.validate();
-    if (isValid == true) {
-      _formKey.currentState!.save();
-      var data = {
-        'id': userEmail,
-        'password': userPassword,
-        'root' : 'local'
-      };
-      final response = await loginSendData(data, context);
+  void sendIdandPassword() async {
+    final data = {
+      'id' : emailController.text,
+      'password' : passwordController.text,
+      'root' : 'local'
+    };
+    final response = await loginSendData('/login' ,data);
+    if(response != null && response != '닉네임 설정 안됨'){
       final jsonData = jsonDecode(response);
-      if (response != null) {
-        globalUserId = jsonData['id'];
-        jwtToken = jsonData['token'];
-        globalNickName = jsonData['nickname'];
-        Navigator.pushNamed(context, SetPage.routeName);
-      } else {
-        loginCheck();
-      }
+      jwtToken = jsonData['token'];
+      globalNickName = jsonData['nickname'];
+      globalUserId = jsonData['id'];
+      Navigator.pushNamed(context, SetPage.routeName);
+    }else if(response == '닉네임 설정 안됨'){
+      Navigator.pushNamed(context, NickName.routeName);
+    }else{
+      setState(() {
+        loginError = true;
+      });
     }
   }
-
-  void loginCheck() {
-    setState(() {
-      loginError = false;
-    });
+  void socialLogin(email, root) async {
+    final data = {'id' : email, 'root' : root};
+    final response = await loginSendData('/socialLogin', data);
+    if(response == null){
+      globalUserId = email;
+      LoginRoot = root;
+      Navigator.pushNamed(context, UserConsent.routeName);
+    }else if(response == '닉네임 설정 안됨'){
+      Navigator.pushNamed(context, NickName.routeName);
+    }else{
+      final jsonData = jsonDecode(response);
+      jwtToken = jsonData['token'];
+      globalUserId = jsonData['id'];
+      globalNickName = jsonData['nickname'];
+      Navigator.pushNamed(context, SetPage.routeName);
+    }
   }
-
   // auto Login lmplementation
   void upDateEmailandPassword() async {
     final SharedPreferences pref = await SharedPreferences.getInstance();
     pref.setString('useremail', userEmail);
     pref.setString('userPassword', userPassword);
+  }
+  
+  void LoginNaver() async {
+    NaverLoginResult result = await FlutterNaverLogin.logIn();
+    socialLogin(result.account.email, 'naver');
   }
 
   void setData() async {
@@ -79,13 +100,6 @@ class _LoginScreenState extends State<LoginScreen> {
     } catch (e) {
       print('에러 : $e');
     }
-  }
-
-  void kakaoAccountServer() async {
-    final data = await viewModel.login();
-    globalUserId = data['id'];
-    LoginRoot = data['root'];
-    Navigator.pushNamed(context, UserConsent.routeName);
   }
 
   @override
@@ -134,141 +148,101 @@ class _LoginScreenState extends State<LoginScreen> {
                           width: 2,
                         ),
                       ),
-                      child: Form(
-                        key: _formKey,
-                        child: SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              TextFormField(
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return '이메일 형식에 맞게 작성해주세요.';
-                                  } else if (!value.contains('@')) {
-                                    return '이메일 형식에 맞게 작성해주세요.';
-                                  }
-                                  return null;
-                                },
-                                onSaved: (value) {
-                                  userEmail = value!;
-                                },
-                                onChanged: (value) {
-                                  userEmail = value;
-                                },
-                                decoration: InputDecoration(
-                                  prefixIcon: Icon(Icons.email),
-                                  border: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.grey),
-                                  ),
-                                  hintText: '아이디',
-                                ),
-                              ),
-                              TextFormField(
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return '비밀번호가 틀렸습니다.';
-                                  }
-                                  return null;
-                                },
-                                onSaved: (value) {
-                                  userPassword = value!;
-                                },
-                                onChanged: (value) {
-                                  userPassword = value;
-                                },
-                                obscureText: true,
-                                decoration: InputDecoration(
-                                    prefixIcon: Icon(Icons.lock),
-                                    border: OutlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Colors.grey),
-                                    ),
-                                    hintText: '비밀번호'),
-                              ),
-                              Container(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    IconButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          stayLoggedIn = !stayLoggedIn;
-                                        });
-                                      },
-                                      icon: Icon(
-                                        Icons.check_circle,
-                                        size: 20,
-                                        color: stayLoggedIn == false
-                                            ? Colors.grey
-                                            : Colors.blue,
-                                      ),
-                                    ),
-                                    Text(
-                                      '로그인 상태를 유지',
-                                      style: TextStyle(fontSize: 13),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              
-                              // 로그인 버튼
-                              ElevatedButton(
-                                onPressed: () {
-                                  _tryValidation();
-                                  // Navigator.pushNamed(
-                                  //     context, SetPage.routeName);
-                                  // Navigator.pushNamed(context, SocialLoginSetting.rotueName);
-                                },
-                                child: Text(
-                                  '로그인',
-                                  style: TextStyle(
-                                    fontSize: 30,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.blue,
-                                  minimumSize: Size(double.infinity, 48),
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.symmetric(vertical: 20),
-                                child: Text(
-                                  '소셜 로그인',
-                                  style: TextStyle(
-                                      fontSize: 16, color: Colors.grey[600]),
-                                ),
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [                              
+                            MyTextFormField(controller: emailController, hintText: '아이디', obscureText: false,),
+                            SizedBox(height: 10,),
+                            MyTextFormField(controller: passwordController, hintText: '비밀번호', obscureText: true,),
+                            Container(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  InkWell(
-                                    onTap: () {
-                                      login_naver();
+                                  IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        stayLoggedIn = !stayLoggedIn;
+                                      });
                                     },
-                                    child: CircleAvatar(
-                                      radius: 30,
-                                      backgroundImage:
-                                          AssetImage('image/naverButton.png'),
+                                    icon: Icon(
+                                      Icons.check_circle,
+                                      size: 20,
+                                      color: stayLoggedIn == false
+                                          ? Colors.grey
+                                          : Colors.blue,
                                     ),
                                   ),
-                                  SizedBox(
-                                    width: 20,
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      kakaoAccountServer();
-                                    },
-                                    child: CircleAvatar(
-                                      backgroundColor: Colors.yellow,
-                                      radius: 30,
-                                      backgroundImage:
-                                          AssetImage('image/kakao.png'),
-                                    ),
+                                  Text(
+                                    '로그인 상태를 유지',
+                                    style: TextStyle(fontSize: 13),
                                   ),
                                 ],
                               ),
-                            ],
-                          ),
+                            ),
+                            if(loginError == true)
+                            Text('아이디 혹은 비밀번호가 잘못됐습니다.', style: TextStyle(color: Colors.red),),
+                            SizedBox(height: 10,),
+                            // 로그인 버튼
+                            ElevatedButton(
+                              onPressed: () {
+                                if(emailController.text.length != 0 && passwordController.text.length != 0){
+                                  sendIdandPassword();
+                                }else{
+                                  null;
+                                }
+                              },
+                              child: Text(
+                                '로그인',
+                                style: TextStyle(
+                                  fontSize: 30,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.blue,
+                                minimumSize: Size(double.infinity, 48),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(vertical: 20),
+                              child: Text(
+                                '소셜 로그인',
+                                style: TextStyle(
+                                    fontSize: 16, color: Colors.grey[600]),
+                              ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    LoginNaver();
+                                  },
+                                  child: CircleAvatar(
+                                    radius: 30,
+                                    backgroundImage:
+                                        AssetImage('image/naverButton.png'),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 20,
+                                ),
+                                InkWell(
+                                  onTap: () async {
+                                    // kakaoAccountServer();
+                                    final data = await viewModel.login();
+                                    socialLogin(data, 'kakao');
+                                  },
+                                  child: CircleAvatar(
+                                    backgroundColor: Colors.yellow,
+                                    radius: 30,
+                                    backgroundImage:
+                                        AssetImage('image/kakao.png'),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
                     ),

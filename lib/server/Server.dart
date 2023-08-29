@@ -1,26 +1,23 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:smart_dongne/server/userId.dart';
 import 'dart:convert';
-import '../login_page/setnickname.dart';
-import '../main_page/setpage.dart';
 
 
-Future<dynamic> loginSendData(data, BuildContext context) async {
-  final url = Uri.parse('http://192.168.0.16:8080/login');
+Future<dynamic> loginSendData(address ,data) async {
+  final url = Uri.parse('http://192.168.0.203:8080${address}');
   final headers = {'Content-Type': 'application/json'};
-  try {
+  try {    
     final response =
         await http.post(url, headers: headers, body: jsonEncode(data));
     if (response.statusCode == 200) {
       var jsonData = response.body;
-      if(jsonData != 'id 오류' && jsonData != '비번 오류'){
-        return jsonData;
-      }else if(jsonData == '닉네임 설정 안됨'){
-        Navigator.pushNamed(context, NickName.routeName, arguments: ArgumentEmail(data['id']));
-      }else{
+      if(jsonData == 'id 오류' || jsonData == '비번 오류'){
         return null;
+      }else if(jsonData == '닉네임 설정 안됨'){
+        return '닉네임 설정 안됨';
+      }else{
+        return jsonData;
       }
     } else {
       // 요청이 실패하거나 오류가 발생함
@@ -33,7 +30,7 @@ Future<dynamic> loginSendData(data, BuildContext context) async {
 }
 
 Future<String?> nickNameSetUp(data) async {
-  final url = Uri.parse('http://192.168.0.16:8080/edit-user/confirm');
+  final url = Uri.parse('http://192.168.0.203:8080/edit-user/confirm');
   final headers = {'Content-Type': 'application/json'};
   print(data);
   try {
@@ -61,7 +58,7 @@ class numberAuthentiaction {
   String? AuthenticationNumber;
 
   Future<void> sendPhoneNumber(number) async {
-    final url = Uri.parse('http://192.168.0.16:8080/authentication');
+    final url = Uri.parse('http://192.168.0.203:8080/authentication');
     final headers = {'Content-Type': 'application/json'};
     try {
       final response =
@@ -86,7 +83,7 @@ class numberAuthentiaction {
 class ServerFindId {
 
   Future<String?> sendFindId(data, context) async {
-    final url = Uri.parse('http://192.168.0.16:8080/findId');
+    final url = Uri.parse('http://192.168.0.203:8080/findId');
     final headers = {'Content-Type': 'application/json'};
     print(data);
 
@@ -109,7 +106,7 @@ class ServerFindId {
   }
 
   Future<String?> authenticationNumberCheck(data, context) async {
-    final url = Uri.parse('http://192.168.0.16:8080/authentication-check');
+    final url = Uri.parse('http://192.168.0.203:8080/authentication-check');
     final headers = {'Content-Type': 'application/json'};
     try {
       final response =
@@ -137,7 +134,7 @@ class ServerFindId {
 
 class FindPasswordServer {
   Future<String?> sendEmail(email, Function changeScreen) async {
-    final url = Uri.parse('http://192.168.0.16:8080/findPassword/email');
+    final url = Uri.parse('http://192.168.0.203:8080/findPassword/email');
     final headers = {'Content-Type': 'application/json'};
     try {
       final response =
@@ -160,7 +157,7 @@ class FindPasswordServer {
   }
 
   Future<String?> checkdata(data) async {
-    final url = Uri.parse('http://192.168.0.16:8080/findPassword/check');
+    final url = Uri.parse('http://192.168.0.203:8080/findPassword/check');
     final headers = {'Content-Type': 'application/json'};
     try {
       final response =
@@ -181,7 +178,7 @@ class FindPasswordServer {
   }
 
   Future<String?> setupPassword(password, context) async {
-    final url = Uri.parse('http://192.168.0.16:8080/setPassword');
+    final url = Uri.parse('http://192.168.0.203:8080/setPassword');
     final headers = {'Content-Type': 'application/json'};
     print(password);
     try {
@@ -224,7 +221,7 @@ class FindPasswordServer {
 }
 
 Future<String?> authenticationNumberCheck(data) async {
-  final url = Uri.parse('http://192.168.0.16:8080/authentication-check');
+  final url = Uri.parse('http://192.168.0.203:8080/authentication-check');
   final headers = {'Content-Type': 'application/json'};
 
   try {
@@ -251,7 +248,7 @@ Future<String?> authenticationNumberCheck(data) async {
 }
 
 Future<String?> checkNickNameServer(data) async {
-  final url = Uri.parse('http://192.168.0.16:8080/nickname');
+  final url = Uri.parse('http://192.168.0.203:8080/nickname');
   final headers = {'Content-Type': 'application/json'};
 
   try {
@@ -275,7 +272,7 @@ Future<String?> checkNickNameServer(data) async {
 }
 
 Future<String?> AccountRemove(data) async {
-  final url = Uri.parse('http://192.168.0.16:8080/remove');
+  final url = Uri.parse('http://192.168.0.203:8080/remove');
   final headers = {'Content-Type': 'application/json'};
 
   try {
@@ -300,9 +297,10 @@ Future<String?> AccountRemove(data) async {
 }
 
 Future<String?> contentSend(data, imageFile) async {
-  final url = Uri.parse('http://192.168.0.16:8080/post/submit');
+  final url = Uri.parse('http://192.168.0.203:8080/post/submit');
   var request = http.MultipartRequest('POST', url); 
   var multipartFile = await http.MultipartFile.fromPath('file', imageFile.path);
+  print(data);
   try {
     request.fields.addAll(data);
     request.files.add(multipartFile);
@@ -324,7 +322,7 @@ Future<String?> contentSend(data, imageFile) async {
 }
 
 Future<dynamic> mainPageData(email) async {
-  final url = Uri.parse('http://192.168.0.16:8080/main/recommend');
+  final url = Uri.parse('http://192.168.0.203:8080/main/recommend');
   final headers = {'Content-Type': 'application/json'};
   try {
     final response = await http.post(url, headers: headers, body: jsonEncode(email));
@@ -341,7 +339,7 @@ Future<dynamic> mainPageData(email) async {
 }
 
 Future<dynamic> profileData(email) async {
-  final url = Uri.parse('http://192.168.0.16:8080/profile');
+  final url = Uri.parse('http://192.168.0.203:8080/profile');
   final headers = {'Content-Type': 'application/json'};
   try {
     final response = await http.post(url, headers: headers, body: jsonEncode(email));
@@ -358,7 +356,7 @@ Future<dynamic> profileData(email) async {
 }
 
 Future<dynamic> profileViewData(email) async {
-  final url = Uri.parse('http://192.168.0.16:8080/profile/view');
+  final url = Uri.parse('http://192.168.0.203:8080/profile/view');
   final headers = {'Content-Type': 'application/json'};
   try {
     final response = await http.post(url, headers: headers, body: jsonEncode(email));
@@ -374,7 +372,7 @@ Future<dynamic> profileViewData(email) async {
 }
 
 Future<String?> profileEdit(data, imagePath) async {
-  final url = Uri.parse('http://192.168.0.16:8080/profile/set');
+  final url = Uri.parse('http://192.168.0.203:8080/profile/set');
   final headers = {'Content-Type': 'application/json'};
   var request = http.MultipartRequest('POST', url); 
 

@@ -16,11 +16,7 @@ class MainViewModel {
     isLogined = await _socialLogin.login();
     if (isLogined) {
       user = await UserApi.instance.me();
-      final data = {
-        'id' : user!.kakaoAccount?.email,
-        'root' : 'kakao'
-      };
-      return data;
+      return user!.kakaoAccount?.email;
     }
   }
 
