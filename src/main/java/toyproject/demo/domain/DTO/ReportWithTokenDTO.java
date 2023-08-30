@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 public class ReportWithTokenDTO {
     String reportingUserId;
     String reportedUserId;
+    String reportingUserRoot;
+    String reportedUserRoot;
     Long reportedPostId;
     String reason;
     LocalDateTime date;

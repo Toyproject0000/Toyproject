@@ -14,6 +14,8 @@ public class FollowConverter implements Converter<FollowWithTokenDTO, Follow> {
         follow.setFollowedUserId(source.getFollowedUserId());
         follow.setDate(source.getDate());
         follow.setId(source.getId());
+        follow.setFollowingUserRoot(source.getFollowingUserRoot());
+        follow.setFollowedUserRoot(source.getFollowedUserRoot());
         return follow;
     }
 }

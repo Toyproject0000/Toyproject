@@ -33,7 +33,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public void update(User user, String userId) {
-        jdbcTemplate.update("UPDATE user SET password = COALESCE(?, password),  nickname = COALESCE(?, nickname), info = COALESCE(?, info), img_location = coalesce(?, img_location), name = coalesce(?, name), phone_number = coalesce(?, phone_number), gender = coalesce(?, gender) WHERE id = ?",
+        jdbcTemplate.update("UPDATE user SET password = COALESCE(?, password),  nickname = COALESCE(?, nickname), info = COALESCE(?, info), img_location = COALESCE(?, img_location), name = COALESCE(?, name), phone_number = COALESCE(?, phone_number), gender = COALESCE(?, gender) WHERE id = ?",
                 user.getPassword(), user.getNickname(), user.getInfo(), user.getImgLocation(),user.getName(),user.getPhoneNumber(),user.getGender(), userId);
     }
 
@@ -65,7 +65,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public List<User> findUserByNameAndPhoneAndId(User user) {
-        return jdbcTemplate.query("select * from user where name = ? And phoneNumber = ? AND id = ?", rowMapper, user.getName(), user.getPhoneNumber(), user.getId());
+        return jdbcTemplate.query("select * from user where name = ? And phone_number = ? AND id = ? and root = ?", rowMapper, user.getName(), user.getPhoneNumber(), user.getId(), user.getRoot());
     }
 
     @Override
@@ -75,7 +75,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public List<User> findEmail(User user) {
-        return jdbcTemplate.query("select * from user where id = ?", rowMapper, user.getId());
+        return jdbcTemplate.query("select * from user where id = ? and root = ?", rowMapper, user.getId(), user.getRoot());
     }
 
     @Override

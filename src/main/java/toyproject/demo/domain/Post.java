@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 public class Post {
     Long id;
     String userId;
+    String root;
     String nickname = "";
     String contents;
     String title;

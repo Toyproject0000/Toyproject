@@ -1,6 +1,8 @@
 package toyproject.demo.Controller.완료;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -40,6 +42,8 @@ public class PostController {
                              @RequestParam String category,
                              @RequestParam String disclosure,
                              @RequestParam String possibleReply,
+                             @RequestParam String visiblyLike,
+                             @RequestParam String root,
                              @RequestParam String token) {
         try {
             tokenUtil.parseJwtToken(token);
@@ -50,6 +54,8 @@ public class PostController {
         Post post = new Post();
         try {
             post.setUserId(userId);
+            post.setVisiblyLike(visiblyLike);
+            post.setRoot(root);
             post.setContents(contents);
             post.setTitle(title);
             post.setCategory(category);
@@ -68,14 +74,17 @@ public class PostController {
         }
     }
 
-    @PatchMapping(value = "/edit", produces = "application/json;charset=UTF-8")
+    @PostMapping(value = "/edit", produces = "application/json;charset=UTF-8")
     public String editConfirm(@RequestParam(required = false) MultipartFile file,
                               @RequestParam String userId,
+                              @RequestParam String root,
                               @RequestParam(required = false) String contents,
                               @RequestParam(required = false) String title,
                               @RequestParam(required = false) String category,
                               @RequestParam(required = false) String disclosure,
                               @RequestParam(required = false) String possibleReply,
+                              @RequestParam Long id,
+                              @RequestParam String visiblyLike,
                               @RequestParam String token){
         try {
             tokenUtil.parseJwtToken(token);
@@ -84,8 +93,11 @@ public class PostController {
         }
         Post post = new Post();
         try {
+            post.setId(id);
             post.setUserId(userId);
             post.setContents(contents);
+            post.setRoot(root);
+            post.setVisiblyLike(visiblyLike);
             post.setTitle(title);
             post.setCategory(category);
             post.setDisclosure(disclosure);
@@ -118,23 +130,15 @@ public class PostController {
         }
     }
 
-    /**
-     *
-     * @param tokenPost
-     * @param formerDate
-     * @param afterDate
-     * @return
-     * @throws IOException
-     */
-
     @PostMapping(value = "/search", produces = "application/json;charset=UTF-8")
-    public List<Post> search(@RequestBody(required = false) PostWithTokenDTO tokenPost,
-                             @RequestBody(required = false) LocalDate formerDate,
-                             @RequestBody(required = false) LocalDate afterDate) throws IOException {
+    public List<Post> search(@RequestBody(required = false) SearchData data) throws IOException {
+        PostWithTokenDTO tokenPost = data.getTokenPost();
+        LocalDate afterDate = data.getAfterDate();
+        LocalDate formerDate = data.getFormerDate();
         try {
             tokenUtil.parseJwtToken(tokenPost.getToken());
         }catch (Exception e){
-            return null;
+            System.out.println("e.getMessage() = " + e.getMessage());
         }
         Post post = postConverter.convert(tokenPost);
 
@@ -172,6 +176,14 @@ public class PostController {
     @PostMapping
     public void read(@RequestBody Post post){
         algorithm.read(post, post.getUserId());
+    }
+
+    @Getter
+    @Setter
+    private static class SearchData{
+        PostWithTokenDTO tokenPost;
+        LocalDate formerDate;
+        LocalDate afterDate;
     }
 
 }

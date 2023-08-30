@@ -7,25 +7,16 @@ import toyproject.demo.domain.User;
 import java.util.List;
 
 public interface BlockRepository {
-    void blockUser(String userId, String id);
-
-    void blockPost(String userId, Long postId);
-
-    void reportUser(String userId, String id, String reason);
-
-    void reportPost(String userId, Long postId, String reason);
-
-    void cancelBlockUser(String userId, String id);
-
-    void cancelReportUser(String userId, String id);
-    void cancelBlockPost(String userId, Long postId);
-    void cancelReportPost(String userId, Long postId);
-
-    List<BlockUserDTO> findBlockUser(String userId);
-
-    List<Post> findBlockPost(String userId);
-
-    List<Post> findReportPost(String userId);
-
-    List<BlockUserDTO> findReportUser(String userId);
+    void blockUser(String userId, String id, String userRoot, String root);
+    void blockPost(String userId, Long postId, String root);
+    void reportUser(String userId, String id, String reason, String userRoot, String root);
+    void reportPost(String userId, Long postId, String reason, String userRoot);
+    void cancelBlockUser(String userId, String id, String userRoot, String root);
+    void cancelReportUser(String userId, String id, String userRoot, String root);
+    void cancelBlockPost(String userId, Long postId, String root);
+    void cancelReportPost(String userId, Long postId, String root);
+    List<User> findBlockUser(String userId, String root);
+    List<Post> findBlockPost(String userId, String root);
+    List<Post> findReportPost(String userId, String userRoot);
+    List<User> findReportUser(String userId, String userRoot);
 }

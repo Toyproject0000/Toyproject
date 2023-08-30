@@ -13,4 +13,6 @@ public class FollowWithTokenDTO {
     String followedUserId; //팔로잉받는사람
     LocalDateTime date;
     String token;
+    String followingUserRoot; //팔로잉하는사람
+    String followedUserRoot;
 }

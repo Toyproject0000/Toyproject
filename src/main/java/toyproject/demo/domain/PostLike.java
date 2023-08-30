@@ -9,4 +9,5 @@ public class PostLike {
     Long id;
     String postId;
     String userId;
+    String userRoot;
 }

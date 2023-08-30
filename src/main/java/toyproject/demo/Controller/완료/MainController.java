@@ -28,7 +28,7 @@ public class MainController {
         }catch (Exception e){
             return null;
         }
-        return postService.recommend(tokenUser.getId());
+        return postService.recommend(tokenUser.getId(), tokenUser.getRoot());
     }
 
     @PostMapping(value = "/recommend/category", produces = "application/json;charset=UTF-8")

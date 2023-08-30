@@ -13,6 +13,7 @@ public class PostLikeConverter implements Converter<PostLikeWithTokenDTO, PostLi
         postLike.setPostId(source.getPostId());
         postLike.setId(source.getId());
         postLike.setUserId(source.getUserId());
+        postLike.setUserRoot(source.getUserRoot());
         return postLike;
     }
 }

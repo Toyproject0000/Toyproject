@@ -22,8 +22,9 @@ public class PostRepositoryImpl implements PostRepository {
     }
     @Override
     public void insert(Post post) {
-        String sql = "INSERT INTO post (user_id, contents, title, category, disclosure, date, possibly_reply, img_location, nickname, visibly_like) VALUES (?, ?, ?, ?, ?, ?,?,?,(SELECT nickname FROM user WHERE id = ?),?)";
-        jdbcTemplate.update(sql, post.getUserId(), post.getContents(), post.getTitle(), post.getCategory(), post.getDisclosure(), post.getDate(), post.getPossiblyReply(), post.getImgLocation(), post.getUserId(), post.getVisiblyLike());
+        String sql = "INSERT INTO post (user_id, contents, title, category, disclosure, date, possibly_reply, img_location,  visibly_like, user_root) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        jdbcTemplate.update(sql, post.getUserId(), post.getContents(), post.getTitle(), post.getCategory(), post.getDisclosure(), post.getDate(), post.getPossiblyReply(), post.getImgLocation(), post.getVisiblyLike(), post.getRoot());
     }
 
     @Override
@@ -32,13 +33,11 @@ public class PostRepositoryImpl implements PostRepository {
         return jdbcTemplate.query(sql, rowMapper, id);
     }
 
-
     @Override
     public void update(Post post) {
-        String sql = "UPDATE post SET user_id = ?, contents = ? WHERE id = ?";
-        jdbcTemplate.update(sql, post.getUserId(), post.getContents(), post.getId());
+        String sql = "update post SET contents = COALESCE(?, contents), title = COALESCE(?, title), category = COALESCE(?, category), disclosure = COALESCE(?, disclosure), possibly_reply = COALESCE(?, possibly_reply), img_location = COALESCE(?, img_location),  visibly_like = COALESCE(?, visibly_like) where id = ?";
+        jdbcTemplate.update(sql, post.getContents(), post.getTitle(), post.getCategory(), post.getDisclosure(), post.getPossiblyReply(), post.getImgLocation(), post.getVisiblyLike(), post.getId());
     }
-    //이거 다시
 
     @Override
     public void delete(Post post) {
@@ -47,8 +46,9 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public List<Post> findPostOfFollower(User user) {
-        String sql = "SELECT p.*, (SELECT COUNT(*) FROM postLike pl WHERE pl.post_id = p.id) as likeCount FROM post p INNER JOIN follow f ON p.user_id = f.followedUserId WHERE f.followerUserId = ?";
-        return jdbcTemplate.query(sql, rowMapper, user.getId());
+        String sql = "SELECT p.*, (SELECT COUNT(*) FROM postLike pl WHERE pl.post_id = p.id) as likeCount FROM post p " +
+                "INNER JOIN follow f ON p.user_id = f.followedUserId WHERE f.followedUserId = ? and f.followed_user_root=?";
+        return jdbcTemplate.query(sql, rowMapper, user.getId(), user.getRoot());
     }
     @Override
     public List<Post> findAllLikePost(User user) {
@@ -84,6 +84,14 @@ public class PostRepositoryImpl implements PostRepository {
                 String likePattern = "%" + post.getContents() + "%";
                 parameters.add(likePattern);
             }
+            if (post.getCategory() != null && !post.getCategory().isEmpty()) {
+                if (post.getUserId() != null || post.getTitle() != null || post.getContents() != null){
+                    queryBuilder.append(" AND ");
+                }
+                queryBuilder.append("p.category LIKE ?");
+                String likePattern = "%" + post.getCategory() + "%";
+                parameters.add(likePattern);
+            }
         }
 
         if (formerDate != null) {
@@ -104,8 +112,8 @@ public class PostRepositoryImpl implements PostRepository {
 
         String query = queryBuilder.toString();
         Object[] params = parameters.toArray();
-
-        return jdbcTemplate.query(query, params, rowMapper);
+        List<Post> posts = jdbcTemplate.query(query, params, rowMapper);
+        return posts;
     }
 
     @Override
@@ -120,12 +128,8 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public List<Post> recommendByAlgorithm(String userId) {
-        List<String> categories = jdbcTemplate.queryForList("select category from category where user_id = ?", String.class, userId);
-        System.out.println(categories.size());
-        for (String category : categories) {
-            System.out.println("category = " + category);
-        }
+    public List<Post> recommendByAlgorithm(String userId, String userRoot) {
+        List<String> categories = jdbcTemplate.queryForList("select category from category where user_id = ? and user_root = ?", String.class, userId, userRoot);
         ArrayList<Post> posts = new ArrayList<>();
         for (String category : categories) {
             posts.addAll(jdbcTemplate.query("SELECT p.*, u.nickname AS nickname, COUNT(pl.post_id) AS likeCount FROM post p LEFT JOIN user u ON p.user_id = u.id LEFT JOIN postLike pl ON p.id = pl.post_id WHERE p.category = ? GROUP BY p.id", rowMapper, category));

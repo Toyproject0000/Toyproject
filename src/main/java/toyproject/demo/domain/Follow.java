@@ -11,6 +11,8 @@ import java.time.LocalDateTime;
 public class Follow {
     Long id;
     String followingUserId; //팔로잉하는사람
+    String followingUserRoot; //팔로잉하는사람
     String followedUserId; //팔로잉받는사람
+    String followedUserRoot;
     LocalDateTime date;
 }

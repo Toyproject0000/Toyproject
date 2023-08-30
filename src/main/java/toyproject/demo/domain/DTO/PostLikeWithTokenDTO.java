@@ -9,5 +9,6 @@ public class PostLikeWithTokenDTO {
     Long id;
     String postId;
     String userId;
+    String userRoot;
     String token;
 }

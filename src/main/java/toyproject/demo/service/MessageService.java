@@ -24,7 +24,7 @@ public class MessageService {
     public Optional<List<Message>> findAll(Message message) {
         List<Message> messages;
 
-            messages = messageRepository.findAll(message);
+        messages = messageRepository.findAll(message);
 
         return Optional.ofNullable(messages);
     }

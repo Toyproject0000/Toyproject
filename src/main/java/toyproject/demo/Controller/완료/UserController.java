@@ -1,4 +1,4 @@
-package toyproject.demo.Controller;
+package toyproject.demo.Controller.완료;
 
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -51,26 +51,21 @@ public class UserController {
         return "{\"token\" : \"" + token+"\""+ result;
     }
 
-    /**
-     *
-     * @param user
-     * @return
-     */
 
-    @PostMapping(value = "/findId", produces = "application/json;charset=UTF-8")
-    public String findId(@RequestBody User user){
-        return userService.findId(user);
-    }
+//    @PostMapping(value = "/findId", produces = "application/json;charset=UTF-8")
+//    public String findId(@RequestBody User user){
+//        return userService.findId(user);
+//    }
 
-    @PostMapping(value = "/findPassword/email", produces = "application/json;charset=UTF-8")
-    public Boolean findPasswordEmail(@RequestBody User user){
-        return userService.findEmail(user);
-    }
-
-    @PostMapping(value = "/findPassword/check", produces = "application/json;charset=UTF-8")
-    public String findPassword(@RequestBody User user){
-        return userService.findPassword(user);
-    }
+//    @PostMapping(value = "/findPassword/email", produces = "application/json;charset=UTF-8")
+//    public Boolean findPasswordEmail(@RequestBody User user){
+//        return userService.findEmail(user);
+//    }
+//
+//    @PostMapping(value = "/findPassword/check", produces = "application/json;charset=UTF-8")
+//    public String findPassword(@RequestBody User user){
+//        return userService.findPassword(user);
+//    }
 
     @PostMapping(value = "/remove", produces = "application/json;charset=UTF-8")
     public String delete(@RequestBody UserWithTokenDTO tokenUser){
@@ -81,7 +76,6 @@ public class UserController {
         }
 
         User user = userConverter.convert(tokenUser);
-
 
         try {
             userService.delete(user);
@@ -101,7 +95,6 @@ public class UserController {
             String id = user.getId();
             String num = mailService.sendMail(id);
             HttpSession session = request.getSession();
-            System.out.println("session.getAttribute(id) = " + session.getAttribute(id));
             session.setAttribute(id, num);
             return "ok";
         }catch (Exception e){
@@ -136,6 +129,7 @@ public class UserController {
                              @RequestParam(required = false) String info,
                              @RequestParam(required = false) String nickname,
                              @RequestParam(required = false) String password,
+                             @RequestParam(required = false) String name,
                              @RequestParam String token,
                              @RequestParam(required = false, defaultValue = "false") String basicImage
                              ){
@@ -149,6 +143,7 @@ public class UserController {
             User user = new User();
             user.setId(userId);
             user.setNickname(nickname);
+            user.setName(name);
             user.setInfo(info);
             user.setPassword(password);
             if (file!=null&&!file.isEmpty())

@@ -36,6 +36,7 @@ public class PostLikeController {
             postLikeService.add(postLike);
             return "ok";
         }catch (Exception e){
+            System.out.println(e.getMessage());
             return "에러 발생";
         }
     }
@@ -52,6 +53,7 @@ public class PostLikeController {
             postLikeService.remove(postLike);
             return "ok";
         }catch (Exception e){
+            System.out.println(e.getMessage());
             return "에러 발생";
         }
     }
