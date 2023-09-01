@@ -12,6 +12,7 @@ import toyproject.demo.domain.DTO.ProfileDTO;
 import toyproject.demo.domain.DTO.ProfileViewDTO;
 import toyproject.demo.domain.DTO.UserWithTokenDTO;
 import toyproject.demo.domain.User;
+import toyproject.demo.repositoryImpl.AuthenticationRepositoryImpl;
 import toyproject.demo.service.*;
 
 import java.time.LocalDate;
@@ -28,6 +29,7 @@ public class UserController {
     private final PostService postService;
     private final JwtTokenUtil tokenUtil;
     private final UserConverter userConverter;
+    private final AuthenticationRepositoryImpl authenticationRepository;
 
     @PostMapping(value = "/join", produces = "application/json;charset=UTF-8")
     public String join(@RequestBody User user){
@@ -94,13 +96,8 @@ public class UserController {
     public String authentication(@RequestBody User user, HttpServletRequest request) {
         try {
             String id = user.getId();
-            System.out.println("id = " + id);
             String num = mailService.sendMail(id);
-            System.out.println("num = " + num);
-            HttpSession session = request.getSession();
-            session.setAttribute(id, num);
-            System.out.println("session = " + session);
-            System.out.println("session.getAttribute(id) = " + session.getAttribute(id));
+            authenticationRepository.insert(id, num);
             return "ok";
         }catch (Exception e){
             System.out.println(e.getMessage());
@@ -112,14 +109,10 @@ public class UserController {
     public Boolean authenticationCheck(@RequestBody Authentication data, HttpServletRequest request){
         try {
             String id = data.getId();
-            System.out.println("id = " + id);
             String num = data.getNum();
-            System.out.println("num = " + num);
-            HttpSession session = request.getSession(false);
-            System.out.println("session = " + session);
-            String realNum = (String)session.getAttribute(id);
+            Integer realNum = authenticationRepository.find(id);
             if (realNum.equals(num)){
-                session.invalidate();
+                authenticationRepository.delete(id);
                 return true;
             }
         }catch (Exception e){

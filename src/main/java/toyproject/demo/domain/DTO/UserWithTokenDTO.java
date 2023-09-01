@@ -3,6 +3,8 @@ package toyproject.demo.domain.DTO;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 public class UserWithTokenDTO {
@@ -10,6 +12,7 @@ public class UserWithTokenDTO {
     String root;
     String password;
     String name;
+    LocalDate birth;
     String info;
     String phoneNumber;
     String nickname;

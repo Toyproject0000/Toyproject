@@ -19,6 +19,7 @@ public class UserConverter implements Converter<UserWithTokenDTO, User> {
         user.setName(source.getName());
         user.setGender(source.getGender());
         user.setRoot(source.getRoot());
+        user.setBirth(source.getBirth());
         return user;
     }
 }

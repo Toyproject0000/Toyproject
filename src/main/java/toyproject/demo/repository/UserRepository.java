@@ -9,17 +9,17 @@ import toyproject.demo.domain.User;
 import java.util.List;
 
 
-public interface UserRepository {
-    public void insert(User user);
-    public void update(User user,String userId);
-    public void delete(User user);
-    public List<User> findById(String id, String userRoot);
-    public List<User> findFollower(String userId);
-    public List<User> findUserByNameAndPhone(User user);
-    public List<User> findUserByNameAndPhoneAndId(User user);
-    public List<User> findNickname(User user);
-    public List<User> findEmail(User user);
-    public void setPassword(User user);
-    public List<ProfileViewDTO> findUser(String id);
+ public interface UserRepository {
+     void insert(User user);
+     void update(User user,String userId);
+     void delete(User user);
+     List<User> findById(String id, String userRoot);
+     List<User> findFollower(String userId);
+     List<User> findUserByNameAndPhone(User user);
+     List<User> findUserByNameAndPhoneAndId(User user);
+     List<User> findNickname(User user);
+     List<User> findEmail(User user);
+     void setPassword(User user);
+     List<ProfileViewDTO> findUser(String id);
     List<ProfileDTO> userProfile(String id);
 }
