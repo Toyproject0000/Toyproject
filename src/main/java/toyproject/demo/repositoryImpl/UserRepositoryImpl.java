@@ -27,14 +27,14 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public void insert(User user) {
-        jdbcTemplate.update("INSERT INTO user (id, root, password, name, phone_number,  gender) " +
-                "VALUES (?, ? ,?, ?, ?, ?)", user.getId(), user.getRoot(), user.getPassword(), user.getName(), user.getPhoneNumber(), user.getGender());
+        jdbcTemplate.update("INSERT INTO user (id, root, password, name, phone_number,  gender, birth) " +
+                "VALUES (?, ? ,?, ?, ?, ?)", user.getId(), user.getRoot(), user.getPassword(), user.getName(), user.getPhoneNumber(), user.getGender(), user.getBirth());
     }
 
     @Override
     public void update(User user, String userId) {
-        jdbcTemplate.update("UPDATE user SET password = COALESCE(?, password),  nickname = COALESCE(?, nickname), info = COALESCE(?, info), img_location = COALESCE(?, img_location), name = COALESCE(?, name), phone_number = COALESCE(?, phone_number), gender = COALESCE(?, gender) WHERE id = ?",
-                user.getPassword(), user.getNickname(), user.getInfo(), user.getImgLocation(),user.getName(),user.getPhoneNumber(),user.getGender(), userId);
+        jdbcTemplate.update("UPDATE user SET password = COALESCE(?, password),  nickname = COALESCE(?, nickname), info = COALESCE(?, info), img_location = COALESCE(?, img_location), name = COALESCE(?, name), phone_number = COALESCE(?, phone_number), gender = COALESCE(?, gender), birth = coalesce(?, birth) WHERE id = ?",
+                user.getPassword(), user.getNickname(), user.getInfo(), user.getImgLocation(),user.getName(),user.getPhoneNumber(),user.getGender(), user.getBirth(), userId);
     }
 
     /**

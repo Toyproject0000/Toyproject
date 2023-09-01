@@ -14,6 +14,7 @@ import toyproject.demo.domain.DTO.UserWithTokenDTO;
 import toyproject.demo.domain.User;
 import toyproject.demo.service.*;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @RestController
@@ -96,6 +97,7 @@ public class UserController {
             String num = mailService.sendMail(id);
             HttpSession session = request.getSession();
             session.setAttribute(id, num);
+            System.out.println("session.getAttribute(id) = " + session.getAttribute(id));
             return "ok";
         }catch (Exception e){
             System.out.println(e.getMessage());
@@ -112,7 +114,6 @@ public class UserController {
             HttpSession session = request.getSession(false);
             String realNum = (String)session.getAttribute(id);
             if (realNum.equals(num)){
-                session.invalidate();
                 return true;
             }
         }catch (Exception e){
@@ -130,18 +131,21 @@ public class UserController {
                              @RequestParam(required = false) String nickname,
                              @RequestParam(required = false) String password,
                              @RequestParam(required = false) String name,
+                             @RequestParam(required = false) LocalDate birth,
                              @RequestParam String token,
                              @RequestParam(required = false, defaultValue = "false") String basicImage
                              ){
         try {
             tokenUtil.parseJwtToken(token);
         }catch (Exception e){
+            System.out.println(e.getMessage());
             return "잘못된 요청입니다.";
         }
 
         try {
             User user = new User();
             user.setId(userId);
+            user.setBirth(birth);
             user.setNickname(nickname);
             user.setName(name);
             user.setInfo(info);
