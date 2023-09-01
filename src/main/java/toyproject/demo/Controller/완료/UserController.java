@@ -94,9 +94,12 @@ public class UserController {
     public String authentication(@RequestBody User user, HttpServletRequest request) {
         try {
             String id = user.getId();
+            System.out.println("id = " + id);
             String num = mailService.sendMail(id);
+            System.out.println("num = " + num);
             HttpSession session = request.getSession();
             session.setAttribute(id, num);
+            System.out.println("session = " + session);
             System.out.println("session.getAttribute(id) = " + session.getAttribute(id));
             return "ok";
         }catch (Exception e){
@@ -113,6 +116,7 @@ public class UserController {
             String num = data.getNum();
             System.out.println("num = " + num);
             HttpSession session = request.getSession(false);
+            System.out.println("session = " + session);
             String realNum = (String)session.getAttribute(id);
             if (realNum.equals(num)){
                 session.invalidate();
