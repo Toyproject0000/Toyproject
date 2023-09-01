@@ -114,7 +114,6 @@ Future<String?> deleteChatting(data) async {
 
 Future<String?> ServerResponseOKTemplate(address, data) async {
   final url = Uri.parse('http://192.168.0.201:8080${address}');
-
   final headers = {'Content-Type': 'application/json'};
   try {
     final response = await http.post(url, headers: headers, body: jsonEncode(data));

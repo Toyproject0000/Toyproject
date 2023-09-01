@@ -5,11 +5,7 @@ import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:smart_dongne/component/my_Text_Form_Field.dart';
 import 'package:smart_dongne/login_page/Social_login/kakao_login.dart';
 import 'package:smart_dongne/login_page/Social_login/main_view_model.dart';
-import 'package:smart_dongne/login_page/Social_login/social_login.dart';
-import 'package:smart_dongne/login_page/Social_login/social_login_setting.dart';
 import 'package:smart_dongne/login_page/TermsofService/agreement.dart';
-import 'package:smart_dongne/login_page/join_membership_page.dart';
-import 'package:smart_dongne/login_page/Nickname/setnickname.dart';
 import 'package:smart_dongne/server/Server.dart';
 import 'package:smart_dongne/login_page/find_password.dart';
 import 'package:smart_dongne/main_page/setpage.dart';
@@ -43,36 +39,35 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void sendIdandPassword() async {
     final data = {
-      'id' : emailController.text,
-      'password' : passwordController.text,
-      'root' : 'local'
+      'id': emailController.text,
+      'password': passwordController.text,
+      'root': 'local'
     };
-    final response = await loginSendData('/login' ,data);
-    if(response != null && response != '닉네임 설정 안됨'){
+    final response = await loginSendData('/login', data);
+    if (response != null && response != '닉네임 설정 안됨') {
       final jsonData = jsonDecode(response);
       jwtToken = jsonData['token'];
       globalNickName = jsonData['nickname'];
       globalUserId = jsonData['id'];
       Navigator.pushNamed(context, SetPage.routeName);
-    }else if(response == '닉네임 설정 안됨'){
-      Navigator.pushNamed(context, NickNameSet.routeName);
-    }else{
+    } else if (response == '닉네임 설정 안됨') {
+    } else {
       setState(() {
         loginError = true;
       });
     }
   }
+
   void socialLogin(email, root) async {
-    final data = {'id' : email, 'root' : root};
+    final data = {'id': email, 'root': root};
     final response = await loginSendData('/socialLogin', data);
-    if(response == null){
+    if (response == null) {
       globalUserId = email;
       LoginRoot = root;
       Navigator.pushNamed(context, UserConsent.routeName);
-    }else if(response == '닉네임 설정 안됨'){
-      globalUserId = email;
-      Navigator.pushNamed(context, NickNameSet.routeName);
-    }else{
+    } else if (response == '닉네임 설정 안됨') {
+      
+    } else {
       final jsonData = jsonDecode(response);
       jwtToken = jsonData['token'];
       globalUserId = jsonData['id'];
@@ -80,13 +75,14 @@ class _LoginScreenState extends State<LoginScreen> {
       Navigator.pushNamed(context, SetPage.routeName);
     }
   }
+
   // auto Login lmplementation
   void upDateEmailandPassword() async {
     final SharedPreferences pref = await SharedPreferences.getInstance();
     pref.setString('useremail', userEmail);
     pref.setString('userPassword', userPassword);
   }
-  
+
   void LoginNaver() async {
     NaverLoginResult result = await FlutterNaverLogin.logIn();
     socialLogin(result.account.email, 'naver');
@@ -151,10 +147,20 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       child: SingleChildScrollView(
                         child: Column(
-                          children: [                              
-                            MyTextFormField(controller: emailController, hintText: '아이디', obscureText: false,),
-                            SizedBox(height: 10,),
-                            MyTextFormField(controller: passwordController, hintText: '비밀번호', obscureText: true,),
+                          children: [
+                            MyTextFormField(
+                              controller: emailController,
+                              hintText: '아이디',
+                              obscureText: false,
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            MyTextFormField(
+                              controller: passwordController,
+                              hintText: '비밀번호',
+                              obscureText: true,
+                            ),
                             Container(
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
@@ -180,15 +186,21 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ],
                               ),
                             ),
-                            if(loginError == true)
-                            Text('아이디 혹은 비밀번호가 잘못됐습니다.', style: TextStyle(color: Colors.red),),
-                            SizedBox(height: 10,),
+                            if (loginError == true)
+                              Text(
+                                '아이디 혹은 비밀번호가 잘못됐습니다.',
+                                style: TextStyle(color: Colors.red),
+                              ),
+                            SizedBox(
+                              height: 10,
+                            ),
                             // 로그인 버튼
                             ElevatedButton(
                               onPressed: () {
-                                if(emailController.text.isNotEmpty && passwordController.text.isNotEmpty){
+                                if (emailController.text.isNotEmpty &&
+                                    passwordController.text.isNotEmpty) {
                                   sendIdandPassword();
-                                }else{
+                                } else {
                                   null;
                                 }
                               },

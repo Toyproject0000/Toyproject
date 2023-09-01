@@ -1,20 +1,16 @@
-import 'dart:async';
-import 'dart:convert';
-
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:smart_dongne/component/authentication_TextFormfield.dart';
+import 'package:smart_dongne/component/myButton.dart';
 import 'package:smart_dongne/component/my_Text_Form_Field.dart';
 import 'package:smart_dongne/component/myselfWidget.dart';
-import 'package:smart_dongne/login_page/Nickname/setnickname.dart';
-import 'package:smart_dongne/main_page/setpage.dart';
+import 'package:smart_dongne/login_page/nickname_page.dart';
 import 'package:smart_dongne/server/chatServer.dart';
 import 'package:smart_dongne/server/userId.dart';
 
-import '../server/Server.dart';
 
 class Joinmembership extends StatefulWidget {
   const Joinmembership({Key? key}) : super(key: key);
@@ -38,60 +34,45 @@ class _JoinmembershipState extends State<Joinmembership> {
   TextEditingController userNameController = TextEditingController();
   TextEditingController userPhoneNumberController = TextEditingController();
   TextEditingController userbirthdayController = TextEditingController();
-
+  TextEditingController nicknameController = TextEditingController();
+  
   String userEmail = '';
+  String userNicName = '';
 
   String? authenticationNumber;
   String? perfectPassWord;
   bool manButton = false;
 
-  void MessageCompleted() {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            content: Text('회원가입이 완료됬습니다.'),
-            actions: [
-              TextButton(
-                  onPressed: () {
-                    Navigator.popUntil(context, ModalRoute.withName('/'));
-                  },
-                  child: Text(
-                    '완료',
-                    style: TextStyle(color: Colors.blue),
-                  ))
-            ],
-          );
-        });
-  }
+  bool appearNickNameField = false;
 
   void _tryValidation() async {
-    if (successfulidentification) {
+    // if (successfulidentification) {
       if (passWordCheck()) {
         if (MySelfInformationCheck()) {
-          final data = {
-            'id': userEmail,
-            'root': LoginRoot,
-            'password': passwordCheckController.text,
-            'name': userNameController.text,
-            'phoneNumber': userPhoneNumberController.text,
-            'gender': manButton,
-          };
+          Navigator.pushNamed(context, NickNameField.routeName,
+            arguments: JoinArgument(
+              email: userEmail,
+              password: passwordCheckController.text,
+              name: userNameController.text,
+              gender: manButton,
+              phonenumber: userPhoneNumberController.text
+            ),
+          );
         }
       }
-    } else {
-      Flushbar(
-        margin: EdgeInsets.symmetric(horizontal: 15),
-        flushbarPosition: FlushbarPosition.TOP,
-        duration: Duration(seconds: 2),
-        message: '본인인증을 하시오.',
-        messageSize: 15,
-        borderRadius: BorderRadius.circular(4),
-        backgroundColor: Colors.white,
-        messageColor: Colors.black,
-        boxShadows: [BoxShadow(color: Colors.black, blurRadius: 8)],
-      ).show(context);
-    }
+    // } else {
+    //   Flushbar(
+    //     margin: EdgeInsets.symmetric(horizontal: 15),
+    //     flushbarPosition: FlushbarPosition.TOP,
+    //     duration: Duration(seconds: 2),
+    //     message: '본인인증을 하시오.',
+    //     messageSize: 15,
+    //     borderRadius: BorderRadius.circular(4),
+    //     backgroundColor: Colors.white,
+    //     messageColor: Colors.black,
+    //     boxShadows: [BoxShadow(color: Colors.black, blurRadius: 8)],
+    //   ).show(context);
+    // }
   }
 
   void _emailValidation() async {
@@ -108,6 +89,7 @@ class _JoinmembershipState extends State<Joinmembership> {
       boxShadows: [BoxShadow(color: Colors.black, blurRadius: 8)],
     ).show(context);
     await ServerResponseOKTemplate('/authentication', email);
+    userEmail = emailController.text;
   }
 
   bool MySelfInformationCheck() {
@@ -241,7 +223,7 @@ class _JoinmembershipState extends State<Joinmembership> {
                 ),
                 MyTextFormField(
                     controller: passwordCheckController,
-                    hintText: '비밀번호',
+                    hintText: '비밀번호 체크',
                     obscureText: true),
 
                 SizedBox(
@@ -308,21 +290,10 @@ class _JoinmembershipState extends State<Joinmembership> {
                 SizedBox(
                   height: 25,
                 ),
-                ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      minimumSize: Size(double.infinity, 48),
-                    ),
-                    child: Text(
-                      '회원 가입하기',
-                      style: TextStyle(
-                        fontSize: 25,
-                        color: Colors.white,
-                      ),
-                    ),
-                    onPressed: () {
-                      _tryValidation();
-                    }),
+                MyButton(
+                  text: '회원 가입하기',
+                  onPresse: _tryValidation
+                )
               ],
             ),
           ),
