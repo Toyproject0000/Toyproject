@@ -102,7 +102,6 @@ public class UserController {
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
-
         return "cancel";
     }
 
@@ -110,10 +109,13 @@ public class UserController {
     public Boolean authenticationCheck(@RequestBody Authentication data, HttpServletRequest request){
         try {
             String id = data.getId();
+            System.out.println("id = " + id);
             String num = data.getNum();
+            System.out.println("num = " + num);
             HttpSession session = request.getSession(false);
             String realNum = (String)session.getAttribute(id);
             if (realNum.equals(num)){
+                session.invalidate();
                 return true;
             }
         }catch (Exception e){
