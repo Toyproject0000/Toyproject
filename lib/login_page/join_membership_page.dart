@@ -9,7 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:smart_dongne/component/authentication_TextFormfield.dart';
 import 'package:smart_dongne/component/my_Text_Form_Field.dart';
 import 'package:smart_dongne/component/myselfWidget.dart';
-import 'package:smart_dongne/login_page/setnickname.dart';
+import 'package:smart_dongne/login_page/Nickname/setnickname.dart';
 import 'package:smart_dongne/main_page/setpage.dart';
 import 'package:smart_dongne/server/chatServer.dart';
 import 'package:smart_dongne/server/userId.dart';
@@ -31,7 +31,7 @@ class _JoinmembershipState extends State<Joinmembership> {
   bool successfulidentification = false;
 
   // textEditingController
-  TextEditingController emailContorller = TextEditingController();
+  TextEditingController emailController = TextEditingController();
   TextEditingController authenticationController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController passwordCheckController = TextEditingController();
@@ -95,7 +95,7 @@ class _JoinmembershipState extends State<Joinmembership> {
   }
 
   void _emailValidation() async {
-    final email = {'id': emailContorller.text};
+    final email = {'id': emailController.text};
     Flushbar(
       margin: EdgeInsets.symmetric(horizontal: 15),
       flushbarPosition: FlushbarPosition.TOP,
@@ -111,7 +111,7 @@ class _JoinmembershipState extends State<Joinmembership> {
   }
 
   bool MySelfInformationCheck() {
-    if (userNameController.text.length != 0 &&
+    if (userNameController.text.isNotEmpty &&
         userPhoneNumberController.text.length == 11 &&
         userbirthdayController.text.length == 8) {
       return true;
@@ -136,7 +136,7 @@ class _JoinmembershipState extends State<Joinmembership> {
     final response =
         await ServerResponseOKTemplate('/authentication-check', data);
     if (response != null) {
-      userEmail = emailContorller.text;
+      userEmail = emailController.text;
       setState(() {
         authenticationSuccessful = true;
         successfulidentification = true;
@@ -212,7 +212,7 @@ class _JoinmembershipState extends State<Joinmembership> {
                 AuthenticationTextFormField(
                     hintText: '이메일',
                     requestMethod: '인증번호 요청',
-                    controller: emailContorller,
+                    controller: emailController,
                     sendData: _emailValidation),
                 SizedBox(
                   height: 5,

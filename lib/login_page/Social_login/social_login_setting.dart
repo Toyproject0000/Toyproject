@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:smart_dongne/component/my_Text_Form_Field.dart';
 import 'package:smart_dongne/component/myselfWidget.dart';
-import 'package:smart_dongne/login_page/setnickname.dart';
+import 'package:smart_dongne/login_page/Nickname/setnickname.dart';
 import 'package:smart_dongne/server/chatServer.dart';
 import 'package:smart_dongne/server/userId.dart';
 import 'package:toggle_switch/toggle_switch.dart';
@@ -38,7 +38,7 @@ class _SocialLoginSettingState extends State<SocialLoginSetting> {
     };
     final response = await ServerResponseOKTemplate('/join', data);
     if (response != null) {
-      Navigator.pushNamed(context, NickName.routeName);
+      Navigator.pushNamed(context, NickNameSet.routeName);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         duration: Duration(seconds: 2),
@@ -138,7 +138,7 @@ class _SocialLoginSettingState extends State<SocialLoginSetting> {
                 SizedBox(height: 25,),
                 InkWell(
                   onTap: (){
-                    if(nameController.text != 0 && birthdayController == 8 && phoneNumberController == 11 ){
+                    if(nameController.text.isEmpty && birthdayController == 8 && phoneNumberController == 11 ){
                       sendSocialUserData();
                     }
                   },

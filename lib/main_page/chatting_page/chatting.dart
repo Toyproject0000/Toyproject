@@ -68,8 +68,7 @@ class _ChattingState extends State<Chatting> {
   void getChatdata() async {
     final data = {'sendUser': globalNickName, 'token' : jwtToken};
     final response = await ServerResponseJsonDataTemplate('/message/findAll', data);
-    jsonData = await jsonDecode(response!);
-    print(jsonData);
+    print(response);
     setState(() {});
   }
 

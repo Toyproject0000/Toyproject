@@ -212,10 +212,9 @@ class _ChattingContentState extends State<ChattingContent> {
       'acceptUser' : acceptUser,
       'token' : jwtToken,
     };
-    final response = await aConversationWithaParticularPerson(data);
-    jsonData = jsonDecode(response);
+    final response = await ServerResponseJsonDataTemplate('/message/user' ,data);
     setState(() {
-      reverseList = jsonData!.reversed.toList();
+      reverseList = response.reversed.toList();
     });
   }
 
@@ -257,7 +256,7 @@ class _ChattingContentState extends State<ChattingContent> {
 
     basicAppBar = AppBar(
       centerTitle: true,
-      title: Text('usernickname', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+      title: Text(sendUser! , style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
       actions: [
         IconButton(onPressed: (){
           setState(() {

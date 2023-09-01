@@ -9,7 +9,7 @@ import 'package:smart_dongne/login_page/Social_login/social_login.dart';
 import 'package:smart_dongne/login_page/Social_login/social_login_setting.dart';
 import 'package:smart_dongne/login_page/TermsofService/agreement.dart';
 import 'package:smart_dongne/login_page/join_membership_page.dart';
-import 'package:smart_dongne/login_page/setnickname.dart';
+import 'package:smart_dongne/login_page/Nickname/setnickname.dart';
 import 'package:smart_dongne/server/Server.dart';
 import 'package:smart_dongne/login_page/find_password.dart';
 import 'package:smart_dongne/main_page/setpage.dart';
@@ -55,7 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
       globalUserId = jsonData['id'];
       Navigator.pushNamed(context, SetPage.routeName);
     }else if(response == '닉네임 설정 안됨'){
-      Navigator.pushNamed(context, NickName.routeName);
+      Navigator.pushNamed(context, NickNameSet.routeName);
     }else{
       setState(() {
         loginError = true;
@@ -70,7 +70,8 @@ class _LoginScreenState extends State<LoginScreen> {
       LoginRoot = root;
       Navigator.pushNamed(context, UserConsent.routeName);
     }else if(response == '닉네임 설정 안됨'){
-      Navigator.pushNamed(context, NickName.routeName);
+      globalUserId = email;
+      Navigator.pushNamed(context, NickNameSet.routeName);
     }else{
       final jsonData = jsonDecode(response);
       jwtToken = jsonData['token'];
@@ -185,7 +186,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             // 로그인 버튼
                             ElevatedButton(
                               onPressed: () {
-                                if(emailController.text.length != 0 && passwordController.text.length != 0){
+                                if(emailController.text.isNotEmpty && passwordController.text.isNotEmpty){
                                   sendIdandPassword();
                                 }else{
                                   null;

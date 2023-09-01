@@ -52,8 +52,8 @@ class _ProfilePageState extends State<ProfilePage> {
   Future<void> callProfileData() async {
     final email = {'id': globalUserId, 'token' : jwtToken};
     final response = await ServerResponseJsonDataTemplate('/profile', email);
-    jsonData = jsonDecode(response!);
-    jsonDataofprofile = jsonData[0];
+    print(response[6]);
+    jsonDataofprofile = response;
     userPosts = jsonDataofprofile['posts'];
     if(userPosts != []){
       FinishedWidgetList =

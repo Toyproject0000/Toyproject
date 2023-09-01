@@ -239,11 +239,11 @@ class _ProfileEditState extends State<ProfileEdit> {
 
   void getProfileViewData() async {
     final email = {'id': globalUserId, 'token' : jwtToken};
-    final response = await ServerResponseOKTemplate('/profile/view' ,email);
-    final jsonData = jsonDecode(response!);
-    userNickName = jsonData['nickname'];
-    userIntroduction = jsonData['info'];
-    userProfileImage = jsonData['imgLocation'];
+    final response = await ServerResponseJsonDataTemplate('/profile/view' ,email);
+    // print(response);
+    // userNickName = response['nickname'];
+    // userIntroduction = response['info'];
+    // userProfileImage = response['imgLocation'];
     nameTextController.text = userNickName;
     introductionController.text = userIntroduction;
     imagePath = userProfileImage;

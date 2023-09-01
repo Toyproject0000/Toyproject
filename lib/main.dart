@@ -4,10 +4,9 @@ import 'package:smart_dongne/login_page/Social_login/social_login_setting.dart';
 import 'package:smart_dongne/login_page/TermsofService/agreement.dart';
 import 'package:smart_dongne/login_page/TermsofService/termsofservice.dart';
 import 'package:smart_dongne/login_page/find_password.dart';
-import 'package:smart_dongne/login_page/find_password_2.dart';
 import 'package:smart_dongne/login_page/join_membership_page.dart';
 import 'package:smart_dongne/login_page/login_page.dart';
-import 'package:smart_dongne/login_page/setnickname.dart';
+import 'package:smart_dongne/login_page/Nickname/setnickname.dart';
 import 'package:smart_dongne/main_page/chatting_page/chatting_Content.dart';
 import 'package:smart_dongne/main_page/chatting_page/chatting_searchmode.dart';
 import 'package:smart_dongne/main_page/home_page/Comment_page.dart';
@@ -48,12 +47,11 @@ class MyApp extends StatelessWidget {
         Joinmembership.routeName: (context) => Joinmembership(),
         FindPassword.routeName: (context) => FindPassword(),
         SetPage.routeName: (context) => SetPage(),
-        NickName.routeName: (context) => NickName(),
+        NickNameSet.routeName: (context) => NickNameSet(),
         ProfileEdit.routeName: (context) => ProfileEdit(),
         FindId.routeName: (context) => FindId(),
         LastSetting.routeName: (context) => LastSetting(),
         CoverPage.routeName: (context) => CoverPage(),
-        NewPassWord.routeName: (context) => NewPassWord(),
         ChatSearchMode.routeName: (context) => ChatSearchMode(), 
         UserSetting.routeName: (context) => UserSetting(),
         AccountManagement.routeName: (context) => AccountManagement(),

@@ -103,9 +103,8 @@ class _HomePageState extends State<HomePage> {
   void GetMainData() async {
     final data = {'id': globalUserId, 'token' : jwtToken};
     mainData = await ServerResponseJsonDataTemplate('/main/recommend' ,data);
-    jsonData = jsonDecode(mainData);
     FinishedWidgetList = 
-        jsonData.map<Container>((data) => MakeaPosting(data)).toList();
+        mainData.map<Container>((data) => MakeaPosting(data)).toList();
     setState(() {
       BuildFinshWidget = Column(children: FinishedWidgetList);
     });
