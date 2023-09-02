@@ -77,7 +77,6 @@ public class UserService {
         if (!findUser.get(0).getPassword().equals(user.getPassword())){
             return "비번 오류";
         }
-        if (findUser.get(0).getNickname().equals("")) return "닉네임 설정 안됨";
 
         return ",\n\"id\" : \""+findUser.get(0).getId()+"\",\n\"nickname\" : \""+findUser.get(0).getNickname()+"\"}";
     }
@@ -90,7 +89,6 @@ public class UserService {
         if (!findUser.get(0).getRoot().equals(user.getRoot())){
             return "잘못된 접근입니다.";
         }
-        if (findUser.get(0).getNickname().equals("")) return "닉네임 설정 안됨";
 
         return ",\n\"id\" : \""+findUser.get(0).getId()+"\",\n\"nickname\" : \""+findUser.get(0).getNickname()+"\"}";
     }
