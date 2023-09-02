@@ -26,6 +26,7 @@ public class MainController {
         try {
             tokenUtil.parseJwtToken(tokenUser.getToken());
         }catch (Exception e){
+            System.out.println(e.getMessage());
             return null;
         }
         return postService.recommend(tokenUser.getId(), tokenUser.getRoot());
@@ -36,6 +37,7 @@ public class MainController {
         try {
             tokenUtil.parseJwtToken(tokenPost.getToken());
         }catch (Exception e){
+            System.out.println(e.getMessage());
             return null;
         }
         return postService.recommendWithCategory(tokenPost.getCategory());
