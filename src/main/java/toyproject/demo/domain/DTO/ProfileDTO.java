@@ -14,7 +14,6 @@ public class ProfileDTO {
     String id;
     String nickname;
     String info;
-    LocalDate birth;
     String imgLocation;
     List<Post> posts = new ArrayList<>();
 }

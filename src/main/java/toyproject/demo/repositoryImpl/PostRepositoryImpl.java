@@ -132,7 +132,7 @@ public class PostRepositoryImpl implements PostRepository {
         List<String> categories = jdbcTemplate.queryForList("select category from category where user_id = ? and user_root = ?", String.class, userId, userRoot);
         ArrayList<Post> posts = new ArrayList<>();
         for (String category : categories) {
-            posts.addAll(jdbcTemplate.query("SELECT p.*, u.nickname AS nickname, COUNT(pl.post_id) AS likeCount FROM post p LEFT JOIN user u ON p.user_id = u.id LEFT JOIN postLike pl ON p.id = pl.post_id WHERE p.category = ? GROUP BY p.id", rowMapper, category));
+            posts.addAll(jdbcTemplate.query("SELECT p.*, u.nickname AS nickname,u.root AS Root, COUNT(pl.post_id) AS likeCount FROM post p LEFT JOIN user u ON p.user_id = u.id LEFT JOIN postLike pl ON p.id = pl.post_id WHERE p.category = ? GROUP BY p.id", rowMapper, category));
         }
         return posts;
     }
