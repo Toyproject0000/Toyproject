@@ -63,8 +63,8 @@ public class UserService {
         }
     }
 
-    public List<ProfileViewDTO> findUser(String id){
-        List<ProfileViewDTO> result = userRepository.findUser(id);
+    public List<ProfileViewDTO> findUser(String id, String root){
+        List<ProfileViewDTO> result = userRepository.findUser(id, root);
         return result;
     }
 

@@ -15,5 +15,7 @@ public class ProfileDTO {
     String nickname;
     String info;
     String imgLocation;
+    Integer following;
+    Integer follower;
     List<Post> posts = new ArrayList<>();
 }

@@ -20,6 +20,6 @@ import java.util.List;
      List<User> findNickname(User user);
      List<User> findEmail(User user);
      void setPassword(User user);
-     List<ProfileViewDTO> findUser(String id);
+     List<ProfileViewDTO> findUser(String id, String root);
     List<ProfileDTO> userProfile(String id, String root);
 }

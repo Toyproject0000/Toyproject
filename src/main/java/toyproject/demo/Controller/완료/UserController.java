@@ -175,7 +175,7 @@ public class UserController {
         User user = userConverter.convert(tokenUser);
         try {
             String id = user.getId();
-            ProfileViewDTO profileView = userService.findUser(id).get(0);
+            ProfileViewDTO profileView = userService.findUser(id, user.getRoot()).get(0);
 
             return profileView;
         }catch (Exception e){
