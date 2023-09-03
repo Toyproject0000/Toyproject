@@ -13,8 +13,11 @@ public class ImgUploadService {
     public String ProfileImgUpload(MultipartFile file, String userId) throws IOException {
 //        String baseUploadPath = "C:/Users/kwh87"; // 절대 경로 설정
         String baseUploadPath = "/Users/gimmin-ung/ImageServer";
+        String originalFilename = file.getOriginalFilename();
+        int lastDotIndex = originalFilename.lastIndexOf(".");
+        String fileExtension = originalFilename.substring(lastDotIndex + 1);
         String fileName = UUID.randomUUID().toString();
-        String filePath = baseUploadPath + "/" + userId + "/profile/" + fileName;
+        String filePath = baseUploadPath + "/" + userId + "/profile/" + fileName+"."+fileExtension;
         File directory = new File(filePath).getParentFile();
         if (!directory.exists()) {
             directory.mkdirs();
@@ -28,7 +31,10 @@ public class ImgUploadService {
         String baseUploadPath = "C:/Users/kwh87"; // 절대 경로 설정
 //        String baseUploadPath = "/Users/gimmin-ung/ImageServer"; // 절대 경로 설정
         String fileName = UUID.randomUUID().toString();
-        String filePath = baseUploadPath + "/" + userId + "/post/" + fileName;
+        String originalFilename = file.getOriginalFilename();
+        int lastDotIndex = originalFilename.lastIndexOf(".");
+        String fileExtension = originalFilename.substring(lastDotIndex + 1);
+        String filePath = baseUploadPath + "/" + userId + "/post/" + fileName+"."+fileExtension;
         File directory = new File(filePath).getParentFile();
         if (!directory.exists()) {
             directory.mkdirs();
