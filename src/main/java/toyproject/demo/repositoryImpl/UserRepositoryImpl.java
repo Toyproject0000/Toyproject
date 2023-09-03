@@ -94,7 +94,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public List<ProfileDTO> userProfile(String id) {
-        return jdbcTemplate.query("select * from user where id = ?", profileRowMapper,id);
+    public List<ProfileDTO> userProfile(String id, String root) {
+        return jdbcTemplate.query("select * from user where id = ? and root = ?", profileRowMapper,id, root);
     }
 }

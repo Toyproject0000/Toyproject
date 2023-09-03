@@ -22,7 +22,7 @@ public class PostRepositoryImpl implements PostRepository {
     }
     @Override
     public void insert(Post post) {
-        String sql = "INSERT INTO post (user_id, contents, title, category, disclosure, date, possibly_reply, img_location,  visibly_like, user_root, user_img) " +
+        String sql = "INSERT INTO post (user_id, contents, title, category, disclosure, date, possibly_reply, img_location,  visibly_like, root, user_img) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, (select img_location from user u where id = ? and root = ?))";
         jdbcTemplate.update(sql, post.getUserId(), post.getContents(), post.getTitle(), post.getCategory(), post.getDisclosure(), post.getDate(), post.getPossiblyReply(), post.getImgLocation(), post.getVisiblyLike(), post.getRoot(), post.getUserId(), post.getRoot());
     }
@@ -117,14 +117,14 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public List<Post> findByWriter(String id) {
+    public List<Post> findByWriter(String id, String root) {
         String sql = "SELECT p.*, COUNT(pl.post_id) AS likeCount " +
                 "FROM post p " +
                 "LEFT JOIN postLike pl ON p.id = pl.post_id " +
-                "WHERE p.user_id = ? " +
+                "WHERE p.user_id = ? and p.root = ?" +
                 "GROUP BY p.id " +
                 "ORDER BY p.date DESC";
-        return jdbcTemplate.query(sql, rowMapper, id);
+        return jdbcTemplate.query(sql, rowMapper, id, root);
     }
 
     @Override

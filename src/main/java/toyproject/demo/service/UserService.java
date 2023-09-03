@@ -106,8 +106,8 @@ public class UserService {
         }
     }
 
-    public List<ProfileDTO> userProfile(String id){
-        return userRepository.userProfile(id);
+    public List<ProfileDTO> userProfile(String id, String root){
+        return userRepository.userProfile(id, root);
     }
 
     public void delete(User user){

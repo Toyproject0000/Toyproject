@@ -195,9 +195,9 @@ public class UserController {
 
         String id = user.getId();
 
-        List<ProfileDTO> profile = userService.userProfile(id);
+        List<ProfileDTO> profile = userService.userProfile(id, user.getRoot());
 
-        profile.get(0).setPosts(postService.findByWriter(id));
+        profile.get(0).setPosts(postService.findByWriter(id, user.getRoot()));
 
         return profile;
     }

@@ -43,8 +43,8 @@ public class PostService {
         postRepository.update(post);
     }
 
-    public List<Post> findByWriter(String id){
-        return postRepository.findByWriter(id);
+    public List<Post> findByWriter(String id, String root){
+        return postRepository.findByWriter(id, root);
     }
 
 

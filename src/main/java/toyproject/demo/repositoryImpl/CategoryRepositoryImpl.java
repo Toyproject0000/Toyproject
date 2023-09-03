@@ -53,7 +53,7 @@ public class CategoryRepositoryImpl implements CategoryRepository {
         List<String> categories = jdbcTemplate.queryForList("SELECT DISTINCT category FROM post", String.class);
         StringBuilder sb = new StringBuilder();
         for (String category : categories) {
-            sb.append("INSERT INTO category (user_id, category, score, user_root) VALUES ('"+userId+"', '"+category+"', 0, "+"'"+userRoot+"')");
+            sb.append("INSERT INTO category (user_id, category, score, root) VALUES ('"+userId+"', '"+category+"', 0, "+"'"+userRoot+"')");
         }
         jdbcTemplate.update(sb.toString());
     }

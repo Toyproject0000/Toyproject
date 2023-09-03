@@ -14,7 +14,7 @@ import java.util.List;
      List<Post> findPostOfFollower(User user);
      List<Post> findAllLikePost(User user);
      List<Post> search(Post post, LocalDate formerDate, LocalDate afterDate);
-     List<Post> findByWriter(String id);
+     List<Post> findByWriter(String id, String root);
      List<Post> recommendByAlgorithm(String userId, String userRoot);
      List<Post> recommendByCategory(String category);
 }
