@@ -22,9 +22,9 @@ public class PostRepositoryImpl implements PostRepository {
     }
     @Override
     public void insert(Post post) {
-        String sql = "INSERT INTO post (user_id, contents, title, category, disclosure, date, possibly_reply, img_location,  visibly_like, user_root) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        jdbcTemplate.update(sql, post.getUserId(), post.getContents(), post.getTitle(), post.getCategory(), post.getDisclosure(), post.getDate(), post.getPossiblyReply(), post.getImgLocation(), post.getVisiblyLike(), post.getRoot());
+        String sql = "INSERT INTO post (user_id, contents, title, category, disclosure, date, possibly_reply, img_location,  visibly_like, user_root, user_img) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, (select img_location from user u where id = ? and root = ?))";
+        jdbcTemplate.update(sql, post.getUserId(), post.getContents(), post.getTitle(), post.getCategory(), post.getDisclosure(), post.getDate(), post.getPossiblyReply(), post.getImgLocation(), post.getVisiblyLike(), post.getRoot(), post.getUserId(), post.getRoot());
     }
 
     @Override

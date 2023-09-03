@@ -15,6 +15,7 @@ public class Post {
     String contents;
     String title;
     String imgLocation;
+    String userImg;
     String category;
     String disclosure;
     String possiblyReply;
