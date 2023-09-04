@@ -42,6 +42,24 @@ class _WritingPageState extends State<WritingPage> {
     }
   }
 
+  Future<Widget> _summerNoteEditor() async {
+    final summerNoteEditor = await FlutterSummernote(
+      decoration: BoxDecoration(
+        border: Border.all(width: 0),
+      ),
+      key: _keyEditor,
+      hint: "내용을 입력하시오....",
+      showBottomToolbar: false,
+      customToolbar: """
+          [
+            ['style', ['bold','italic','underline','clear']],
+            ['para', ['paragraph']],
+          ]
+            """,
+    );
+    return summerNoteEditor;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,20 +89,24 @@ class _WritingPageState extends State<WritingPage> {
         ],
         automaticallyImplyLeading: false,
       ),
-      body: FlutterSummernote(
-        decoration: BoxDecoration(
-          border: Border.all(width: 0),
-        ),
-        key: _keyEditor,
-        hint: "내용을 입력하시오....",
-        showBottomToolbar: false,
-        customToolbar: """
-            [
-              ['style', ['bold','italic','underline','clear']],
-              ['para', ['paragraph']],
-            ]
-            """,
-        ),
+      body: FutureBuilder(
+        future: _summerNoteEditor(),
+        builder: (BuildContext context, AsyncSnapshot<Widget> snapshot){
+          if(snapshot.hasError){
+            Center(
+              child: Text('error'),
+            );
+          }
+          if(snapshot.connectionState == ConnectionState.waiting){
+            return Center(
+              child: CircularProgressIndicator(
+                color: Colors.blue,
+              ),
+            );
+          }
+          return snapshot.data!;
+        }
+      )
     );
   }
 }

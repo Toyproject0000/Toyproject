@@ -2,10 +2,12 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_login/flutter_naver_login.dart';
+import 'package:provider/provider.dart';
 import 'package:smart_dongne/component/my_Text_Form_Field.dart';
 import 'package:smart_dongne/login_page/Social_login/kakao_login.dart';
 import 'package:smart_dongne/login_page/Social_login/main_view_model.dart';
 import 'package:smart_dongne/login_page/TermsofService/agreement.dart';
+import 'package:smart_dongne/provider/LoginMaintenance.dart';
 import 'package:smart_dongne/server/Server.dart';
 import 'package:smart_dongne/login_page/find_password.dart';
 import 'package:smart_dongne/main_page/setpage.dart';
@@ -23,17 +25,14 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final viewModel = MainViewModel(KakaoLogin());
-  bool termsofservice = false;
-  bool personalInfomation = false;
-  bool allconsend = false;
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  LoginMaintenance _loginMaintenance = LoginMaintenance();
 
   bool stayLoggedIn = false;
 
   String userEmail = '';
   String userPassword = '';
-  bool loginError = false;
 
   void upDateEmailAndPassword() {}
 
@@ -52,9 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
       Navigator.pushNamed(context, SetPage.routeName);
     } else if (response == '닉네임 설정 안됨') {
     } else {
-      setState(() {
-        loginError = true;
-      });
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('이메일 혹은 비밀번호가 틀렸습니다.')));
     }
   }
 
@@ -101,6 +98,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // provider allocation
+    _loginMaintenance = Provider.of<LoginMaintenance>(context, listen: false);
+    
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: GestureDetector(
@@ -165,19 +166,22 @@ class _LoginScreenState extends State<LoginScreen> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        stayLoggedIn = !stayLoggedIn;
-                                      });
+                                  Consumer(
+                                    builder: (context, provider, child){
+                                      return IconButton(
+                                      onPressed: () {
+                                        _loginMaintenance.loginMaintenanceOnpress();
+                                      },
+                                      icon: Icon(
+                                        Icons.check_circle,
+                                        size: 20,
+                                        color: Provider.of<LoginMaintenance>(context).loginMaintenance == false
+                                            ? Colors.grey
+                                            : Colors.blue,
+                                      ),
+                                      );
                                     },
-                                    icon: Icon(
-                                      Icons.check_circle,
-                                      size: 20,
-                                      color: stayLoggedIn == false
-                                          ? Colors.grey
-                                          : Colors.blue,
-                                    ),
+                          
                                   ),
                                   Text(
                                     '로그인 상태를 유지',
@@ -186,11 +190,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ],
                               ),
                             ),
-                            if (loginError == true)
-                              Text(
-                                '아이디 혹은 비밀번호가 잘못됐습니다.',
-                                style: TextStyle(color: Colors.red),
-                              ),
                             SizedBox(
                               height: 10,
                             ),

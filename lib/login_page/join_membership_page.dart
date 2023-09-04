@@ -5,6 +5,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:smart_dongne/component/authentication_TextFormfield.dart';
+import 'package:smart_dongne/component/genderButton.dart';
 import 'package:smart_dongne/component/myButton.dart';
 import 'package:smart_dongne/component/my_Text_Form_Field.dart';
 import 'package:smart_dongne/component/myselfWidget.dart';
@@ -238,59 +239,8 @@ class _JoinmembershipState extends State<Joinmembership> {
                     nameController: userNameController,
                     phoneNumberController: userPhoneNumberController,
                     birthdayController: userbirthdayController),
-                Container(
-                  height: 60,
-                  padding: EdgeInsets.all(10.0),
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.grey,
-                        width: 1.0,
-                      ),
-                      borderRadius: BorderRadius.circular(5)),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            setState(() {
-                              manButton = true;
-                            });
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                manButton ? Colors.blue : Colors.white,
-                          ),
-                          child: Text(
-                            '남성',
-                            style: TextStyle(
-                              color: manButton ? Colors.white : Colors.grey,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            setState(() {
-                              manButton = false;
-                            });
-                          },
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: manButton == false
-                                  ? Colors.blue
-                                  : Colors.white),
-                          child: Text(
-                            '여성',
-                            style: TextStyle(
-                              color: manButton ? Colors.grey : Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+
+                MyGenderButton(man: manButton),
                 SizedBox(
                   height: 25,
                 ),

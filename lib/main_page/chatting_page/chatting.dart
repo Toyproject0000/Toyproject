@@ -1,11 +1,8 @@
-import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_dongne/main_page/chatting_page/ChatListTile.dart';
-import 'package:smart_dongne/main_page/chatting_page/chatting_Content.dart';
 import 'package:smart_dongne/main_page/chatting_page/chatting_searchmode.dart';
 import 'package:smart_dongne/server/chatServer.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:smart_dongne/server/userId.dart';
 
 class Chatting extends StatefulWidget {
@@ -54,18 +51,18 @@ class _ChattingState extends State<Chatting> {
           future: getChatdata(),
           builder: (BuildContext context, AsyncSnapshot<List<Widget>> snapshot){
             if(snapshot.hasError){
-                Center(
-                  child: Text('error'),
-                );
-              }
-              if(snapshot.connectionState == ConnectionState.waiting){
-                return Center(
-                  child: CircularProgressIndicator(
-                    color: Colors.blue,
-                  ),
-                );
-              }
-              return Column(children: snapshot.data!);
+              Center(
+                child: Text('error'),
+              );
+            }
+            if(snapshot.connectionState == ConnectionState.waiting){
+              return Center(
+                child: CircularProgressIndicator(
+                  color: Colors.blue,
+                ),
+              );
+            }
+            return Column(children: snapshot.data!);
           }
 
         ),

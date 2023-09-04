@@ -14,7 +14,6 @@ class ChatListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(data);
     return Slidable(
       endActionPane: ActionPane(
         motion: const BehindMotion(),
@@ -27,7 +26,7 @@ class ChatListTile extends StatelessWidget {
         ],
       ),
       child: ListTile(
-        contentPadding: EdgeInsets.all(10),
+        contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
         title: Text(data['sendUser'], style: TextStyle(color: Colors.black),),
         subtitle: Text(data['message'], overflow: TextOverflow.ellipsis),
         leading: CircleAvatar(

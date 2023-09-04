@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
-import 'package:smart_dongne/login_page/Social_login/social_login_setting.dart';
+import 'package:smart_dongne/login_page/social_login_setting.dart';
 import 'package:smart_dongne/login_page/TermsofService/agreement.dart';
 import 'package:smart_dongne/login_page/TermsofService/termsofservice.dart';
 import 'package:smart_dongne/login_page/find_password.dart';
@@ -24,12 +24,23 @@ import 'package:smart_dongne/main_page/writing_page/cover.dart';
 import 'package:smart_dongne/main_page/profile_page/profile_edit_page.dart';
 import 'package:smart_dongne/main_page/writing_page/writing_page_final.dart';
 import 'package:smart_dongne/main_page/setpage.dart';
+import 'package:smart_dongne/provider/JoinArgeement.dart';
+import 'package:smart_dongne/provider/LoginMaintenance.dart';
 import 'login_page/TermsofService/personalinformaition.dart';
 import 'login_page/find_id.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   KakaoSdk.init(nativeAppKey: 'ca6e54286fb5cc0bc83d0320f4cb60d8');
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (BuildContext context) => LoginMaintenance()),
+        ChangeNotifierProvider(create: (BuildContext context) => JoinArgeement())
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

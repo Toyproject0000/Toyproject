@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:smart_dongne/login_page/Social_login/social_login_setting.dart';
+import 'package:provider/provider.dart';
+import 'package:smart_dongne/component/myButton.dart';
+import 'package:smart_dongne/login_page/social_login_setting.dart';
 import 'package:smart_dongne/login_page/TermsofService/termsofservice.dart';
 import 'package:smart_dongne/login_page/join_membership_page.dart';
+import 'package:smart_dongne/provider/JoinArgeement.dart';
 import 'package:smart_dongne/server/userId.dart';
 
 class UserConsent extends StatefulWidget {
@@ -14,14 +17,23 @@ class UserConsent extends StatefulWidget {
 }
 
 class _UserConsentState extends State<UserConsent> {
-  bool allconsend = false;
-  bool termsofservice = false;
-  bool personalInfomation = false;
-  dynamic args;
-  bool isLoading = false;
+  
+  late JoinArgeement _joinArgeement;
+
+  void onPress() {
+    if(Provider.of<JoinArgeement>(context, listen: false).AllargeeMent == true){
+      if(LoginRoot == 'local'){
+        Navigator.pushNamed(context, Joinmembership.routeName);
+      }else {
+        Navigator.pushNamed(context, SocialLoginSetting.routeName);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    _joinArgeement = Provider.of<JoinArgeement>(context, listen: false);
+    print('지금 이용약관, 개인정보 실행되고 있습니다.');
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -40,149 +52,90 @@ class _UserConsentState extends State<UserConsent> {
         padding: EdgeInsets.symmetric(vertical: 25, horizontal: 15),
         child: Column(
           children: [
-            Row(children: [
-              IconButton(
-                onPressed: () {
-                  if (allconsend == false) {
-                    setState(() {
-                      allconsend = true;
-                      termsofservice = true;
-                      personalInfomation = true;
-                    });
-                  } else {
-                    setState(() {
-                      allconsend = false;
-                      termsofservice = false;
-                      personalInfomation = false;
-                    });
-                  }
+            ListTile(
+              leading: Consumer(
+                builder: (context, child, provider){
+                  return IconButton(
+                    onPressed: () {
+                      _joinArgeement.onPresseAllargeeMent();
+                    },
+                    icon: Icon(
+                      Icons.check_circle_outline,
+                      size: 25,
+                      color: Provider.of<JoinArgeement>(context).AllargeeMent == false ? Colors.grey : Colors.blue,
+                    ),
+                  );
                 },
-                icon: Icon(
-                  Icons.check_circle_outline,
-                  size: 25,
-                  color: allconsend == false ? Colors.grey : Colors.blue,
-                ),
               ),
-              SizedBox(
-                width: 10,
-              ),
-              Text(
+              title: Text(
                 '전체 동의하기',
                 style: TextStyle(fontSize: 20),
-              )
-            ]),
-            SizedBox(
-              height: 10,
+              ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        setState(() {
-                          termsofservice = !termsofservice;
-                          if (termsofservice == true &&
-                              personalInfomation == true) {
-                            allconsend = true;
-                          } else {
-                            allconsend = false;
-                          }
-                        });
-                      },
-                      icon: Icon(
-                        Icons.check_circle_outline,
-                        size: 25,
-                        color:
-                            termsofservice == false ? Colors.grey : Colors.blue,
-                      ),
+
+            ListTile(
+              leading: Consumer(
+                builder: (context, provider, child){
+                  return IconButton(
+                    onPressed: () {
+                      _joinArgeement.onPresstermsargeement();
+                    },
+                    icon: Icon(
+                      Icons.check_circle_outline,
+                      size: 25,
+                      color:
+                          Provider.of<JoinArgeement>(context).termsargeement == false ? Colors.grey : Colors.blue,
                     ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                      '글쓴이 이용약관',
-                      style: TextStyle(fontSize: 20),
-                    ),
-                  ],
-                ),
-                IconButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, TermsofService.routeName);
-                  },
-                  icon: Icon(Icons.arrow_forward_ios),
-                  color: Colors.grey,
-                ),
-              ],
+                  );
+                },
+              ),
+              trailing: IconButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, TermsofService.routeName);
+                },
+                icon: Icon(Icons.arrow_forward_ios),
+                color: Colors.grey,
+              ),
+              title: Text(
+                '글쓴이 이용약관',
+                style: TextStyle(fontSize: 20),
+              ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        setState(() {
-                          personalInfomation = !personalInfomation;
-                          if (termsofservice == true &&
-                              personalInfomation == true) {
-                            allconsend = true;
-                          } else {
-                            allconsend = false;
-                          }
-                        });
-                      },
-                      icon: Icon(
-                        Icons.check_circle_outline,
-                        size: 25,
-                        color: personalInfomation == false
-                            ? Colors.grey
-                            : Colors.blue,
-                      ),
+            ListTile(
+              leading: Consumer(
+                builder: (context, child, provider){
+                  return IconButton(
+                    onPressed: () {
+                      _joinArgeement.onPresspersonalinformaitionArgeement();
+                    },
+                    icon: Icon(
+                      Icons.check_circle_outline,
+                      size: 25,
+                      color: Provider.of<JoinArgeement>(context).personalinformaitionArgeement == false
+                          ? Colors.grey
+                          : Colors.blue,
                     ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                      '개인정보 수집 및 이용',
-                      style: TextStyle(fontSize: 20),
-                    ),
-                  ],
-                ),
-                IconButton(
-                  onPressed: () async {
-                    await Navigator.pushNamed(
-                        context, TermsofService.routeName);
-                  },
-                  icon: Icon(Icons.arrow_forward_ios),
-                  color: Colors.grey,
-                ),
-              ],
+                  );
+                },
+              ),
+              trailing: IconButton(
+                onPressed: () async {
+                  await Navigator.pushNamed(
+                      context, TermsofService.routeName);
+                },
+                icon: Icon(Icons.arrow_forward_ios),
+                color: Colors.grey,
+              ),
+              title: Text(
+                '개인정보 수집 및 이용',
+                style: TextStyle(fontSize: 20),
+              ),
             ),
+            
             SizedBox(
               height: 20,
             ),
-            Container(
-              width: double.infinity,
-              child: ElevatedButton(
-                child: Text(
-                  '완료',
-                  style: TextStyle(color: Colors.white, fontSize: 20),
-                ),
-                onPressed: allconsend == true
-                    ? () {
-                      if(LoginRoot == 'local'){
-                        Navigator.pushNamed(
-                              context, Joinmembership.routeName);
-                      }else{
-                        Navigator.pushNamed(context, SocialLoginSetting.routeName);
-                      }
-                      }
-                    : null,
-                style: ElevatedButton.styleFrom(primary: Colors.blue),
-              ),
-            )
+            MyButton(text: '다음', onPresse: onPress)
           ],
         ),
       ),

@@ -12,6 +12,7 @@ class PostingWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(data);
     final contentsDate = data['date'];
     return Container(
       child: Column(

@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 
 Future<String?> postLike(data) async {
   print(data);
-  final url = Uri.parse('http://192.168.0.199:8080/post-like/add');
+  final url = Uri.parse('http://192.168.0.16:8080/post-like/add');
   final headers = {'Content-Type': 'application/json'};
   try {
     final response = await http.post(url, headers: headers, body: jsonEncode(data));
@@ -20,7 +20,7 @@ Future<String?> postLike(data) async {
 }
 
 Future<String?> postUnLike(data) async {
-  final url = Uri.parse('http://192.168.0.199:8080/post-like/remove');
+  final url = Uri.parse('http://192.168.0.16:8080/post-like/remove');
   final headers = {'Content-Type': 'application/json'};
   try {
     final response = await http.post(url, headers: headers, body: jsonEncode(data));
