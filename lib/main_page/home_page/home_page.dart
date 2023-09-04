@@ -21,14 +21,12 @@ class _HomePageState extends State<HomePage> {
   Column? BuildFinshWidget;
   dynamic jsonData;
 
-  void GetMainData() async {
+  Future<Widget> GetMainData() async {
     final data = {'id': globalUserId, 'token' : jwtToken, 'root' : LoginRoot};
     mainData = await ServerResponseJsonDataTemplate('/main/recommend' ,data);
     FinishedWidgetList = 
         mainData.map<Widget>((factor) => PostingWidget(data:factor)).toList();
-    setState(() {
-      BuildFinshWidget = Column(children: FinishedWidgetList);
-    });
+    return Column(children: FinishedWidgetList,);
   }
 
   @override
@@ -117,14 +115,28 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ]),
               ),
-              BuildFinshWidget == null
-                  ? Center(
+
+              // asynchronous operation 
+              FutureBuilder(
+                future: GetMainData(),
+                builder: (BuildContext context, AsyncSnapshot<Widget> snapshot){
+                  if(snapshot.hasError){
+                    Center(
+                      child: Text('error'),
+                    );
+                  }
+                  if(snapshot.connectionState == ConnectionState.waiting){
+                    return Center(
                       child: CircularProgressIndicator(
                         color: Colors.blue,
-                        backgroundColor: Colors.grey,
                       ),
-                    )
-                  : BuildFinshWidget!
+                    );
+                  }
+
+                  return snapshot.data!;
+                }
+              ),
+
             ],
           ),
         ),

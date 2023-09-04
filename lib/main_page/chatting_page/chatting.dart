@@ -34,16 +34,15 @@ class _ChattingState extends State<Chatting> {
     }
   }
   
-  void getChatdata() async {
+  Future<List<Widget>> getChatdata() async {
     final data = {'sendUser': globalNickName, 'token' : jwtToken};
     response = await ServerResponseJsonDataTemplate('/message/findAll', data);
     allChatting = response.map((data) => ChatListTile(data: data, onDismissed: _onDismissed)).toList();
-    setState(() {});
+    return allChatting;
   }
 
   @override
   void initState() {
-    getChatdata();
     super.initState();
   }
 
@@ -51,13 +50,25 @@ class _ChattingState extends State<Chatting> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: response != [] ?
-            Column(
-              children: allChatting,
-            )
-            : Center(
-                child: Text('대화 메시지가 없습니다.'),
-              ),
+        child: FutureBuilder(
+          future: getChatdata(),
+          builder: (BuildContext context, AsyncSnapshot<List<Widget>> snapshot){
+            if(snapshot.hasError){
+                Center(
+                  child: Text('error'),
+                );
+              }
+              if(snapshot.connectionState == ConnectionState.waiting){
+                return Center(
+                  child: CircularProgressIndicator(
+                    color: Colors.blue,
+                  ),
+                );
+              }
+              return Column(children: snapshot.data!);
+          }
+
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
