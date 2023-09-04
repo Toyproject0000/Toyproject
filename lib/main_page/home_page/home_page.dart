@@ -1,13 +1,11 @@
-import 'dart:convert';
-import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:smart_dongne/main_page/home_page/Content_page.dart';
+import 'package:smart_dongne/component/postingWidget.dart';
 import 'package:smart_dongne/main_page/home_page/search_bar.dart';
 import 'package:smart_dongne/server/chatServer.dart';
 import 'package:smart_dongne/server/userId.dart';
 
-import '../../server/Server.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -17,94 +15,17 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late dynamic mainData;
+  dynamic mainData;
   late Map<String, dynamic> firstPosting;
-  late List<Container> FinishedWidgetList;
+  late List<Widget> FinishedWidgetList;
   Column? BuildFinshWidget;
   dynamic jsonData;
 
-  // 게시물에 쓸 데이터들
-  Container PostingWidget = Container();
-
-  Container MakeaPosting(data) {
-    final contentsDate = data['date'];
-    final PostingContent = data['contents'];
-
-    return Container(
-      child: Column(
-        children: [
-          Divider(
-            color: Colors.black,
-            height: 0,
-          ),
-          Container(
-            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-            child: Row(
-              children: [
-                data['imgLocation'] == '' ? CircleAvatar(
-                  backgroundImage: FileImage(data['imgLocation']),
-                ) : CircleAvatar(
-                  backgroundImage: Image.asset('image/basicprofile.png',fit: BoxFit.cover).image,
-                  backgroundColor: Colors.grey,
-                ),
-                SizedBox(
-                  width: 10,
-                ),
-                Text(data['nickname'], style: TextStyle(fontSize: 18)),
-              ],
-            ),
-          ),
-          Divider(
-            color: Colors.grey,
-            height: 0,
-          ),
-          Container(
-            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-            child: Row(
-              children: [
-                Text(
-                  '제목:',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(
-                  width: 5,
-                ),
-                Text(
-                  data['title'],
-                  style: TextStyle(fontSize: 15),
-                ),
-              ],
-            ),
-          ),
-          InkWell(
-            onTap: () {
-              Navigator.pushNamed(context, ShowaContents.routeName,
-                  arguments: ContentArguments(PostingContent['content'], PostingContent['userId'], PostingContent['id'],));
-            },
-            child: AspectRatio(
-              aspectRatio: 4 / 4,
-              child: Image.file(
-                File(data['imgLocation']),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          Container(
-              margin: EdgeInsets.only(bottom: 15),
-              padding: EdgeInsets.all(7),
-              child: Row(
-                children: [Text(contentsDate.substring(0, 10))],
-              )),
-        ],
-      ),
-    );
-  }
-
   void GetMainData() async {
-    final data = {'id': globalUserId, 'token' : jwtToken};
+    final data = {'id': globalUserId, 'token' : jwtToken, 'root' : LoginRoot};
     mainData = await ServerResponseJsonDataTemplate('/main/recommend' ,data);
     FinishedWidgetList = 
-        mainData.map<Container>((data) => MakeaPosting(data)).toList();
+        mainData.map<Widget>((factor) => PostingWidget(data:factor)).toList();
     setState(() {
       BuildFinshWidget = Column(children: FinishedWidgetList);
     });
@@ -119,7 +40,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
+      body : SafeArea(
         child: Padding(
           padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
           child: ListView(

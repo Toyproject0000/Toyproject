@@ -62,16 +62,16 @@ class _LoginScreenState extends State<LoginScreen> {
     final data = {'id': email, 'root': root};
     final response = await loginSendData('/socialLogin', data);
     if (response == null) {
+      // go to join page
       globalUserId = email;
       LoginRoot = root;
       Navigator.pushNamed(context, UserConsent.routeName);
-    } else if (response == '닉네임 설정 안됨') {
-      
     } else {
       final jsonData = jsonDecode(response);
       jwtToken = jsonData['token'];
       globalUserId = jsonData['id'];
       globalNickName = jsonData['nickname'];
+      LoginRoot = root;
       Navigator.pushNamed(context, SetPage.routeName);
     }
   }

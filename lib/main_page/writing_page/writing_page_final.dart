@@ -1,19 +1,16 @@
-
 import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_summernote/flutter_summernote.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:smart_dongne/component/myShowDialog.dart';
 import 'package:smart_dongne/main_page/writing_page/cover.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:smart_dongne/server/chatServer.dart';
 import 'package:smart_dongne/server/userId.dart';
-import '../../server/Server.dart';
-
 
 class LastSetting extends StatefulWidget {
   const LastSetting({super.key});
-  
 
   static const routeName = '/LastSetting';
 
@@ -22,6 +19,7 @@ class LastSetting extends StatefulWidget {
 }
 
 class _LastSettingState extends State<LastSetting> {
+  MyShowDialog? myShowDialog;
   final _formKey = GlobalKey<FormState>();
   TextEditingController _controller = TextEditingController();
   List<bool> ButtonColorList = [];
@@ -30,7 +28,7 @@ class _LastSettingState extends State<LastSetting> {
   late String contents;
   late Function changeCurrentIndex;
   late GlobalKey<FlutterSummernoteState> summerNoteKey;
-  dynamic? finalImage; // 꾸밈까지 맞친 최종 이미지
+  dynamic finalImage; // 꾸밈까지 맞친 최종 이미지
   late File imageFile;
 
   bool buttonColor1 = false;
@@ -42,7 +40,7 @@ class _LastSettingState extends State<LastSetting> {
   bool commentvalue = false;
   bool numberoflike = false;
   int disclosureindex = 0;
-  
+
   List<String> settingRange = [
     '모두 공개',
     '독자만 공개',
@@ -62,32 +60,17 @@ class _LastSettingState extends State<LastSetting> {
     return null;
   }
 
-  Future<void> cameraImage() async {
-    Navigator.pop(context);
-    final imagePicker = ImagePicker();
-    final pickerFile = await imagePicker.pickImage(source: ImageSource.camera);
-
-    if (pickerFile != null) {
-      setState(() {
-        imagePath = pickerFile.path;
-        selectCover = true;
-      });
-      finalImage = await Navigator.pushNamed(context, CoverPage.routeName,
-          arguments: ScreenArguments(imagePath!));
-    }
-  }
-
   void sendDateServer() async {
     final titleString = _tryValidation();
 
     if (titleString == null) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        duration: Duration(seconds: 5),
+        duration: Duration(seconds: 2),
         content: Text('제목을 입력해주세요.'),
       ));
     } else if (selectCover == false) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        duration: Duration(seconds: 5),
+        duration: Duration(seconds: 2),
         content: Text('표지를 선택해 주세요.'),
       ));
     } else if (buttonColor1 == false &&
@@ -95,7 +78,7 @@ class _LastSettingState extends State<LastSetting> {
         buttonColor3 == false &&
         buttonColor4 == false) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        duration: Duration(seconds: 5),
+        duration: Duration(seconds: 2),
         content: Text('주제를 선택해주세요.'),
       ));
     } else {
@@ -104,20 +87,22 @@ class _LastSettingState extends State<LastSetting> {
       final selectTopic = topicSelect();
       final tempDir = await getTemporaryDirectory();
       File file = await File('${tempDir.path}/image.png').create();
-      final finalImageFile = await file.writeAsBytes(finalImage); 
+      final finalImageFile = await file.writeAsBytes(finalImage);
       // 서버에 데이터 보내기
       final data = {
-        'userId' : 'alsdnd336@naver.com',
+        'userId': globalUserId,
+        'root': LoginRoot,
         'title': titleString,
         'contents': contents,
-        'category' : selectTopic,
+        'category': selectTopic,
         'disclosure': settingRange[disclosureindex],
-        'possibleReply' : settingComment,
-        'token' : jwtToken!
+        'possibleReply': settingComment,
+        'token': jwtToken,
+        'visiblyLike': settingNumberofLike
       };
-      final response = await contentSend(data, finalImageFile);
-      
-      if(response == 'ok'){
+      final response = await ServerSendImageDataTemplate(
+          '/post/submit', data, finalImageFile.path);
+      if (response == 'ok') {
         changeCurrentIndex(0);
         Navigator.pop(context);
         summerNoteKey.currentState!.setEmpty();
@@ -125,180 +110,44 @@ class _LastSettingState extends State<LastSetting> {
     }
   }
 
-  String topicSelect(){
-    if(buttonColor1 == true){
-      return '소설';
-    }else if(buttonColor2 == true){
-      return '일기';
-    }else if(buttonColor3 == true){
-      return '동기부여';
-    }else{
-      return '지식';
-    }
-  }
-
-  String commentFunc(){
-    if(commentvalue == false){
-      return '활성화';
-    }else{
-      return '비활성화';
-    }
-  }
-
-  String likeNumberFunc(){
-    if(numberoflike == false){
-      return '활성화';
-    }else{
-      return '비활성화';
-    }
-  }
-
-  Future<void> galleryImage() async {
-    Navigator.pop(context);
-
-    final imagePicker = ImagePicker();
-    final pickerFile = await imagePicker.pickImage(source: ImageSource.gallery);
-    if (pickerFile != null) {
-      setState(() {
-        imagePath = pickerFile.path;
+  void changedImage(changedImagePath) async {
+    setState(() {
+        imagePath = changedImagePath;
         selectCover = true;
       });
 
       finalImage = await Navigator.pushNamed(context, CoverPage.routeName,
           arguments: ScreenArguments(imagePath!));
+  }
+
+  String topicSelect() {
+    if (buttonColor1 == true) {
+      return '소설';
+    } else if (buttonColor2 == true) {
+      return '일기';
+    } else if (buttonColor3 == true) {
+      return '동기부여';
+    } else {
+      return '지식';
     }
   }
 
-  void showMenuOfPicture(context) {
-    showGeneralDialog(
-      context: context,
-      barrierDismissible: true,
-      barrierLabel: 'Dismiss',
-      transitionDuration: Duration(milliseconds: 200),
-      pageBuilder: (BuildContext buildContext, Animation<double> animation,
-          Animation<double> secondaryAnimation) {
-        return Align(
-          alignment: Alignment.bottomCenter,
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.grey[300],
-            ),
-            margin: EdgeInsets.only(bottom: 50.0),
-            height: MediaQuery.of(context).size.height * 0.25,
-            width: MediaQuery.of(context).size.width,
-            child: Column(
-              children: [
-                Expanded(
-                    child: GestureDetector(
-                  onTap: () {
-                    cameraImage();
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(10.0),
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(color: Colors.grey, width: 1.0),
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(Icons.photo_camera_rounded),
-                        SizedBox(width: 18),
-                        Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text('Camera',
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    color: Colors.black,
-                                    decoration: TextDecoration.none,
-                                  )),
-                              Text('카메라로 사진찍기',
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    color: Colors.grey,
-                                    decoration: TextDecoration.none,
-                                  )),
-                            ]),
-                      ],
-                    ),
-                  ),
-                )),
-                Expanded(
-                    child: GestureDetector(
-                  onTap: () {
-                    galleryImage();
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(10.0),
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(color: Colors.grey, width: 1.0),
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Icon(Icons.image),
-                        SizedBox(width: 20),
-                        Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text('Gallery',
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    color: Colors.black,
-                                    decoration: TextDecoration.none,
-                                  )),
-                              Text('갤러리에서 사진 가져오기',
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    color: Colors.grey,
-                                    decoration: TextDecoration.none,
-                                  ))
-                            ]),
-                      ],
-                    ),
-                  ),
-                )),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () async {
-                      Navigator.pop(context);
-                      selectCover = true;
-                      finalImage = await Navigator.pushNamed(context, CoverPage.routeName);
-                    },
-                    child: Container(
-                      padding: EdgeInsets.all(10.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Icon(Icons.person),
-                          SizedBox(width: 20),
-                          Text(
-                            '기본제공 사진 설정',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 15,
-                              color: Colors.grey,
-                              decoration: TextDecoration.none,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                )
-              ],
-            ),
-          ),
-        );
-      },
-    );
+  String commentFunc() {
+    if (commentvalue == false) {
+      return '활성화';
+    } else {
+      return '비활성화';
+    }
   }
 
+  String likeNumberFunc() {
+    if (numberoflike == false) {
+      return '활성화';
+    } else {
+      return '비활성화';
+    }
+  }
+  
   List<Row> disclosureList = [
     Row(
       children: [
@@ -333,15 +182,23 @@ class _LastSettingState extends State<LastSetting> {
   void initState() {
     super.initState();
     dropDownValue = disclosureList[0];
+    
   }
 
   @override
-  Widget build(BuildContext context) {
+  void didChangeDependencies() {
+    // argument allocation
     final args = ModalRoute.of(context)!.settings.arguments as Contents;
     changeCurrentIndex = args.changCurrentIndex;
     contents = args.content;
     summerNoteKey = args.summerNoteKey;
+    myShowDialog = MyShowDialog(context: context, changeImagePath: changedImage);
 
+    super.didChangeDependencies();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -406,7 +263,7 @@ class _LastSettingState extends State<LastSetting> {
           ),
           GestureDetector(
             onTap: () {
-              showMenuOfPicture(context);
+              myShowDialog!.showMenuOfPicture();
             },
             child: Container(
               width: double.infinity,

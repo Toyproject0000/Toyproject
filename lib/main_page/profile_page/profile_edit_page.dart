@@ -1,16 +1,14 @@
-import 'dart:convert';
-
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
-import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
+import 'package:smart_dongne/component/myShowDialog.dart';
 import 'package:smart_dongne/server/chatServer.dart';
 import 'package:smart_dongne/server/userId.dart';
-import '../../server/Server.dart';
 
 class ProfileEdit extends StatefulWidget {
   const ProfileEdit({super.key});
@@ -21,9 +19,9 @@ class ProfileEdit extends StatefulWidget {
 }
 
 class _ProfileEditState extends State<ProfileEdit> {
-  TextEditingController nameTextController = TextEditingController();
   TextEditingController introductionController = TextEditingController();
-  FocusNode nameFocusNode = FocusNode();
+  MyShowDialog? myShowDialog;
+
   FocusNode introductionFocusNdoe = FocusNode();
   bool nameCancelButton = false;
   bool introduction = false;
@@ -32,144 +30,12 @@ class _ProfileEditState extends State<ProfileEdit> {
   String imageBeforeChange = '';
 
   //server data
-  late String userNickName;
-  late String userIntroduction;
-  late String userProfileImage;
+  String userIntroduction = '';
+  String userProfileImage = '';
+  String userNickname = '';
 
-  void showMenuOfPicture(context) {
-    showModalBottomSheet(
-        context: context,
-        builder: ((context) => Container(
-              height: MediaQuery.of(context).size.height * 0.35,
-              width: MediaQuery.of(context).size.width * 0.8,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20.0),
-              ),
-              child: Column(
-                children: [
-                  Expanded(
-                      child: GestureDetector(
-                    onTap: () {
-                      pickImageOfCamera();
-                    },
-                    child: Container(
-                      padding: EdgeInsets.all(10.0),
-                      decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(color: Colors.grey, width: 1.0),
-                        ),
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(Icons.photo_camera_rounded),
-                          SizedBox(width: 18),
-                          Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text('Camera',
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      color: Colors.black,
-                                      decoration: TextDecoration.none,
-                                    )),
-                                Text('카메라로 사진찍기',
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      color: Colors.grey,
-                                      decoration: TextDecoration.none,
-                                    ))
-                              ]),
-                        ],
-                      ),
-                    ),
-                  )),
-                  Expanded(
-                      child: GestureDetector(
-                    onTap: () {
-                      pickImageOfGallery();
-                    },
-                    child: Container(
-                      padding: EdgeInsets.all(10.0),
-                      decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(color: Colors.grey, width: 1.0),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Icon(Icons.image),
-                          SizedBox(width: 20),
-                          Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text('Gallery',
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      color: Colors.black,
-                                      decoration: TextDecoration.none,
-                                    )),
-                                Text('갤러리에서 사진 가져오기',
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      color: Colors.grey,
-                                      decoration: TextDecoration.none,
-                                    ))
-                              ]),
-                        ],
-                      ),
-                    ),
-                  )),
-                  Expanded(
-                      child: GestureDetector(
-                    onTap: () {
-                      imagePath = '';
-                      Navigator.pop(context);
-                      setState(() {});
-                    },
-                    child: Container(
-                      padding: EdgeInsets.all(10.0),
-                      decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(color: Colors.grey, width: 1.0),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Icon(Icons.account_circle),
-                          SizedBox(width: 20),
-                          Text('기본사진 설정',
-                              style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.black,
-                                decoration: TextDecoration.none,
-                              )),
-                        ],
-                      ),
-                    ),
-                  )),
-                ],
-              ),
-            )));
-  }
-
-  void nameTextCancelButton(controller) {
-    if (controller.text.isEmpty) {
-      setState(() {
-        nameCancelButton = false;
-      });
-    } else {
-      setState(() {
-        nameCancelButton = true;
-      });
-    }
-  }
-
-  void introdutionCancelButton(controller) {
-    if (controller.text.isEmpty) {
+  void introdutionCancelButton() {
+    if (introductionController.text.isEmpty) {
       setState(() {
         introduction = false;
       });
@@ -180,38 +46,51 @@ class _ProfileEditState extends State<ProfileEdit> {
     }
   }
 
-  Future<void> pickImageOfGallery() async {
-    final imagePicker = ImagePicker();
-    final galleryFile =
-        await imagePicker.pickImage(source: ImageSource.gallery);
-    if (galleryFile != null) {
-      final img = await _cropImage(imageFile: File(galleryFile.path));
-      Navigator.pop(context);
-      if (img == null) {
-      } else {
-        setState(() {
-          imagePath = img.path;
-        });
-      }
-    }
+  void ChangedImage(changeImagePath){
+    setState(() {
+      imagePath = changeImagePath;
+    });
   }
 
-  Future<void> pickImageOfCamera() async {
-    final imagePicker = ImagePicker();
-    final cameraFile = await imagePicker.pickImage(source: ImageSource.camera);
+  // imageSelect Way
+  // Future<void> pickImageOfGallery() async {
+  //   final imagePicker = ImagePicker();
+  //   final galleryFile =
+  //       await imagePicker.pickImage(source: ImageSource.gallery);
+  //   if (galleryFile != null) {
+  //     final img = await _cropImage(imageFile: File(galleryFile.path));
+  //     Navigator.pop(context);
+  //     if (img == null) {
+  //     } else {
+  //       setState(() {
+  //         imagePath = img.path;
+  //       });
+  //     }
+  //   }
+  // }
 
-    if (cameraFile != null) {
-      final img = await _cropImage(imageFile: File(cameraFile.path));
+  // void SelectbasicImage() {
+  //   setState(() {
+  //     imagePath = '';
+  //   });
+  // }
 
-      Navigator.pop(context);
-      if (img == null) {
-      } else {
-        setState(() {
-          imagePath = img.path;
-        });
-      }
-    }
-  }
+  // Future<void> pickImageOfCamera() async {
+  //   final imagePicker = ImagePicker();
+  //   final cameraFile = await imagePicker.pickImage(source: ImageSource.camera);
+
+  //   if (cameraFile != null) {
+  //     final img = await _cropImage(imageFile: File(cameraFile.path));
+
+  //     Navigator.pop(context);
+  //     if (img == null) {
+  //     } else {
+  //       setState(() {
+  //         imagePath = img.path;
+  //       });
+  //     }
+  //   }
+  // }
 
   Widget imageSetting() {
     if (imagePath != '') {
@@ -225,38 +104,33 @@ class _ProfileEditState extends State<ProfileEdit> {
             'image/basicprofile.png',
             width: 100, // 이미지의 가로 크기 조절
             height: 100, // 이미지의 세로 크기 조절
-            fit: BoxFit.cover, // 이미지의 크기를 조절하여 CircleAvatar에 맞게 맞출지 결정 (필요에 따라 변경 가능)
+            fit: BoxFit
+                .cover, // 이미지의 크기를 조절하여 CircleAvatar에 맞게 맞출지 결정 (필요에 따라 변경 가능)
           ).image);
     }
   }
 
-  Future<File?> _cropImage({required File imageFile}) async {
-    CroppedFile? croppedImage =
-        await ImageCropper().cropImage(sourcePath: imageFile.path);
-    if (croppedImage == null) return null;
-    return File(croppedImage.path);
-  }
-
-  void getProfileViewData() async {
-    final email = {'id': globalUserId, 'token' : jwtToken};
-    final response = await ServerResponseJsonDataTemplate('/profile/view' ,email);
-    // print(response);
-    // userNickName = response['nickname'];
-    // userIntroduction = response['info'];
-    // userProfileImage = response['imgLocation'];
-    nameTextController.text = userNickName;
-    introductionController.text = userIntroduction;
-    imagePath = userProfileImage;
-    if (imagePath != '') {
-      imageBeforeChange = imagePath!;
-    }
-    setState(() {});
-  }
+  // Future<File?> _cropImage({required File imageFile}) async {
+  //   CroppedFile? croppedImage =
+  //       await ImageCropper().cropImage(sourcePath: imageFile.path);
+  //   if (croppedImage == null) return null;
+  //   return File(croppedImage.path);
+  // }
 
   @override
-  void initState() {
-    getProfileViewData();
-    super.initState();
+  void didChangeDependencies() {
+    final args =
+        ModalRoute.of(context)!.settings.arguments as ProfileEditArgument;
+
+    // argument allocations
+    userIntroduction = args.info;
+    userProfileImage = args.imgLocation;
+    userNickname = args.nickname;
+    introductionController.text = userIntroduction;
+
+    // showDialog instance
+    myShowDialog = MyShowDialog(context: context, changeImagePath: ChangedImage);
+    super.didChangeDependencies();
   }
 
   @override
@@ -280,53 +154,33 @@ class _ProfileEditState extends State<ProfileEdit> {
                 Text('완료', style: TextStyle(color: Colors.blue, fontSize: 16)),
             onPressed: () async {
               if (imagePath == imageBeforeChange &&
-                  userIntroduction == introductionController.text &&
-                  userNickName == nameTextController.text) {
-                if (nameTextController.text == '') {
-                  Flushbar(
-                    margin: EdgeInsets.symmetric(horizontal: 30),
-                    flushbarPosition: FlushbarPosition.TOP,
-                    duration: Duration(seconds: 2),
-                    message: '닉네임을 입력해주세요.',
-                    messageSize: 15,
-                    borderRadius: BorderRadius.circular(4),
-                    backgroundColor: Colors.white,
-                    messageColor: Colors.black,
-                    boxShadows: [
-                      BoxShadow(
-                        color: Colors.grey,
-                        blurRadius: 8,
-                      ),
-                    ],
-                  ).show(context);
-                } else {
-                  Flushbar(
-                    margin: EdgeInsets.symmetric(horizontal: 30),
-                    flushbarPosition: FlushbarPosition.TOP,
-                    duration: Duration(seconds: 2),
-                    message: '변경사항을 입력해주세요.',
-                    messageSize: 15,
-                    borderRadius: BorderRadius.circular(4),
-                    backgroundColor: Colors.white,
-                    messageColor: Colors.black,
-                    boxShadows: [
-                      BoxShadow(
-                        color: Colors.grey,
-                        blurRadius: 8,
-                      ),
-                    ],
-                  ).show(context);
-                }
+                  userIntroduction == introductionController.text) {
+                Flushbar(
+                  margin: EdgeInsets.symmetric(horizontal: 30),
+                  flushbarPosition: FlushbarPosition.TOP,
+                  duration: Duration(seconds: 2),
+                  message: '변경사항을 입력해주세요.',
+                  messageSize: 15,
+                  borderRadius: BorderRadius.circular(4),
+                  backgroundColor: Colors.white,
+                  messageColor: Colors.black,
+                  boxShadows: [
+                    BoxShadow(
+                      color: Colors.grey,
+                      blurRadius: 8,
+                    ),
+                  ],
+                ).show(context);
               } else {
                 final data = {
                   'userId': 'alsdnd336@naver.com',
                   'info': introductionController.text,
-                  'nickname': nameTextController.text,
-                  'token' : jwtToken!
+                  'token': jwtToken
                 };
-                final response = await ServerSendImageDataTemplate('/profile/set', data, imagePath);
+                final response = await ServerSendImageDataTemplate(
+                    '/profile/set', data, imagePath);
                 print(response);
-                if(response != null){
+                if (response != null) {
                   Navigator.pop(context, 'editIt');
                 }
               }
@@ -345,7 +199,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                     imageSetting(),
                     TextButton(
                         onPressed: () {
-                          showMenuOfPicture(context);
+                          myShowDialog!.showMenuOfPicture();    
                         },
                         child: Text(
                           '사진 변경',
@@ -354,58 +208,11 @@ class _ProfileEditState extends State<ProfileEdit> {
                   ],
                 )),
             Padding(
-              padding: EdgeInsets.only(top: 5),
+              padding: EdgeInsets.symmetric(vertical: 10),
               child: Text(
-                '닉네임',
-                style: TextStyle(color: Colors.black, fontSize: 16),
+                userNickname,
+                style: TextStyle(color: Colors.black, fontSize: 25),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(top: 5),
-              child: Column(children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: EditableText(
-                          inputFormatters: [
-                            LengthLimitingTextInputFormatter(40),
-                          ],
-                          keyboardType: TextInputType.text,
-                          onChanged: (text) {
-                            nameTextCancelButton(nameTextController);
-                          },
-                          maxLines: null,
-                          controller: nameTextController,
-                          focusNode: nameFocusNode,
-                          style: TextStyle(fontSize: 16, color: Colors.black),
-                          cursorColor: Colors.blue,
-                          backgroundCursorColor: Colors.blue),
-                    ),
-                    IconButton(
-                        onPressed: () {
-                          if (nameCancelButton == true) {
-                            nameTextController.clear();
-                            setState(() {
-                              nameCancelButton = false;
-                            });
-                          }
-                        },
-                        icon: Icon(
-                          Icons.cancel,
-                          color: nameCancelButton == true
-                              ? Colors.black
-                              : Colors.white,
-                        ))
-                  ],
-                ),
-                Divider(
-                  color: Colors.grey,
-                  height: 1,
-                  thickness: 1,
-                  indent: 1,
-                  endIndent: 1,
-                ),
-              ]),
             ),
             Padding(
               padding: EdgeInsets.only(top: 15),
@@ -425,7 +232,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                             LengthLimitingTextInputFormatter(200),
                           ],
                           onChanged: (text) {
-                            introdutionCancelButton(introductionController);
+                            introdutionCancelButton();
                           },
                           maxLines: null,
                           controller: introductionController,
@@ -465,4 +272,13 @@ class _ProfileEditState extends State<ProfileEdit> {
       ),
     );
   }
+}
+
+class ProfileEditArgument {
+  final String info;
+  final String imgLocation;
+  final String nickname;
+
+  ProfileEditArgument(
+      {required this.info, required this.imgLocation, required this.nickname});
 }

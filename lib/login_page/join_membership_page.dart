@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:smart_dongne/component/authentication_TextFormfield.dart';
 import 'package:smart_dongne/component/myButton.dart';
 import 'package:smart_dongne/component/my_Text_Form_Field.dart';
@@ -43,20 +44,23 @@ class _JoinmembershipState extends State<Joinmembership> {
   String? perfectPassWord;
   bool manButton = false;
 
-  bool appearNickNameField = false;
-
   void _tryValidation() async {
     // if (successfulidentification) {
       if (passWordCheck()) {
         if (MySelfInformationCheck()) {
+          // birthday create a type 
+          String birthdayType = userbirthdayController.text.substring(0, 4) + '-' + userbirthdayController.text.substring(4, 6) + '-' + userbirthdayController.text.substring(6, 8);
+          final data = {
+            'id' : userEmail,
+            'password' : passwordCheckController.text,
+            'name' : userNameController.text,
+            'gender' : manButton,
+            'phoneNumber' : userPhoneNumberController.text,
+            'birth' : birthdayType,
+            'root' : 'local'
+          };
           Navigator.pushNamed(context, NickNameField.routeName,
-            arguments: JoinArgument(
-              email: userEmail,
-              password: passwordCheckController.text,
-              name: userNameController.text,
-              gender: manButton,
-              phonenumber: userPhoneNumberController.text
-            ),
+            arguments: JoinArgument(data),
           );
         }
       }

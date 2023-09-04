@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 Future<dynamic> chattingMainPageData(nickname) async {
-  final url = Uri.parse('http://192.168.0.201:8080/message/findAll');
+  final url = Uri.parse('http://192.168.0.199:8080/message/findAll');
   final headers = {'Content-Type': 'application/json'};
   try {
     final response = await http.post(url, headers: headers, body: jsonEncode(nickname));
@@ -19,7 +19,7 @@ Future<dynamic> chattingMainPageData(nickname) async {
 }
 
 Future<dynamic> chattingSearchPageData(nickname) async {
-  final url = Uri.parse('http://192.168.0.201:8080/message/search');
+  final url = Uri.parse('http://192.168.0.199:8080/message/search');
   final headers = {'Content-Type': 'application/json'};
   try {
     final response = await http.post(url, headers: headers, body: jsonEncode(nickname));
@@ -36,7 +36,7 @@ Future<dynamic> chattingSearchPageData(nickname) async {
 }
 
 Future<dynamic> aConversationWithaParticularPerson(sendUser) async {
-  final url = Uri.parse('http://192.168.0.201:8080/message/user');
+  final url = Uri.parse('http://192.168.0.199:8080/message/user');
   final headers = {'Content-Type': 'application/json'};
   try {
     final response = await http.post(url, headers: headers, body: jsonEncode(sendUser));
@@ -52,7 +52,7 @@ Future<dynamic> aConversationWithaParticularPerson(sendUser) async {
 }
 
 Future<dynamic> chattingContentSearch(data) async {
-  final url = Uri.parse('http://192.168.0.201:8080/message/search');
+  final url = Uri.parse('http://192.168.0.199:8080/message/search');
   final headers = {'Content-Type': 'application/json'};
   try {
     final response = await http.post(url, headers: headers, body: jsonEncode(data));
@@ -69,7 +69,7 @@ Future<dynamic> chattingContentSearch(data) async {
 }
 
 Future<dynamic> sendChattingContent(data) async {
-  final url = Uri.parse('http://192.168.0.201:8080/message/send');
+  final url = Uri.parse('http://192.168.0.199:8080/message/send');
   final headers = {'Content-Type': 'application/json'};
   try {
     final response = await http.post(url, headers: headers, body: jsonEncode(data));
@@ -91,7 +91,7 @@ Future<dynamic> sendChattingContent(data) async {
 
 Future<String?> deleteChatting(data) async {
 
-  final url = Uri.parse('http://192.168.0.201:8080/message/deleteAll');
+  final url = Uri.parse('http://192.168.0.199:8080/message/deleteAll');
   final headers = {'Content-Type': 'application/json'};
   try {
     final response = await http.post(url, headers: headers, body: jsonEncode(data));
@@ -113,7 +113,8 @@ Future<String?> deleteChatting(data) async {
 }
 
 Future<String?> ServerResponseOKTemplate(address, data) async {
-  final url = Uri.parse('http://192.168.0.201:8080${address}');
+  print(data);
+  final url = Uri.parse('http://192.168.0.199:8080${address}');
   final headers = {'Content-Type': 'application/json'};
   try {
     final response = await http.post(url, headers: headers, body: jsonEncode(data));
@@ -136,14 +137,15 @@ Future<String?> ServerResponseOKTemplate(address, data) async {
 
 Future<dynamic> ServerResponseJsonDataTemplate(address, data) async {
   
-  final url = Uri.parse('http://192.168.0.201:8080${address}');
+  final url = Uri.parse('http://192.168.0.199:8080${address}');
   final headers = {'Content-Type': 'application/json'};
   try {
     final response = await http.post(url, headers: headers, body: jsonEncode(data));
     if (response.statusCode == 200) {
       var jsonData = response.body;
       if(jsonData != 'cancel'){
-        return jsonDecode(jsonData);
+        final decodeJsonData = jsonDecode(jsonData);
+        return decodeJsonData;
       }else{
         return null;
       }
@@ -157,8 +159,7 @@ Future<dynamic> ServerResponseJsonDataTemplate(address, data) async {
 }
 
 Future<String?> ServerSendImageDataTemplate(address, data, imagePath) async {
-  final url = Uri.parse('http://192.168.0.201:8080${address}');
-  final headers = {'Content-Type': 'application/json'};
+  final url = Uri.parse('http://192.168.0.199:8080${address}');
   var request = http.MultipartRequest('POST', url); 
   if(imagePath == ''){
     try{
