@@ -131,7 +131,7 @@ public class PostRepositoryImpl implements PostRepository {
         String sql = "SELECT p.*, COUNT(pl.post_id) AS likeCount " +
                 "FROM post p " +
                 "LEFT JOIN postLike pl ON p.id = pl.post_id " +
-                "WHERE p.user_id = ? and p.root = ? and and p.id NOT IN (SELECT blocked_post_id FROM block WHERE blocking_user_id = ? and blocking_user_root = ?)" +
+                "WHERE p.user_id = ? and p.root = ? and p.id NOT IN (SELECT blocked_post_id FROM block WHERE blocking_user_id = ? and blocking_user_root = ?)" +
                 "GROUP BY p.id " +
                 "ORDER BY p.date DESC";
         return jdbcTemplate.query(sql, rowMapper, id, root, id, root);
