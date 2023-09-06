@@ -20,6 +20,7 @@ public class PostConverter implements Converter<PostWithTokenDTO, Post> {
         post.setId(source.getId());
         post.setNickname(source.getNickname());
         post.setLikeCount(source.getLikeCount());
+        post.setRoot(source.getRoot());
         post.setVisiblyLike(source.getVisiblyLike());
         return post;
     }

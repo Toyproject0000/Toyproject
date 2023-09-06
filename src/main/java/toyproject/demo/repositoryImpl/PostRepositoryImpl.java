@@ -47,12 +47,12 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public List<Post> findPostOfFollower(User user) {
         String sql = "SELECT p.*, (SELECT COUNT(*) FROM postLike pl WHERE pl.post_id = p.id) as likeCount FROM post p " +
-                "INNER JOIN follow f ON p.user_id = f.followedUserId WHERE f.followedUserId = ? and f.followed_user_root=?";
-        return jdbcTemplate.query(sql, rowMapper, user.getId(), user.getRoot());
+                "INNER JOIN follow f ON p.user_id = f.followedUserId WHERE f.followedUserId = ? and f.followed_user_root=? and p.id NOT IN (SELECT blocked_post_id FROM block WHERE blocking_user_id = ? and blocking_user_root = ?)";
+        return jdbcTemplate.query(sql, rowMapper, user.getId(), user.getRoot(), user.getId(), user.getRoot());
     }
     @Override
     public List<Post> findAllLikePost(User user) {
-        return jdbcTemplate.query("SELECT p.*, (SELECT COUNT(*) FROM postLike pl WHERE pl.post_id = p.id) as likeCount FROM post p WHERE id IN (SELECT post_id FROM postLike WHERE user_id = ?)", rowMapper, user.getId());
+        return jdbcTemplate.query("SELECT p.*, (SELECT COUNT(*) FROM postLike pl WHERE pl.post_id = p.id) as likeCount FROM post p WHERE id IN (SELECT post_id FROM postLike WHERE user_id = ? and p.id NOT IN (SELECT blocked_post_id FROM block WHERE blocking_user_id = ? and blocking_user_root = ?))", rowMapper, user.getId(), user.getId(), user.getRoot());
     }
 
 
@@ -110,21 +110,31 @@ public class PostRepositoryImpl implements PostRepository {
             parameters.add(afterDate);
         }
 
+        queryBuilder.append("and p.id NOT IN (SELECT blocked_post_id FROM block WHERE blocking_user_id = ? and blocking_user_root = ?)");
+        parameters.add(post.getUserId());
+        parameters.add(post.getRoot());
+
         String query = queryBuilder.toString();
         Object[] params = parameters.toArray();
         List<Post> posts = jdbcTemplate.query(query, params, rowMapper);
         return posts;
     }
 
+    /**
+     *
+     * @param id
+     * @param root
+     * @return
+     */
     @Override
     public List<Post> findByWriter(String id, String root) {
         String sql = "SELECT p.*, COUNT(pl.post_id) AS likeCount " +
                 "FROM post p " +
                 "LEFT JOIN postLike pl ON p.id = pl.post_id " +
-                "WHERE p.user_id = ? and p.root = ?" +
+                "WHERE p.user_id = ? and p.root = ? and and p.id NOT IN (SELECT blocked_post_id FROM block WHERE blocking_user_id = ? and blocking_user_root = ?)" +
                 "GROUP BY p.id " +
                 "ORDER BY p.date DESC";
-        return jdbcTemplate.query(sql, rowMapper, id, root);
+        return jdbcTemplate.query(sql, rowMapper, id, root, id, root);
     }
 
     @Override
@@ -132,20 +142,20 @@ public class PostRepositoryImpl implements PostRepository {
         List<String> categories = jdbcTemplate.queryForList("select category from category where user_id = ? and user_root = ?", String.class, userId, userRoot);
         ArrayList<Post> posts = new ArrayList<>();
         for (String category : categories) {
-            posts.addAll(jdbcTemplate.query("SELECT p.*, u.nickname AS nickname,u.root AS Root, COUNT(pl.post_id) AS likeCount FROM post p LEFT JOIN user u ON p.user_id = u.id LEFT JOIN postLike pl ON p.id = pl.post_id WHERE p.category = ? GROUP BY p.id", rowMapper, category));
+            posts.addAll(jdbcTemplate.query("SELECT p.*, u.nickname AS nickname,u.root AS Root, COUNT(pl.post_id) AS likeCount FROM post p LEFT JOIN user u ON p.user_id = u.id LEFT JOIN postLike pl ON p.id = pl.post_id WHERE p.category = ? and p.id NOT IN (SELECT blocked_post_id FROM block WHERE blocking_user_id = ? and blocking_user_root = ?) GROUP BY p.id", rowMapper, category, userId, userRoot));
         }
         return posts;
     }
 
     @Override
-    public List<Post> recommendByCategory(String category) {
+    public List<Post> recommendByCategory(String category, String userId, String root) {
         String sql = "SELECT p.*, u.nickname AS nickname, COUNT(pl.post_id) AS likeCount " +
                 "FROM post p " +
                 "LEFT JOIN user u ON p.user_id = u.id " +
                 "LEFT JOIN postLike pl ON p.id = pl.post_id " +
-                "WHERE p.category = ? " +
+                "WHERE p.category = ? and p.id NOT IN (SELECT blocked_post_id FROM block WHERE blocking_user_id = ? and blocking_user_root = ?)" +
                 "GROUP BY p.id";
 
-        return jdbcTemplate.query(sql, rowMapper, category);
+        return jdbcTemplate.query(sql, rowMapper, category, userId, root);
     }
 }

@@ -40,7 +40,7 @@ public class MainController {
             System.out.println(e.getMessage());
             return null;
         }
-        return postService.recommendWithCategory(tokenPost.getCategory());
+        return postService.recommendWithCategory(tokenPost.getCategory(), tokenPost.getUserId(), tokenPost.getRoot());
     }
 
 }

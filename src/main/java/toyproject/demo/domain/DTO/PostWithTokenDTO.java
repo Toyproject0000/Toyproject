@@ -11,6 +11,7 @@ public class PostWithTokenDTO {
     Long id;
     String userId;
     String nickname;
+    String root;
     String title;
     String contents;
     String imgLocation;

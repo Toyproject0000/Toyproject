@@ -68,14 +68,15 @@ public class PostService {
 
     public List<Post> recommend(String userId, String userRoot) {
         List<Post> result = postRepository.recommendByAlgorithm(userId, userRoot);
+        System.out.println("result.size() = " + result.size());
 
         List<Post> posts = selectRandomPost(result);
 
         return posts;
     }
 
-    public List<Post> recommendWithCategory(String category){
-        List<Post> result = postRepository.recommendByCategory(category);
+    public List<Post> recommendWithCategory(String category, String userId, String root){
+        List<Post> result = postRepository.recommendByCategory(category, userId, root);
 
         List<Post> posts = selectRandomPost(result);
 
