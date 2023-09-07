@@ -17,5 +17,6 @@ public class ProfileDTO {
     String imgLocation;
     Integer following;
     Integer follower;
+    Integer followStatus;
     List<Post> posts = new ArrayList<>();
 }

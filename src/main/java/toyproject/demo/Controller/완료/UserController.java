@@ -199,7 +199,6 @@ public class UserController {
         String id = user.getId();
 
         List<ProfileDTO> profile = userService.userProfile(id, user.getRoot(), tokenUser.getLoginId(), tokenUser.getLoginRoot());
-        System.out.println("profile.size() = " + profile.size());
 
         profile.get(0).setPosts(postService.findByWriter(id, user.getRoot()));
 
