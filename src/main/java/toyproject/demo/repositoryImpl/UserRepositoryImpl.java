@@ -94,7 +94,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public List<ProfileDTO> userProfile(String id, String root) {
-        return jdbcTemplate.query("select u.*, (SELECT COUNT(*) FROM follow f1 WHERE f1.followedUserId = u.id) AS following, (SELECT COUNT(*) FROM follow f2 WHERE f2.followingUserId = u.id) AS follower from user u where id = ? and root = ?", profileRowMapper,id, root);
+    public List<ProfileDTO> userProfile(String id, String root, String loginId, String loginRoot) {
+        return jdbcTemplate.query("select u.*, (SELECT COUNT(*) FROM follow f1 WHERE f1.followedUserId = u.id) AS follower, (SELECT COUNT(*) FROM follow f2 WHERE f2.followingUserId = u.id) AS following, (select  count(id) from follow f3 where f3.followedUserId = u.id and f3.followingUserId = ?and f3.following_user_root = ?) from user u where id = ? and root = ?", profileRowMapper,loginId,loginRoot,id, root);
     }
 }

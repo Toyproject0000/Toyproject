@@ -19,4 +19,6 @@ public class UserWithTokenDTO {
     Boolean gender;
     String imgLocation;
     String token;
+    String loginId;
+    String loginRoot;
 }

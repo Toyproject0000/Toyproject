@@ -21,5 +21,5 @@ import java.util.List;
      List<User> findEmail(User user);
      void setPassword(User user);
      List<ProfileViewDTO> findUser(String id, String root);
-    List<ProfileDTO> userProfile(String id, String root);
+    List<ProfileDTO> userProfile(String id, String root,String loginId, String loginRoot);
 }

@@ -9,4 +9,5 @@ public class ReplyLike {
     Long id;
     String replyId;
     String userId;
+    String userRoot;
 }

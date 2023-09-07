@@ -14,6 +14,7 @@ public class ReplyLikeConverter implements Converter<ReplyLikeWithTokenDTO, Repl
         replyLike.setReplyId(source.getReplyId());
         replyLike.setId(source.getId());
         replyLike.setUserId(source.getUserId());
+        replyLike.setUserRoot(source.getUserRoot());
         return replyLike;
     }
 }

@@ -17,12 +17,12 @@ public class ReplyLikeRepositoryImpl implements ReplyLikeRepository {
 
     @Override
     public void insert(ReplyLike replyLike) {
-        jdbcTemplate.update("insert into post (post_id, user_id) values (?,?)"
-                , replyLike.getReplyId(), replyLike.getUserId());
+        jdbcTemplate.update("insert into replyLike (reply_id, user_id, user_root) values (?, ?, ?)"
+                , replyLike.getReplyId(), replyLike.getUserId(), replyLike.getUserRoot());
     }
 
     @Override
     public void delete(ReplyLike replyLike) {
-        jdbcTemplate.update("delete from postLike where post_id = ? And user_id = ?", replyLike.getReplyId(), replyLike.getUserId());
+        jdbcTemplate.update("delete from replyLike where reply_id = ? And user_id = ? and user_root = ?", replyLike.getReplyId(), replyLike.getUserId(), replyLike.getUserRoot());
     }
 }

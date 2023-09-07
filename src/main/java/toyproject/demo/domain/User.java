@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 
 @Getter
@@ -11,7 +12,7 @@ import java.time.LocalDate;
 public class User {
     String id;
     String root;
-    String password = "소셜로그인회원";
+    String password = String.valueOf(UUID.randomUUID());
     String name;
     LocalDate birth;
     String info;

@@ -4,6 +4,8 @@ package toyproject.demo.Controller.완료;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.relational.core.sql.In;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import toyproject.demo.converter.UserConverter;
@@ -93,7 +95,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/authentication", produces = "application/json;charset=UTF-8")
-    public String authentication(@RequestBody User user, HttpServletRequest request) {
+    public String authentication(@RequestBody User user) {
         try {
             String id = user.getId();
             String num = mailService.sendMail(id);
@@ -106,10 +108,11 @@ public class UserController {
     }
 
     @PostMapping(value = "/authentication-check", produces = "application/json;charset=UTF-8")
-    public Boolean authenticationCheck(@RequestBody Authentication data, HttpServletRequest request){
+    @Transactional
+    public Boolean authenticationCheck(@RequestBody Authentication data){
         try {
             String id = data.getId();
-            String num = data.getNum();
+            Integer num = data.getNum();
             Integer realNum = authenticationRepository.find(id);
             if (realNum.equals(num)){
                 authenticationRepository.delete(id);
@@ -195,7 +198,7 @@ public class UserController {
 
         String id = user.getId();
 
-        List<ProfileDTO> profile = userService.userProfile(id, user.getRoot());
+        List<ProfileDTO> profile = userService.userProfile(id, user.getRoot(), tokenUser.getLoginId(), tokenUser.getLoginRoot());
         System.out.println("profile.size() = " + profile.size());
 
         profile.get(0).setPosts(postService.findByWriter(id, user.getRoot()));

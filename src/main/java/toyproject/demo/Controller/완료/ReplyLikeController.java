@@ -1,4 +1,4 @@
-package toyproject.demo.Controller;
+package toyproject.demo.Controller.완료;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -52,7 +52,7 @@ public class ReplyLikeController {
         }
         ReplyLike replyLike = converter.convert(tokenReplyLike);
         try {
-            replyLikeService.add(replyLike);
+            replyLikeService.remove(replyLike);
             return "ok";
         }catch (Exception e){
             return "에러 발생";

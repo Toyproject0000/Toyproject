@@ -14,5 +14,6 @@ public class Reply {
     String userId;
     String postId;
     String contents;
+    String userRoot;
     LocalDateTime date;
 }

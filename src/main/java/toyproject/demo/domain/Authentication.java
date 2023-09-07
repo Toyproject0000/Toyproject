@@ -7,5 +7,5 @@ import lombok.Setter;
 @Setter
 public class Authentication {
     String id;
-    String num;
+    Integer num;
 }

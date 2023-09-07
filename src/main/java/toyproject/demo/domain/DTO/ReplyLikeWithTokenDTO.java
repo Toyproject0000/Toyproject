@@ -10,4 +10,5 @@ public class ReplyLikeWithTokenDTO {
     String replyId;
     String userId;
     String token;
+    String userRoot;
 }

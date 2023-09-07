@@ -1,4 +1,4 @@
-package toyproject.demo.Controller;
+package toyproject.demo.Controller.완료;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +13,8 @@ import toyproject.demo.domain.Post;
 import toyproject.demo.domain.Reply;
 import toyproject.demo.service.JwtTokenUtil;
 import toyproject.demo.service.ReplyService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/reply")
@@ -60,7 +62,7 @@ public class ReplyController {
             replyService.delete(reply);
             return "ok";
         }catch (Exception e){
-            return "에러 발생"; // 작성했던 글 내용 그대로 다시 쓸수있는지 아니면 내가 다시 보내줘야되는지 물어보자
+            return "에러 발생";
         }
     }
     @PostMapping("/edit")
@@ -76,23 +78,23 @@ public class ReplyController {
             replyService.edit(reply);
             return "ok";
         }catch (Exception e){
-            return "에러 발생"; // 작성했던 글 내용 그대로 다시 쓸수있는지 아니면 내가 다시 보내줘야되는지 물어보자
+            return "에러 발생";
         }
     }
 
     @PostMapping("/post")
-    public String findPost(@RequestBody PostWithTokenDTO tokenPost){
+    public List<Reply> findPost(@RequestBody PostWithTokenDTO tokenPost){
         try {
             tokenUtil.parseJwtToken(tokenPost.getToken());
         }catch (Exception e){
-            return "잘못된 접근입니다.";
+            return null;
         }
         Post post = postConverter.convert(tokenPost);
         try {
-            replyService.findReplyOfPost(post);
-            return "ok";
+            return replyService.findReplyOfPost(post);
         }catch (Exception e){
-            return "에러 발생";
+            System.out.println(e.getMessage());
+            return null;
         }
     }
 }
