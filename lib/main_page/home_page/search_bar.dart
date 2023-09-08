@@ -37,32 +37,11 @@ class _Search_Page_barState extends State<Search_Page_bar> {
           ),
         ),
         leadingWidth: 30,
-        title: Container(
-          width: double.infinity,
-          margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
-          padding: EdgeInsets.symmetric(horizontal: 15,),
-          decoration: BoxDecoration(
-              color: Colors.grey[300], borderRadius: BorderRadius.circular(15)),
-          child: Row(
-            children: [
-              Icon(Icons.search),
-              SizedBox(
-                width: 5,
-              ),
-              Expanded(
-                  child: TextFormField(
-                controller: textController,
-                focusNode: _focusNode,
-                cursorColor: Colors.black,
-                decoration: InputDecoration(
-                    hintText: '검색',
-                    focusedBorder: InputBorder.none,
-                    enabledBorder: InputBorder.none),
-              )),
-            ],
-          ),
+        title: CupertinoSearchTextField(
+          controller: textController,
         ),
       ),
     );
   }
 }
+

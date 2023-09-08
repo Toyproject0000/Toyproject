@@ -2,20 +2,19 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_summernote/flutter_summernote.dart';
 import 'package:smart_dongne/main_page/writing_page/writing_page_final.dart';
 
 class WritingPage extends StatefulWidget {
-  const WritingPage(this.changeClass, {Key? key}) : super(key: key);
-  final Function(int index) changeClass;
-
+  const WritingPage({Key? key}) : super(key: key);
+  
   @override
   State<WritingPage> createState() => _WritingPageState();
 }
 
 class _WritingPageState extends State<WritingPage> {
   GlobalKey<FlutterSummernoteState> _keyEditor = GlobalKey();
-  Widget? summerNote;
 
   TextStyle basicFont = TextStyle(
     fontSize: 15,
@@ -42,22 +41,13 @@ class _WritingPageState extends State<WritingPage> {
     }
   }
 
-  Future<Widget> _summerNoteEditor() async {
-    final summerNoteEditor = await FlutterSummernote(
-      decoration: BoxDecoration(
-        border: Border.all(width: 0),
-      ),
-      key: _keyEditor,
-      hint: "내용을 입력하시오....",
-      showBottomToolbar: false,
-      customToolbar: """
-          [
-            ['style', ['bold','italic','underline','clear']],
-            ['para', ['paragraph']],
-          ]
-            """,
-    );
-    return summerNoteEditor;
+  @override
+  void dispose() {
+    // _keyEditor.currentState!.dispose();
+    _keyEditor.currentState!.setState(() {
+      
+    });
+    super.dispose();
   }
 
   @override
@@ -73,10 +63,10 @@ class _WritingPageState extends State<WritingPage> {
             onPressed: () {
               saveText().then((value) async {
                 if (value != null) {
-                  final response = await Navigator.pushNamed(
+                  Navigator.pushNamed(
                     context, 
                     LastSetting.routeName,
-                    arguments: Contents(value, widget.changeClass, _keyEditor),
+                    arguments: Contents(value, _keyEditor),
                   );
                 }
               });
@@ -89,24 +79,20 @@ class _WritingPageState extends State<WritingPage> {
         ],
         automaticallyImplyLeading: false,
       ),
-      body: FutureBuilder(
-        future: _summerNoteEditor(),
-        builder: (BuildContext context, AsyncSnapshot<Widget> snapshot){
-          if(snapshot.hasError){
-            Center(
-              child: Text('error'),
-            );
-          }
-          if(snapshot.connectionState == ConnectionState.waiting){
-            return Center(
-              child: CircularProgressIndicator(
-                color: Colors.blue,
-              ),
-            );
-          }
-          return snapshot.data!;
-        }
-      )
+      body: FlutterSummernote(
+        decoration: BoxDecoration(
+          border: Border.all(width: 0),
+        ),
+        key: _keyEditor,
+        hint: "내용을 입력하시오....",
+        showBottomToolbar: false,
+        customToolbar: """
+            [
+              ['style', ['bold','italic','underline','clear']],
+              ['para', ['paragraph']],
+            ]
+              """,
+      ),
     );
   }
 }

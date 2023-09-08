@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:smart_dongne/server/chatServer.dart';
+import 'package:smart_dongne/server/Server.dart';
 
 class authenticationWidget {
   // 생성자들

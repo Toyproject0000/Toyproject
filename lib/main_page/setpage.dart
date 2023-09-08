@@ -1,10 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'chatting_page/chatting.dart';
-import 'home_page/home_page.dart';
-import 'profile_page/profile.dart';
-import 'writing_page/writing_page.dart';
+import 'package:provider/provider.dart';
+import 'package:smart_dongne/provider/setPageData.dart';
+
 
 class SetPage extends StatefulWidget {
   const SetPage({Key? key}) : super(key: key);
@@ -15,30 +14,22 @@ class SetPage extends StatefulWidget {
 }
 
 class SetPageState extends State<SetPage> {
-  int currentIndex = 0;
-  
-  late List<StatefulWidget> screens;
+  SetPageProvider _changeNotifier = SetPageProvider();
 
-  void changeClass(index) {
-    setState(() {
-      currentIndex = index;
-    });
-  }
+  late int currentIndex;
   
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    screens = [
-    HomePage(),
-    WritingPage(changeClass),
-    Chatting(),
-    ProfilePage(),
-  ];
-  }
+  late List<Widget> screens;
+  
+
 
   @override
   Widget build(BuildContext context) {
+
+    // allocation data
+    currentIndex = Provider.of<SetPageProvider>(context).currentIndex;
+    screens = Provider.of<SetPageProvider>(context).screens;
+    _changeNotifier = Provider.of<SetPageProvider>(context, listen: false);
+
     return Scaffold(
       body: IndexedStack(
         index: currentIndex,
@@ -57,7 +48,7 @@ class SetPageState extends State<SetPage> {
           selectedIconTheme: IconThemeData(size: 30),
           showSelectedLabels: false,
           showUnselectedLabels: false,
-          onTap: (index) => setState(() => currentIndex = index),
+          onTap: (index) => _changeNotifier.ChangeScreen(index),
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Icon(Icons.home),

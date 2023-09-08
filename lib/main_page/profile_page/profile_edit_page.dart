@@ -1,13 +1,10 @@
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:image_cropper/image_cropper.dart';
 import 'dart:io';
-import 'package:image_picker/image_picker.dart';
 import 'package:smart_dongne/component/myShowDialog.dart';
-import 'package:smart_dongne/server/chatServer.dart';
+import 'package:smart_dongne/server/Server.dart';
 import 'package:smart_dongne/server/userId.dart';
 
 class ProfileEdit extends StatefulWidget {
@@ -26,7 +23,6 @@ class _ProfileEditState extends State<ProfileEdit> {
   bool nameCancelButton = false;
   bool introduction = false;
   bool keyboardActivation = false;
-  String imagePath = '';
   String imageBeforeChange = '';
 
   //server data
@@ -48,54 +44,14 @@ class _ProfileEditState extends State<ProfileEdit> {
 
   void ChangedImage(changeImagePath){
     setState(() {
-      imagePath = changeImagePath;
+      userProfileImage = changeImagePath;
     });
   }
 
-  // imageSelect Way
-  // Future<void> pickImageOfGallery() async {
-  //   final imagePicker = ImagePicker();
-  //   final galleryFile =
-  //       await imagePicker.pickImage(source: ImageSource.gallery);
-  //   if (galleryFile != null) {
-  //     final img = await _cropImage(imageFile: File(galleryFile.path));
-  //     Navigator.pop(context);
-  //     if (img == null) {
-  //     } else {
-  //       setState(() {
-  //         imagePath = img.path;
-  //       });
-  //     }
-  //   }
-  // }
-
-  // void SelectbasicImage() {
-  //   setState(() {
-  //     imagePath = '';
-  //   });
-  // }
-
-  // Future<void> pickImageOfCamera() async {
-  //   final imagePicker = ImagePicker();
-  //   final cameraFile = await imagePicker.pickImage(source: ImageSource.camera);
-
-  //   if (cameraFile != null) {
-  //     final img = await _cropImage(imageFile: File(cameraFile.path));
-
-  //     Navigator.pop(context);
-  //     if (img == null) {
-  //     } else {
-  //       setState(() {
-  //         imagePath = img.path;
-  //       });
-  //     }
-  //   }
-  // }
-
   Widget imageSetting() {
-    if (imagePath != '') {
+    if (userProfileImage != '') {
       return CircleAvatar(
-          radius: 80, backgroundImage: FileImage(File(imagePath!)));
+          radius: 80, backgroundImage: FileImage(File(userProfileImage)));
     } else {
       return CircleAvatar(
           radius: 80,
@@ -109,13 +65,6 @@ class _ProfileEditState extends State<ProfileEdit> {
           ).image);
     }
   }
-
-  // Future<File?> _cropImage({required File imageFile}) async {
-  //   CroppedFile? croppedImage =
-  //       await ImageCropper().cropImage(sourcePath: imageFile.path);
-  //   if (croppedImage == null) return null;
-  //   return File(croppedImage.path);
-  // }
 
   @override
   void didChangeDependencies() {
@@ -135,6 +84,7 @@ class _ProfileEditState extends State<ProfileEdit> {
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -153,7 +103,7 @@ class _ProfileEditState extends State<ProfileEdit> {
             child:
                 Text('완료', style: TextStyle(color: Colors.blue, fontSize: 16)),
             onPressed: () async {
-              if (imagePath == imageBeforeChange &&
+              if (userProfileImage == imageBeforeChange &&
                   userIntroduction == introductionController.text) {
                 Flushbar(
                   margin: EdgeInsets.symmetric(horizontal: 30),
@@ -173,12 +123,13 @@ class _ProfileEditState extends State<ProfileEdit> {
                 ).show(context);
               } else {
                 final data = {
-                  'userId': 'alsdnd336@naver.com',
+                  'userId': globalUserId,
+                  'root' : LoginRoot,
                   'info': introductionController.text,
                   'token': jwtToken
                 };
                 final response = await ServerSendImageDataTemplate(
-                    '/profile/set', data, imagePath);
+                    '/profile/set', data, userProfileImage);
                 print(response);
                 if (response != null) {
                   Navigator.pop(context, 'editIt');

@@ -4,18 +4,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class MyGenderButton extends StatefulWidget {
-  MyGenderButton({required this.man ,super.key});
+  MyGenderButton({required this.currentGender ,required this.ChangeGender ,super.key});
 
-  bool man;
+  bool? currentGender;
+  final Function(bool man) ChangeGender;
 
   @override
   State<MyGenderButton> createState() => _MyGenderButtonState();
 }
 
 class _MyGenderButtonState extends State<MyGenderButton> {
-  
+  // bool man = false;
   @override
   Widget build(BuildContext context) {
+    bool man = widget.currentGender == null ? false : widget.currentGender!;
     return Container(
       height: 60,
       padding: EdgeInsets.all(10.0),
@@ -32,17 +34,19 @@ class _MyGenderButtonState extends State<MyGenderButton> {
             child: ElevatedButton(
               onPressed: () {
                 setState(() {
-                  widget.man = true;
+                  man = true;
                 });
+                widget.ChangeGender(man);
+
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor:
-                    widget.man ? Colors.blue : Colors.white,
+                    man ? Colors.blue : Colors.white,
               ),
               child: Text(
                 '남성',
                 style: TextStyle(
-                  color: widget.man ? Colors.white : Colors.grey,
+                  color: man ? Colors.white : Colors.grey,
                 ),
               ),
             ),
@@ -51,17 +55,18 @@ class _MyGenderButtonState extends State<MyGenderButton> {
             child: ElevatedButton(
               onPressed: () {
                 setState(() {
-                  widget.man = false;
+                  man = false;
                 });
+                widget.ChangeGender(man);
               },
               style: ElevatedButton.styleFrom(
-                  backgroundColor: widget.man == false
+                  backgroundColor: man == false
                       ? Colors.blue
                       : Colors.white),
               child: Text(
                 '여성',
                 style: TextStyle(
-                  color: widget.man ? Colors.grey : Colors.white,
+                  color: man ? Colors.grey : Colors.white,
                 ),
               ),
             ),

@@ -3,15 +3,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:smart_dongne/component/authentication_TextFormfield.dart';
 import 'package:smart_dongne/component/genderButton.dart';
 import 'package:smart_dongne/component/myButton.dart';
 import 'package:smart_dongne/component/my_Text_Form_Field.dart';
 import 'package:smart_dongne/component/myselfWidget.dart';
 import 'package:smart_dongne/login_page/nickname_page.dart';
-import 'package:smart_dongne/server/chatServer.dart';
-import 'package:smart_dongne/server/userId.dart';
+import 'package:smart_dongne/server/Server.dart';
 
 
 class Joinmembership extends StatefulWidget {
@@ -43,7 +41,7 @@ class _JoinmembershipState extends State<Joinmembership> {
 
   String? authenticationNumber;
   String? perfectPassWord;
-  bool manButton = false;
+  bool? manButton;
 
   void _tryValidation() async {
     // if (successfulidentification) {
@@ -116,6 +114,10 @@ class _JoinmembershipState extends State<Joinmembership> {
       ).show(context);
       return false;
     }
+  }
+
+  void ChangeGender(bool man){
+    manButton = man;
   }
 
   void authenticationCheck() async {
@@ -240,7 +242,7 @@ class _JoinmembershipState extends State<Joinmembership> {
                     phoneNumberController: userPhoneNumberController,
                     birthdayController: userbirthdayController),
 
-                MyGenderButton(man: manButton),
+                MyGenderButton(ChangeGender: ChangeGender, currentGender: null,),
                 SizedBox(
                   height: 25,
                 ),

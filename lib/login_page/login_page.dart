@@ -82,7 +82,14 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void LoginNaver() async {
     NaverLoginResult result = await FlutterNaverLogin.logIn();
-    socialLogin(result.account.email, 'naver');
+    if(result.errorMessage == ''){
+      socialLogin(result.account.email, 'naver');
+    }
+    // if(result.account['email'] )
+   
+    // if(result == NaverLoginStatus.loggedIn){
+    //   socialLogin(result.account.email, 'naver');
+    // }
   }
 
   void setData() async {
@@ -98,10 +105,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // provider allocation
     _loginMaintenance = Provider.of<LoginMaintenance>(context, listen: false);
-    
-
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: GestureDetector(
@@ -195,7 +199,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             // 로그인 버튼
                             ElevatedButton(
-                              onPressed: () {
+                              onPressed:() {
                                 if (emailController.text.isNotEmpty &&
                                     passwordController.text.isNotEmpty) {
                                   sendIdandPassword();
@@ -243,7 +247,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                   onTap: () async {
                                     // kakaoAccountServer();
                                     final data = await viewModel.login();
-                                    socialLogin(data, 'kakao');
+                                    if(data != null){
+                                      socialLogin(data, 'kakao');
+                                    }
                                   },
                                   child: CircleAvatar(
                                     backgroundColor: Colors.yellow,

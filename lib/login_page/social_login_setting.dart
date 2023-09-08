@@ -16,7 +16,7 @@ class SocialLoginSetting extends StatefulWidget {
 }
 
 class _SocialLoginSettingState extends State<SocialLoginSetting> {
-  bool man = true;
+  bool? man;
   final TextEditingController nameController = TextEditingController();
   final TextEditingController phoneNumberController = TextEditingController();
   final TextEditingController birthdayController = TextEditingController();
@@ -48,6 +48,10 @@ class _SocialLoginSettingState extends State<SocialLoginSetting> {
       }
   }
 
+  void ChangeGender(bool manButton){
+    man = manButton;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,7 +73,7 @@ class _SocialLoginSettingState extends State<SocialLoginSetting> {
                     nameController: nameController,
                     birthdayController: birthdayController,
                     phoneNumberController: phoneNumberController),
-                MyGenderButton(man: man),
+                MyGenderButton(ChangeGender: ChangeGender, currentGender: null,),
                 SizedBox(
                   height: 25,
                 ),

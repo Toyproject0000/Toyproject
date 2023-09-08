@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_dongne/main_page/chatting_page/ChatListTile.dart';
 import 'package:smart_dongne/main_page/chatting_page/chatting_searchmode.dart';
-import 'package:smart_dongne/server/chatServer.dart';
+import 'package:smart_dongne/server/Server.dart';
 import 'package:smart_dongne/server/userId.dart';
 
 class Chatting extends StatefulWidget {
@@ -16,7 +16,6 @@ class _ChattingState extends State<Chatting> {
   final TextEditingController textController = TextEditingController();
   String userNikcName = 'test';
   late Column ChattingListColumn;
-  List response = [];
   List<Widget> allChatting = [];
 
   void _onDismissed(sendUser, acceptUser) async {
@@ -25,22 +24,25 @@ class _ChattingState extends State<Chatting> {
       'acceptUser' : acceptUser,
       'token' : jwtToken
     };
-    final response = await deleteChatting(data);
+    final response = await ServerResponseOKTemplate('/message/deleteAll' ,data);
     if(response != null){
       setState(() {});
     }
   }
   
-  Future<List<Widget>> getChatdata() async {
+  Future<Widget> getChatdata() async {
     final data = {'sendUser': globalNickName, 'token' : jwtToken};
-    response = await ServerResponseJsonDataTemplate('/message/findAll', data);
-    allChatting = response.map((data) => ChatListTile(data: data, onDismissed: _onDismissed)).toList();
-    return allChatting;
-  }
 
-  @override
-  void initState() {
-    super.initState();
+    final response = await ServerResponseJsonDataTemplate('/message/findAll', data);
+    if(response.isEmpty){
+      return Center(
+        child: Text('메세지가 없습니다.')
+      );
+    }
+    allChatting = response.map<Widget>((data) => ChatListTile(data: data, onDismissed: _onDismissed)).toList();
+    return Column(
+      children: allChatting,
+    ); 
   }
 
   @override
@@ -49,7 +51,7 @@ class _ChattingState extends State<Chatting> {
       body: SafeArea(
         child: FutureBuilder(
           future: getChatdata(),
-          builder: (BuildContext context, AsyncSnapshot<List<Widget>> snapshot){
+          builder: (BuildContext context, AsyncSnapshot<Widget> snapshot){
             if(snapshot.hasError){
               Center(
                 child: Text('error'),
@@ -62,7 +64,7 @@ class _ChattingState extends State<Chatting> {
                 ),
               );
             }
-            return Column(children: snapshot.data!);
+            return snapshot.data!;
           }
 
         ),

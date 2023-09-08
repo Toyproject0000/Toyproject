@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:smart_dongne/component/timeWidget.dart';
 import 'package:smart_dongne/main_page/chatting_page/chatting_Content.dart';
+import 'package:smart_dongne/server/userId.dart';
 
 class ChatListTile extends StatelessWidget {
 
@@ -33,10 +35,11 @@ class ChatListTile extends StatelessWidget {
           backgroundColor: Colors.grey,
           radius: 25,
         ),
-        trailing: Text(data['date'].substring(5 ,10), style: TextStyle(color: Colors.black),),
+        trailing: TimeWidget(contentsTime: data['date']),
         onTap: (){
-          Navigator.pushNamed(context, ChattingContent.routeName,
-            arguments: SendUserData(data['sendUser'], data['acceptUser']));
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ChattingContent(sendUser: data['sendUser'], acceptUser: data['acceptUser'],)));
         },
       ),
     );

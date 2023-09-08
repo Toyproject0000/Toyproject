@@ -1,135 +1,69 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:smart_dongne/component/myButton.dart';
+import 'package:smart_dongne/component/my_Text_Form_Field.dart';
+import 'package:smart_dongne/provider/setPageData.dart';
 import 'package:smart_dongne/server/Server.dart';
+import 'package:smart_dongne/server/userId.dart';
 
-class UserWithDrawal extends StatefulWidget {
-  const UserWithDrawal({super.key});
-  static const routeName = '/userSetting/accountManagement/withdrawal';
+class UserWithDrawal extends StatelessWidget {
+  UserWithDrawal({super.key});
 
-  @override
-  State<UserWithDrawal> createState() => _UserWithDrawalState();
-}
-
-class _UserWithDrawalState extends State<UserWithDrawal> {
-  TextEditingController idController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-
-  bool errorData = false;
-  final Text ErrorMessage = Text('아이디 혹은 비밀번호가 틀렸습니다. 정보를 다시 입력해주세요.',
-      style: TextStyle(color: Colors.red));
-
-  void sendDataServer() {
-    final data = {
-      'id': idController.text,
-      'password': passwordController.text,
-    };
-
-    final accountRemove = AccountRemove(data);
-    if (accountRemove != null) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text(
-              '회원 탈퇴 완료',
-              style: TextStyle(color: Colors.black, fontSize: 25),
-              textAlign: TextAlign.center,
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.popUntil(context, ModalRoute.withName('/'));
-                },
-                child: Text(
-                  '확인',
-                  style: TextStyle(color: Colors.blue),
-                ),
-              ),
-            ],
-            actionsAlignment: MainAxisAlignment.spaceAround, // 액션 버튼 정렬 방식 설정
-          );
-        },
-      );
-    } else {
-      setState(() {
-        errorData = true;
-      });
-    }
-  }
+  // material allocation 
+  final TextEditingController emailController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    SetPageProvider _setPageProvider = Provider.of<SetPageProvider>(context, listen: false);
+
+    void onTap() {
+      if(emailController.text == globalUserId){
+        final data = {
+          'token' : jwtToken,
+          'id' : emailController.text,
+          'root' : LoginRoot 
+        };
+
+        showDialog(
+            context: context,
+            builder: (context){
+              return AlertDialog(
+                content: Text('${emailController.text} 해당 계정을 탈퇴하시겠습니까?'),
+                actions: [
+                  TextButton(
+                    onPressed: () async {
+                      final response = await ServerResponseOKTemplate('/remove', data);
+                        if(response != null){
+                            LoginRoot = '';
+                          globalNickName = '';
+                          globalUserId = '';
+                          _setPageProvider.ChangeScreen(0);
+                          Navigator.popUntil(context, ModalRoute.withName('/'));
+                      }
+                    },
+                    child: Text('탈퇴하기', style: TextStyle(color: Colors.blue),)
+                  )
+                ],
+              );
+            });
+        }
+    }
+
     return Scaffold(
       appBar: AppBar(
+        elevation: 1,
         centerTitle: true,
-        title: Text('계장 탈퇴'),
         backgroundColor: Colors.white,
+        title: Text('계정 탈퇴', style: TextStyle(color: Colors.black, fontSize: 25),),
       ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+      body: Container(
+        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 30),
         child: Column(
           children: [
-            TextFormField(
-              controller: idController,
-              decoration: InputDecoration(
-                hintText: '아이디를 입력하시오.',
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Colors.black,
-                    width: 1,
-                  ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Colors.black,
-                    width: 1,
-                  ),
-                ),
-              ),
-            ),
-            TextFormField(
-              obscureText: true,
-              controller: passwordController,
-              decoration: InputDecoration(
-                hintText: '비밀번호를 입력하시오.',
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Colors.black,
-                    width: 1,
-                  ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Colors.black,
-                    width: 1,
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            errorData == false
-                ? Text(
-                    '계정을 삭제하시면 한달 동안 같은 이메일로 가입할 수 없습니다.',
-                    style: TextStyle(color: Colors.grey),
-                  )
-                : ErrorMessage,
-            SizedBox(
-              height: 20,
-            ),
-            ElevatedButton(
-              onPressed: () {
-                sendDataServer();
-              },
-              child: Text(
-                '탈퇴하기',
-                style: TextStyle(color: Colors.grey),
-              ),
-              style: ElevatedButton.styleFrom(
-                primary: Colors.grey[300],
-              ),
-            ),
+            MyTextFormField(controller: emailController, hintText: '이메일을 입력하시오', obscureText: false),
+            SizedBox(height: 30,),
+            MyButton(text: '탈퇴하기', onPresse: onTap)
           ],
         ),
       ),

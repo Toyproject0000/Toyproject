@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:smart_dongne/component/genderButton.dart';
 import 'package:smart_dongne/main_page/profile_page/User_setting/userWithdrawal.dart';
 
 class AccountManagement extends StatefulWidget {
@@ -19,7 +20,6 @@ class _AccountManagementState extends State<AccountManagement> {
 
   bool man = true;
   List<String> options = ['남성', '여성'];
-  late Row _genderWidget;
 
   TextEditingController _nameController = TextEditingController();
   TextEditingController _birthdayController = TextEditingController();
@@ -27,6 +27,10 @@ class _AccountManagementState extends State<AccountManagement> {
 
   void togetServerData() async {
 
+  }
+
+  void ChangeGender(bool data){
+    man = data;
   }
   
   @override
@@ -37,38 +41,6 @@ class _AccountManagementState extends State<AccountManagement> {
 
   @override
   Widget build(BuildContext context) {
-
-    _genderWidget = Row(
-      children: [
-        Expanded(
-          child: RadioListTile(
-            value: options[0],
-            activeColor: Colors.blue,
-            groupValue: currentOption,
-            title: Text(options[0]),
-            onChanged: (value){
-              setState(() {
-                currentOption = value!;
-              });
-            },
-          ),
-        ),
-        Expanded(
-          child: RadioListTile(
-            value: options[1],
-            activeColor: Colors.blue,
-            groupValue: currentOption,
-            title: Text(options[1]),
-            onChanged: (value){
-              setState(() {
-                currentOption = value!;
-              });
-            },
-          ),
-        )
-      ],
-    );
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -166,22 +138,20 @@ class _AccountManagementState extends State<AccountManagement> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('성별', style: TextStyle(fontSize: 15, color: Colors.black),),
-                _genderWidget,
-                Divider(
-                  height: 1,
-                  color: Colors.grey,
-                  thickness: 1,
-                ),
+                SizedBox(height: 10,),
+                MyGenderButton(ChangeGender: ChangeGender, currentGender: man,)
               ],
             ),
 
             SizedBox(
-              height: 60,
+              height: 30,
             ),
             
             InkWell(
               onTap: () {
-                Navigator.pushNamed(context, UserWithDrawal.routeName);
+                Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => UserWithDrawal())
+                );
               },
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 15),

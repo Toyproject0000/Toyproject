@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:smart_dongne/component/myButton.dart';
 import 'package:smart_dongne/component/my_Text_Form_Field.dart';
 import 'package:smart_dongne/login_page/login_page.dart';
-import 'package:smart_dongne/server/chatServer.dart';
+import 'package:smart_dongne/server/Server.dart';
 
 class NickNameField extends StatefulWidget {
   const NickNameField({super.key});
