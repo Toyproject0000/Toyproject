@@ -128,9 +128,9 @@ public class PostRepositoryImpl implements PostRepository {
      */
     @Override
     public List<Post> findByWriter(String id, String root) {
-        String sql = "SELECT p.*, COUNT(pl.post_id) AS likeCount " +
+        String sql = "SELECT p.*, COUNT(pl.post_id) AS likeCount, u.nickname as nickname " +
                 "FROM post p " +
-                "LEFT JOIN postLike pl ON p.id = pl.post_id " +
+                "LEFT JOIN postLike pl ON p.id = pl.post_id LEFT JOIN user u on p.user_id = u.id " +
                 "WHERE p.user_id = ? and p.root = ? and p.id NOT IN (SELECT blocked_post_id FROM block WHERE blocking_user_id = ? and blocking_user_root = ?)" +
                 "GROUP BY p.id " +
                 "ORDER BY p.date DESC";
