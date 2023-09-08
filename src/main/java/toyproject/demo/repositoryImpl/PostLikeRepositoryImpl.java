@@ -18,7 +18,7 @@ public class PostLikeRepositoryImpl implements PostLikeRepository {
 
     @Override
     public void insert(PostLike postlike) {
-        jdbcTemplate.update("insert into postLike (post_id, user_id, user_root, date) values (?,?,?)", postlike.getPostId(), postlike.getUserId(), postlike.getUserRoot(), LocalDateTime.now());
+        jdbcTemplate.update("insert into postLike (post_id, user_id, user_root, date) values (?,?,?,?)", postlike.getPostId(), postlike.getUserId(), postlike.getUserRoot(), LocalDateTime.now());
     }
 
     @Override

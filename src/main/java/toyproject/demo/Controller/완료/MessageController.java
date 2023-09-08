@@ -32,7 +32,7 @@ public class MessageController {
         try {
             tokenUtil.parseJwtToken(tokenMessage.getToken());
         }catch (Exception e){
-            return null;
+            return "잘못된 접근입니다.";
         }
         Message message = messageConverter.convert(tokenMessage);
 
