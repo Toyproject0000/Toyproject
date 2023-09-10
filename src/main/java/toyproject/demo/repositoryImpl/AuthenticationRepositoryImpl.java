@@ -14,7 +14,7 @@ public class AuthenticationRepositoryImpl {
     }
 
     public Integer find(String id){
-        return jdbcTemplate.queryForObject("SELECT num FROM authentication WHERE user_id = ? ORDER BY created_at DESC LIMIT 1;", Integer.class, id);
+        return jdbcTemplate.queryForObject("SELECT num FROM authentication WHERE user_id = ? ORDER BY id DESC LIMIT 1;", Integer.class, id);
     }
 
     public void delete(String id){

@@ -1,6 +1,7 @@
 package toyproject.demo.repository;
 
 import toyproject.demo.domain.DTO.BlockUserDTO;
+import toyproject.demo.domain.DTO.ProfileViewDTO;
 import toyproject.demo.domain.Post;
 import toyproject.demo.domain.User;
 
@@ -15,8 +16,8 @@ public interface BlockRepository {
     void cancelReportUser(String userId, String id, String userRoot, String root);
     void cancelBlockPost(String userId, Long postId, String root);
     void cancelReportPost(String userId, Long postId, String root);
-    List<User> findBlockUser(String userId, String root);
+    List<ProfileViewDTO> findBlockUser(String userId, String root);
     List<Post> findBlockPost(String userId, String root);
     List<Post> findReportPost(String userId, String userRoot);
-    List<User> findReportUser(String userId, String userRoot);
+    List<ProfileViewDTO> findReportUser(String userId, String userRoot);
 }

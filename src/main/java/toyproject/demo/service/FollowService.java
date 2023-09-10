@@ -1,6 +1,7 @@
 package toyproject.demo.service;
 
 import org.springframework.stereotype.Service;
+import toyproject.demo.domain.DTO.ProfileViewDTO;
 import toyproject.demo.domain.Follow;
 import toyproject.demo.domain.User;
 import toyproject.demo.repository.FollowRepository;
@@ -24,17 +25,17 @@ public class FollowService {
         followRepository.delete(follow);
     }
 
-    public List<User> findFollower(User user){
+    public List<ProfileViewDTO> findFollower(User user){
         try {
-            List<User> follower = followRepository.findAllFollower(user.getId(), user.getRoot());
+            List<ProfileViewDTO> follower = followRepository.findAllFollower(user.getId(), user.getRoot());
             return follower;
         }catch (Exception e){
             e.getMessage();
         }
-        return new ArrayList<User>();
+        return new ArrayList<ProfileViewDTO>();
     }
 
-    public List<User> findFollowing(User user){
+    public List<ProfileViewDTO> findFollowing(User user){
         try {
             return followRepository.findAllFollowing(user.getId(), user.getRoot());
         }catch (Exception e){

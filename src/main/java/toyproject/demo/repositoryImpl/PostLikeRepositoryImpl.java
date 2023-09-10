@@ -23,7 +23,7 @@ public class PostLikeRepositoryImpl implements PostLikeRepository {
 
     @Override
     public void delete(PostLike postLike) {
-        jdbcTemplate.update("delete from postLike where id = ?", postLike.getId());
+        jdbcTemplate.update("delete from postLike where post_id = ? and user_id = ? and user_root = ?", postLike.getPostId(), postLike.getUserId(), postLike.getUserRoot());
     }
 
 }

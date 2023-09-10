@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import toyproject.demo.converter.ReportConverter;
 import toyproject.demo.domain.DTO.BlockUserDTO;
+import toyproject.demo.domain.DTO.ProfileViewDTO;
 import toyproject.demo.domain.DTO.ReportWithTokenDTO;
 import toyproject.demo.domain.Post;
 import toyproject.demo.domain.Report;
@@ -104,7 +105,7 @@ public class BlockController {
     }
 
     @PostMapping(value = "/find/block/user", produces = "application/json;charset=UTF-8")
-    public Optional<List<User>> findBlockUser(@RequestBody ReportWithTokenDTO report){
+    public Optional<List<ProfileViewDTO>> findBlockUser(@RequestBody ReportWithTokenDTO report){
         try {
             tokenUtil.parseJwtToken(report.getToken());
         }catch (Exception e){
@@ -124,7 +125,7 @@ public class BlockController {
     }
 
     @PostMapping(value = "/find/report/user", produces = "application/json;charset=UTF-8")
-    public Optional<List<User>> findReportUser(@RequestBody ReportWithTokenDTO report){
+    public Optional<List<ProfileViewDTO>> findReportUser(@RequestBody ReportWithTokenDTO report){
         try {
             tokenUtil.parseJwtToken(report.getToken());
         }catch (Exception e){

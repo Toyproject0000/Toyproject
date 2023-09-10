@@ -15,6 +15,7 @@ public class ReplyConverter implements Converter<ReplyWithTokenDTO, Reply> {
         reply.setDate(source.getDate());
         reply.setPostId(source.getPostId());
         reply.setUserId(source.getUserId());
+        reply.setUserRoot(source.getUserRoot());
         return reply;
     }
 }

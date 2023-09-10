@@ -50,7 +50,6 @@ public class PostService {
 
     public List<Post> search(Post post, LocalDate formerDate, LocalDate afterDate) throws IOException {
         List<Post> posts = postRepository.search(post, formerDate, afterDate);
-        System.out.println("posts.size() = " + posts.size());
         return posts;
     }
 
@@ -68,7 +67,6 @@ public class PostService {
 
     public List<Post> recommend(String userId, String userRoot) {
         List<Post> result = postRepository.recommendByAlgorithm(userId, userRoot);
-        System.out.println("result.size() = " + result.size());
 
         List<Post> posts = selectRandomPost(result);
 

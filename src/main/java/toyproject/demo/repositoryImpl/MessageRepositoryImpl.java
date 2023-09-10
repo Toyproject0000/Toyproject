@@ -28,7 +28,7 @@ public class MessageRepositoryImpl implements MessageRepository {
                 "AND m.date = (SELECT MAX(date) FROM message " +
                 "              WHERE (sendUser = m.sendUser AND acceptUser = m.acceptUser) " +
                 "                 OR (sendUser = m.acceptUser AND acceptUser = m.sendUser)) " +
-                "GROUP BY m.sendUser, m.acceptUser";
+                "GROUP BY m.sendUser, m.acceptUser order by m.date desc ";
 
         List<Message> messages = jdbcTemplate.query(sql, rowMapper, message.getSendUser(), message.getSendUser());
 

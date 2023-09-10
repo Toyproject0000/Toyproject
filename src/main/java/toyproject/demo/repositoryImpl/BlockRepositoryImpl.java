@@ -5,7 +5,7 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import toyproject.demo.domain.DTO.BlockUserDTO;
+import toyproject.demo.domain.DTO.ProfileViewDTO;
 import toyproject.demo.domain.Post;
 import toyproject.demo.domain.User;
 import toyproject.demo.repository.BlockRepository;
@@ -19,6 +19,7 @@ public class BlockRepositoryImpl implements BlockRepository {
     private final JdbcTemplate jdbcTemplate;
     private final RowMapper<User> userRowMapper = BeanPropertyRowMapper.newInstance(User.class);
     private final RowMapper<Post> postRowMapper = BeanPropertyRowMapper.newInstance(Post.class);
+    private final RowMapper<ProfileViewDTO> profileRowMapper = BeanPropertyRowMapper.newInstance(ProfileViewDTO.class);
     @Override
     public void blockUser(String userId, String id, String userRoot, String root) {
         jdbcTemplate.update("insert into block (blocking_user_id, blocked_user_id, date, blocking_user_root, blocked_user_root) values (?, ?, ?, ? , ?)", userId, id, LocalDateTime.now(), userRoot, root);
@@ -60,8 +61,8 @@ public class BlockRepositoryImpl implements BlockRepository {
     }
 
     @Override
-    public List<User> findBlockUser(String userId, String root) {
-        return jdbcTemplate.query("SELECT u.* FROM user u INNER JOIN block b ON u.id = b.blocked_user_id WHERE b.blocking_user_id = ? and b.blocking_user_root = ?", userRowMapper, userId, root);
+    public List<ProfileViewDTO> findBlockUser(String userId, String root) {
+        return jdbcTemplate.query("SELECT u.* FROM user u INNER JOIN block b ON u.id = b.blocked_user_id WHERE b.blocking_user_id = ? and b.blocking_user_root = ?", profileRowMapper, userId, root);
     }
 
     @Override
@@ -75,7 +76,7 @@ public class BlockRepositoryImpl implements BlockRepository {
     }
 
     @Override
-    public List<User> findReportUser(String userId, String userRoot) {
-        return jdbcTemplate.query("select u.* from user u INNER JOIN report r on u.id = r.reported_user_id where reporting_user_id=? and reporting_user_root = ?", userRowMapper, userId, userRoot);
+    public List<ProfileViewDTO> findReportUser(String userId, String userRoot) {
+        return jdbcTemplate.query("select u.* from user u INNER JOIN report r on u.id = r.reported_user_id where reporting_user_id=? and reporting_user_root = ?", profileRowMapper, userId, userRoot);
     }
 }

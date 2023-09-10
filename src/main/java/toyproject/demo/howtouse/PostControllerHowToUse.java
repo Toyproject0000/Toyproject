@@ -10,7 +10,7 @@ public class PostControllerHowToUse {
 
     @GetMapping("/submit")
     public String submitPost(){
-        return "submit";
+        return "post/submit";
     }
 
     @GetMapping("edit")

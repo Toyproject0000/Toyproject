@@ -1,7 +1,10 @@
 package toyproject.demo.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import toyproject.demo.domain.DTO.ProfileDTO;
 import toyproject.demo.domain.DTO.ProfileViewDTO;
 import toyproject.demo.domain.User;
@@ -12,15 +15,24 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserService {
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
 
+    @Transactional
     public String join(User user){
         try {
             userRepository.insert(user);
             categoryRepository.insert(user.getId(), user.getRoot());
             return "ok";
+        }
+        catch (DuplicateKeyException e){
+            log.error("error", e);
+            if (e.getMessage().contains(user.getNickname())) {
+                return "닉네임이 사용중입니다.";
+            }
+            return "이미 가입된 아이디입니다.";
         }
         catch (Exception e){
             System.out.println(e.getMessage());
@@ -28,39 +40,12 @@ public class UserService {
         }
     }
 
-    public String findId(User user){
-        List<User> result = userRepository.findUserByNameAndPhone(user);
-        if (result.size()==0) return "가입되어 있지않음";
-        else return result.get(0).getId();
-    }
-
-    public String findPassword(User user){
-        List<User> result = userRepository.findUserByNameAndPhoneAndId(user);
-        if (result.size()==0) return "cancel";
-        else return "ok";
-    }
-    public Boolean findEmail(User user){
-        List<User> result = userRepository.findEmail(user);
-        if (result.size()==0) return false;
-        return true;
-    }
-
     public String duplicateNick(User user){
         List<User> users = userRepository.findNickname(user);
         if(users.size()!=0){
-            return "cancel";
+            return "사용중인 닉네임입니다.";
         }
-        return "ok";
-    }
-
-    public String setPassword(User user){
-        try {
-            userRepository.setPassword(user);
-            return "ok";
-        }
-        catch (Exception e){
-            return "cancel";
-        }
+        return "사용가능한 닉네임입니다.";
     }
 
     public List<ProfileViewDTO> findUser(String id, String root){
@@ -86,7 +71,7 @@ public class UserService {
         if(findUser.size()!=1||!findUser.get(0).getId().equals(user.getId())){
             return "id 오류";
         }
-        if (!findUser.get(0).getRoot().equals(user.getRoot())){
+        if (!findUser.get(0).getRoot().equals(user.getRoot())||findUser.get(0).getRoot().equals("local")){
             return "잘못된 접근입니다.";
         }
 
@@ -100,8 +85,6 @@ public class UserService {
             return "ok";
         }
         catch (Exception e){
-            System.out.println(e.getCause());
-            System.out.println(e.getMessage());
             return "cancel";
         }
     }

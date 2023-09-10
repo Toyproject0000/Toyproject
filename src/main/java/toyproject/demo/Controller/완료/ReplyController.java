@@ -1,6 +1,7 @@
 package toyproject.demo.Controller.완료;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/reply")
 @RequiredArgsConstructor
+@Slf4j
 public class ReplyController {
 
     /*
@@ -46,6 +48,7 @@ public class ReplyController {
             replyService.add(reply);
             return "ok";
         }catch (Exception e){
+            log.error("error",e);
             return "에러 발생"; // 작성했던 글 내용 그대로 다시 쓸수있는지 아니면 내가 다시 보내줘야되는지 물어보자
         }
     }
@@ -62,6 +65,7 @@ public class ReplyController {
             replyService.delete(reply);
             return "ok";
         }catch (Exception e){
+            log.error("error",e);
             return "에러 발생";
         }
     }
@@ -78,6 +82,7 @@ public class ReplyController {
             replyService.edit(reply);
             return "ok";
         }catch (Exception e){
+            log.error("error",e);
             return "에러 발생";
         }
     }

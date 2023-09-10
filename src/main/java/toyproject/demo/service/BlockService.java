@@ -3,6 +3,7 @@ package toyproject.demo.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import toyproject.demo.domain.DTO.BlockUserDTO;
+import toyproject.demo.domain.DTO.ProfileViewDTO;
 import toyproject.demo.domain.Post;
 import toyproject.demo.domain.User;
 import toyproject.demo.repository.BlockRepository;
@@ -102,8 +103,8 @@ public class BlockService {
     }
 
 
-    public List<User> findBlockUser(String userId, String root){
-        List<User> users;
+    public List<ProfileViewDTO> findBlockUser(String userId, String root){
+        List<ProfileViewDTO> users;
         try {
             users = blockRepository.findBlockUser(userId, root);
         }
@@ -138,8 +139,8 @@ public class BlockService {
         return posts;
     }
 
-    public List<User> findReportUser(String userId, String userRoot){
-        List<User> users;
+    public List<ProfileViewDTO> findReportUser(String userId, String userRoot){
+        List<ProfileViewDTO> users;
         try {
             users = blockRepository.findReportUser(userId, userRoot);
         }

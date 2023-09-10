@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import toyproject.demo.converter.FollowConverter;
 import toyproject.demo.converter.UserConverter;
 import toyproject.demo.domain.DTO.FollowWithTokenDTO;
+import toyproject.demo.domain.DTO.ProfileViewDTO;
 import toyproject.demo.domain.DTO.UserWithTokenDTO;
 import toyproject.demo.domain.Follow;
 import toyproject.demo.domain.User;
@@ -57,7 +58,7 @@ public class FollowController {
     }
 
     @PostMapping("/find-follower")
-    public List<User> findFollower(@RequestBody UserWithTokenDTO tokenUser){
+    public List<ProfileViewDTO> findFollower(@RequestBody UserWithTokenDTO tokenUser){
         try {
             tokenUtil.parseJwtToken(tokenUser.getToken());
         }catch (Exception e){
@@ -67,7 +68,7 @@ public class FollowController {
         return followService.findFollower(user);
     }
     @PostMapping("/find-following")
-    public List<User> findFollowing(@RequestBody UserWithTokenDTO tokenUser){
+    public List<ProfileViewDTO> findFollowing(@RequestBody UserWithTokenDTO tokenUser){
         try {
             tokenUtil.parseJwtToken(tokenUser.getToken());
         }catch (Exception e){

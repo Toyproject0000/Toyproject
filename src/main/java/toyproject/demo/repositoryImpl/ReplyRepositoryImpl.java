@@ -25,12 +25,12 @@ public class ReplyRepositoryImpl implements ReplyRepository {
     @Override
     public void insert(Reply reply) {
         jdbcTemplate.update("insert into reply (user_id, post_id, contents, user_root, date) values (?,?,?,?,?)",
-                reply.getUserId(), reply.getPostId(), reply.getContents(),reply.getUserRoot(), LocalDateTime.now());
+                reply.getUserId(), reply.getPostId(), reply.getContents(), reply.getUserRoot(), LocalDateTime.now());
     }
 
     @Override
     public void update(Reply reply) {
-        jdbcTemplate.update("update reply set contents = ? and date = ? where id = ? ",
+        jdbcTemplate.update("update reply set contents = ?, date = ? where id = ? ",
                 reply.getContents(), LocalDateTime.now(), reply.getId());
     }
 

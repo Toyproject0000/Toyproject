@@ -9,6 +9,7 @@ import toyproject.demo.domain.User;
 import toyproject.demo.repository.PostRepository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 @Repository
@@ -24,7 +25,7 @@ public class PostRepositoryImpl implements PostRepository {
     public void insert(Post post) {
         String sql = "INSERT INTO post (user_id, contents, title, category, disclosure, date, possibly_reply, img_location,  visibly_like, root, user_img) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, (select img_location from user u where id = ? and root = ?))";
-        jdbcTemplate.update(sql, post.getUserId(), post.getContents(), post.getTitle(), post.getCategory(), post.getDisclosure(), post.getDate(), post.getPossiblyReply(), post.getImgLocation(), post.getVisiblyLike(), post.getRoot(), post.getUserId(), post.getRoot());
+        jdbcTemplate.update(sql, post.getUserId(), post.getContents(), post.getTitle(), post.getCategory(), post.getDisclosure(), LocalDateTime.now(), post.getPossiblyReply(), post.getImgLocation(), post.getVisiblyLike(), post.getRoot(), post.getUserId(), post.getRoot());
     }
 
     @Override
@@ -47,7 +48,7 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public List<Post> findPostOfFollower(User user) {
         String sql = "SELECT p.*, (SELECT COUNT(*) FROM postLike pl WHERE pl.post_id = p.id) as likeCount FROM post p " +
-                "INNER JOIN follow f ON p.user_id = f.followedUserId WHERE f.followedUserId = ? and f.followed_user_root=? and p.id NOT IN (SELECT blocked_post_id FROM block WHERE blocking_user_id = ? and blocking_user_root = ?)";
+                "INNER JOIN follow f ON p.user_id = f.followedUserId and p.root = f.followed_user_root WHERE f.followingUserId = ? and f.following_user_root=? and p.id NOT IN (SELECT blocked_post_id FROM block WHERE blocking_user_id = ? and blocking_user_root = ?)";
         return jdbcTemplate.query(sql, rowMapper, user.getId(), user.getRoot(), user.getId(), user.getRoot());
     }
     @Override
