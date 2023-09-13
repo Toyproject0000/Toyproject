@@ -22,7 +22,6 @@ import java.util.Optional;
 public class BlockController {
     private final BlockService blockService;
     private final JwtTokenUtil tokenUtil;
-    private final ReportConverter converter;
     @PostMapping(value = "/block/user", produces = "application/json;charset=UTF-8")
     public String blockUser(@RequestBody ReportWithTokenDTO report){
         try {

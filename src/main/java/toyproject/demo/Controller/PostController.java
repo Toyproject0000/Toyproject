@@ -48,7 +48,7 @@ public class PostController {
         try {
             tokenUtil.parseJwtToken(token);
         }catch (Exception e){
-            return null;
+            return "잘못된 접근입니다.";
         }
 
         Post post = new Post();
@@ -78,18 +78,18 @@ public class PostController {
     public String editConfirm(@RequestParam(required = false) MultipartFile file,
                               @RequestParam String userId,
                               @RequestParam String root,
-                              @RequestParam(required = false) String contents,
-                              @RequestParam(required = false) String title,
-                              @RequestParam(required = false) String category,
-                              @RequestParam(required = false) String disclosure,
-                              @RequestParam(required = false) String possibleReply,
+                              @RequestParam String contents,
+                              @RequestParam String title,
+                              @RequestParam String category,
+                              @RequestParam String disclosure,
+                              @RequestParam String possibleReply,
                               @RequestParam Long id,
                               @RequestParam String visiblyLike,
                               @RequestParam String token){
         try {
             tokenUtil.parseJwtToken(token);
         }catch (Exception e){
-            return null;
+            return "잘못된 접근입니다.";
         }
         Post post = new Post();
         try {
@@ -119,7 +119,7 @@ public class PostController {
         try {
             tokenUtil.parseJwtToken(tokenPost.getToken());
         }catch (Exception e){
-            return null;
+            return "잘못된 접근입니다.";
         }
         Post post = postConverter.convert(tokenPost);
         try {
@@ -138,7 +138,7 @@ public class PostController {
         try {
             tokenUtil.parseJwtToken(tokenPost.getToken());
         }catch (Exception e){
-            System.out.println("e.getMessage() = " + e.getMessage());
+            return null;
         }
         Post post = postConverter.convert(tokenPost);
 
@@ -173,7 +173,7 @@ public class PostController {
      *
      * @param post
      */
-    @PostMapping
+    @PostMapping("/read")
     public void read(@RequestBody Post post){
         algorithm.read(post, post.getUserId());
     }

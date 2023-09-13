@@ -38,7 +38,7 @@ public class FollowController {
         try {
             tokenUtil.parseJwtToken(tokenFollow.getToken());
         }catch (Exception e){
-            return "cancel";
+            return "잘못된 접근입니다.";
         }
         Follow follow = followConverter.convert(tokenFollow);
         followService.add(follow);
@@ -50,7 +50,7 @@ public class FollowController {
         try {
             tokenUtil.parseJwtToken(tokenFollow.getToken());
         }catch (Exception e){
-            return "cancel";
+            return "잘못된 접근입니다.";
         }
         Follow follow = followConverter.convert(tokenFollow);
         followService.remove(follow);

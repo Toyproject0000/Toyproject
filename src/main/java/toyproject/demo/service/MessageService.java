@@ -18,7 +18,7 @@ public class MessageService {
         try {
             messageRepository.send(message);
             FCMNotificationRequestDto fcm = new FCMNotificationRequestDto();
-            fcm.setTargetUserId(message.getAcceptUser());
+            fcm.setId(message.getAcceptUser());
             fcm.setTitle("새로운 메시지 도착");
             fcm.setBody(message.getSendUser()+"님에게 메세지가 도착했습니다.");
             fcmNotificationService.sendNotificationByToken(fcm);

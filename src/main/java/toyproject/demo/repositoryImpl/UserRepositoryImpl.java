@@ -40,17 +40,17 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public void delete(User user) {
-        jdbcTemplate.update("delete from user where id = ?", user.getId());
+        jdbcTemplate.update("delete from user where id = ? and root = ?", user.getId(), user.getRoot());
     }
 
     @Override
     public void setToken(FCMNotificationRequestDto fcm) {
-        jdbcTemplate.update("update user set fcm = ? where id = ? and root = ?", fcm.getTargetUserId(), fcm.getRoot());
+        jdbcTemplate.update("update user set fcm = ? where id = ? and root = ?", fcm.getId(), fcm.getRoot());
     }
 
     @Override
     public String getToken(FCMNotificationRequestDto fcm) {
-        return jdbcTemplate.queryForObject("select fcm from user where id = ? and root = ?", String.class, fcm.getTargetUserId(), fcm.getRoot());
+        return jdbcTemplate.queryForObject("select fcm from user where id = ? and root = ?", String.class, fcm.getId(), fcm.getRoot());
     }
 
     @Override
@@ -85,7 +85,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public void setPassword(User user) {
-        jdbcTemplate.update("UPDATE user SET password = ?  WHERE id = ?", user.getPassword(), user.getId());
+        jdbcTemplate.update("UPDATE user SET password = ?  WHERE id = ? and root = ?", user.getPassword(), user.getId(), user.getRoot());
     }
 
     @Override
@@ -107,4 +107,5 @@ public class UserRepositoryImpl implements UserRepository {
     public List<User> findUserByPhone(String phoneNumber) {
         return jdbcTemplate.query("select id from user where phone_number = ?", rowMapper, phoneNumber);
     }
+
 }

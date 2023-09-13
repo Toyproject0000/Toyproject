@@ -53,7 +53,7 @@ public class PostRepositoryImpl implements PostRepository {
     }
     @Override
     public List<Post> findAllLikePost(User user) {
-        return jdbcTemplate.query("SELECT p.*, (SELECT COUNT(*) FROM postLike pl WHERE pl.post_id = p.id) as likeCount FROM post p WHERE id IN (SELECT post_id FROM postLike WHERE user_id = ? and p.id NOT IN (SELECT blocked_post_id FROM block WHERE blocking_user_id = ? and blocking_user_root = ?))", rowMapper, user.getId(), user.getId(), user.getRoot());
+        return jdbcTemplate.query("SELECT p.*, (SELECT COUNT(*) FROM postLike pl WHERE pl.post_id = p.id) as likeCount FROM post p WHERE id IN (SELECT post_id FROM postLike WHERE user_id = ? and user_root = ? and p.id NOT IN (SELECT blocked_post_id FROM block WHERE blocking_user_id = ? and blocking_user_root = ?))", rowMapper, user.getId(),user.getRoot(), user.getId(), user.getRoot());
     }
 
 

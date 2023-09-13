@@ -137,6 +137,7 @@ public class UserService {
             return "잘못된 접근입니다.";
         }
 
+
         return ",\n\"id\" : \""+findUser.get(0).getId()+"\",\n\"nickname\" : \""+findUser.get(0).getNickname()+"\"}";
     }
 

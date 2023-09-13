@@ -48,13 +48,13 @@ public class UserController {
     public String login(@RequestBody User user){
         String token = tokenUtil.createToken(user.getId());
         String result = userService.login(user);
-        if(result.equals("id 오류")||result.equals("비번 오류")||result.equals("닉네임 설정 안됨")) return result;
+        if(result.equals("id 오류")||result.equals("비번 오류")) return result;
 
         return "{\"token\" : \"" + token+"\""+ result;
     }
 
-    @PostMapping(value = "/getToken", produces = "application/json;charset=UTF-8")
-    public void getToken(@RequestBody FCMNotificationRequestDto fcm){
+    @PostMapping(value = "/setToken", produces = "application/json;charset=UTF-8")
+    public void setToken(@RequestBody FCMNotificationRequestDto fcm){
         userService.setToken(fcm);
     }
 
@@ -76,7 +76,7 @@ public class UserController {
         return userService.findId(user, random);
     }
 
-    @PostMapping(value = "/check-phone", produces = "application/json;charset=UTF-8")
+    @PostMapping(value = "/checkPhone", produces = "application/json;charset=UTF-8")
     public String checkPhone(@RequestBody Data user, HttpServletRequest request){
         HttpSession session = request.getSession();
         String realNum = (String) session.getAttribute(user.getPhoneNumber());
@@ -116,9 +116,7 @@ public class UserController {
         }catch (Exception e){
             return "잘못된 요청입니다.";
         }
-
         User user = userConverter.convert(tokenUser);
-
         try {
             userService.delete(user);
         }catch (Exception e){
@@ -171,6 +169,8 @@ public class UserController {
                              @RequestParam(required = false) String password,
                              @RequestParam(required = false) String name,
                              @RequestParam(required = false) LocalDate birth,
+                             @RequestParam(required = false) String phoneNumber,
+                             @RequestParam(required = false) Boolean gender,
                              @RequestParam String token,
                              @RequestParam(required = false, defaultValue = "false") String basicImage
                              ){

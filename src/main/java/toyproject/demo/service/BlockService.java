@@ -20,7 +20,6 @@ public class BlockService {
             blockRepository.blockUser(userId, id, userRoot, root);
         }
         catch (Exception e){
-            System.out.println("e.getMessage() = " + e.getMessage());
             return "cancel";
         }
         return "ok";

@@ -37,7 +37,7 @@ public class PostLikeController {
             return "ok";
         }catch (Exception e){
             System.out.println(e.getMessage());
-            return "에러 발생";
+            return "cancel";
         }
     }
 
@@ -54,7 +54,7 @@ public class PostLikeController {
             return "ok";
         }catch (Exception e){
             System.out.println(e.getMessage());
-            return "에러 발생";
+            return "cancel";
         }
     }
 }

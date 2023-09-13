@@ -38,7 +38,7 @@ public class ReplyLikeController {
             replyLikeService.add(replyLike);
             return "ok";
         }catch (Exception e){
-            return "에러 발생";
+            return "cancel";
         }
     }
 
@@ -55,7 +55,7 @@ public class ReplyLikeController {
             replyLikeService.remove(replyLike);
             return "ok";
         }catch (Exception e){
-            return "에러 발생";
+            return "cancel";
         }
     }
 }
