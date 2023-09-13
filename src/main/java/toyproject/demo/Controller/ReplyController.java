@@ -1,4 +1,4 @@
-package toyproject.demo.Controller.완료;
+package toyproject.demo.Controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

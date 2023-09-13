@@ -1,4 +1,4 @@
-package toyproject.demo.Controller.완료;
+package toyproject.demo.Controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,6 +38,8 @@ public class MessageController {
 
         return messageService.send(message);
     }
+
+
     @PostMapping(value = "/message/findAll", produces = "application/json;charset=UTF-8")
     public Optional<List<Message>> findAllMessage(@RequestBody MessageWithTokenDTO tokenMessage){
         try {
@@ -48,6 +50,8 @@ public class MessageController {
         Message message = messageConverter.convert(tokenMessage);
         return messageService.findAll(message);
     }
+
+
     @PostMapping(value = "/message/user", produces = "application/json;charset=UTF-8")
     public Optional<List<Message>> Message(@RequestBody MessageWithTokenDTO tokenMessage){
         try {

@@ -1,4 +1,4 @@
-package toyproject.demo.Controller.완료;
+package toyproject.demo.Controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;

@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import toyproject.demo.domain.DTO.ProfileDTO;
 import toyproject.demo.domain.DTO.ProfileViewDTO;
+import toyproject.demo.domain.FCMNotificationRequestDto;
 import toyproject.demo.domain.User;
 import toyproject.demo.repository.UserRepository;
 
@@ -37,15 +38,19 @@ public class UserRepositoryImpl implements UserRepository {
                 user.getPassword(), user.getNickname(), user.getInfo(), user.getImgLocation(),user.getName(),user.getPhoneNumber(),user.getGender(), user.getBirth(), userId);
     }
 
-    /**
-     *
-     * @param user
-     * 삭제하면 관련된 정보들 다 삭제되게 수정해야함.
-     */
-
     @Override
     public void delete(User user) {
         jdbcTemplate.update("delete from user where id = ?", user.getId());
+    }
+
+    @Override
+    public void setToken(FCMNotificationRequestDto fcm) {
+        jdbcTemplate.update("update user set fcm = ? where id = ? and root = ?", fcm.getTargetUserId(), fcm.getRoot());
+    }
+
+    @Override
+    public String getToken(FCMNotificationRequestDto fcm) {
+        return jdbcTemplate.queryForObject("select fcm from user where id = ? and root = ?", String.class, fcm.getTargetUserId(), fcm.getRoot());
     }
 
     @Override
@@ -96,5 +101,10 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public List<ProfileDTO> userProfile(String id, String root, String loginId, String loginRoot) {
         return jdbcTemplate.query("select u.*, (SELECT COUNT(*) FROM follow f1 WHERE f1.followedUserId = u.id) AS follower, (SELECT COUNT(*) FROM follow f2 WHERE f2.followingUserId = u.id) AS following, (select  count(id) from follow f3 where f3.followedUserId = u.id and f3.followingUserId = ? and f3.following_user_root = ?) as followStatus from user u where id = ? and root = ?", profileRowMapper,loginId,loginRoot,id, root);
+    }
+
+    @Override
+    public List<User> findUserByPhone(String phoneNumber) {
+        return jdbcTemplate.query("select id from user where phone_number = ?", rowMapper, phoneNumber);
     }
 }

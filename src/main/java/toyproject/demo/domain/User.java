@@ -20,4 +20,5 @@ public class User {
     String nickname;
     Boolean gender;
     String imgLocation;
+    String firebaseToken;
 }

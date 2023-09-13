@@ -1,4 +1,4 @@
-package toyproject.demo.Controller.완료;
+package toyproject.demo.Controller;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

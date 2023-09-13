@@ -2,6 +2,7 @@ package toyproject.demo.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import toyproject.demo.domain.FCMNotificationRequestDto;
 import toyproject.demo.domain.Message;
 import toyproject.demo.repository.MessageRepository;
 
@@ -11,10 +12,16 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MessageService {
     private final MessageRepository messageRepository;
+    private final FCMNotificationService fcmNotificationService;
 
     public String send(Message message) {
         try {
             messageRepository.send(message);
+            FCMNotificationRequestDto fcm = new FCMNotificationRequestDto();
+            fcm.setTargetUserId(message.getAcceptUser());
+            fcm.setTitle("새로운 메시지 도착");
+            fcm.setBody(message.getSendUser()+"님에게 메세지가 도착했습니다.");
+            fcmNotificationService.sendNotificationByToken(fcm);
         }catch (Exception e){
             return "cancel";
         }

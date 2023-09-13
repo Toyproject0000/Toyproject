@@ -1,9 +1,11 @@
-package toyproject.demo.Controller.완료;
+package toyproject.demo.Controller;
 
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.relational.core.sql.In;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -13,10 +15,14 @@ import toyproject.demo.domain.Authentication;
 import toyproject.demo.domain.DTO.ProfileDTO;
 import toyproject.demo.domain.DTO.ProfileViewDTO;
 import toyproject.demo.domain.DTO.UserWithTokenDTO;
+import toyproject.demo.domain.FCMNotificationRequestDto;
 import toyproject.demo.domain.User;
 import toyproject.demo.repositoryImpl.AuthenticationRepositoryImpl;
 import toyproject.demo.service.*;
 
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -47,6 +53,11 @@ public class UserController {
         return "{\"token\" : \"" + token+"\""+ result;
     }
 
+    @PostMapping(value = "/getToken", produces = "application/json;charset=UTF-8")
+    public void getToken(@RequestBody FCMNotificationRequestDto fcm){
+        userService.setToken(fcm);
+    }
+
     @PostMapping(value = "/socialLogin", produces = "application/json;charset=UTF-8")
     public String socialLogin(@RequestBody User user){
         String token = tokenUtil.createToken(user.getId());
@@ -57,20 +68,46 @@ public class UserController {
     }
 
 
-//    @PostMapping(value = "/findId", produces = "application/json;charset=UTF-8")
-//    public String findId(@RequestBody User user){
-//        return userService.findId(user);
-//    }
+    @PostMapping(value = "/findId", produces = "application/json;charset=UTF-8")
+    public String findId(@RequestBody User user, HttpServletRequest request) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException {
+        String random = String.valueOf(new Random().nextInt(100000,1000000));
+        HttpSession session = request.getSession();
+        session.setAttribute(user.getPhoneNumber(), random);
+        return userService.findId(user, random);
+    }
 
-//    @PostMapping(value = "/findPassword/email", produces = "application/json;charset=UTF-8")
-//    public Boolean findPasswordEmail(@RequestBody User user){
-//        return userService.findEmail(user);
-//    }
-//
-//    @PostMapping(value = "/findPassword/check", produces = "application/json;charset=UTF-8")
-//    public String findPassword(@RequestBody User user){
-//        return userService.findPassword(user);
-//    }
+    @PostMapping(value = "/check-phone", produces = "application/json;charset=UTF-8")
+    public String checkPhone(@RequestBody Data user, HttpServletRequest request){
+        HttpSession session = request.getSession();
+        String realNum = (String) session.getAttribute(user.getPhoneNumber());
+        if (realNum.equals(user.getNum())){
+            session.invalidate();
+            return userService.findIdCheck(user.getPhoneNumber());
+        }
+        return "인증번호가 틀렸습니다.";
+    }
+
+    @Getter
+    @Setter
+    private static class Data{
+        String phoneNumber;
+        String num;
+        String id;
+    }
+
+    @PostMapping(value = "/findPassword/email", produces = "application/json;charset=UTF-8")
+    public Boolean findPasswordEmail(@RequestBody User user){
+        return userService.findEmail(user);
+    }
+    @PostMapping(value = "/findPassword", produces = "application/json;charset=UTF-8")
+    public Boolean findPassword(@RequestBody Data user){
+        return userService.findPassword(user.getId(), user.getNum());
+    }
+
+    @PostMapping(value = "/setPassword", produces = "application/json;charset=UTF-8")
+    public String setPassword(@RequestBody User user){
+        return userService.setPassword(user);
+    }
 
     @PostMapping(value = "/remove", produces = "application/json;charset=UTF-8")
     public String delete(@RequestBody UserWithTokenDTO tokenUser){

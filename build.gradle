@@ -22,24 +22,26 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '3.1.0'
+	implementation 'org.ow2.petals.dsb:dsb-kernel-notificationservice:1.0.0'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
+	implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.14'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'commons-io:commons-io:2.11.0'    /* Apache commons-io */
-	implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.4'
-	implementation 'commons-fileupload:commons-fileupload:1.4'
+	implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.5'
+	implementation 'commons-fileupload:commons-fileupload:1.5'
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
 	// com.sun.xml.bind
-	implementation 'com.sun.xml.bind:jaxb-impl:4.0.1'
-	implementation 'com.sun.xml.bind:jaxb-core:4.0.1'
+	implementation 'com.sun.xml.bind:jaxb-impl:4.0.2'
+	implementation 'com.sun.xml.bind:jaxb-core:4.0.2'
 	// javax.xml.bind
 	implementation 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
+	implementation group: 'com.google.firebase', name: 'firebase-admin', version: '9.1.1'
 }
 
 tasks.named('test') {
