@@ -22,7 +22,7 @@ public class FCMNotificationService {
 
     public String sendNotificationByToken(FCMNotificationRequestDto requestDto) {
 
-        List<User> user = usersRepository.findById(requestDto.getTargetUserId(), requestDto.getRoot());
+        List<User> user = usersRepository.findById(requestDto.getId(), requestDto.getRoot());
 
         if (user.size()!=0) {
             if (user.get(0).getFirebaseToken() != null) {
@@ -38,17 +38,17 @@ public class FCMNotificationService {
 
                 try {
                     firebaseMessaging.send(message);
-                    return "알림을 성공적으로 전송했습니다. targetUserId=" + requestDto.getTargetUserId();
+                    return "알림을 성공적으로 전송했습니다. targetUserId=" + requestDto.getId();
                 } catch (FirebaseMessagingException e) {
                     e.printStackTrace();
-                    return "알림 보내기를 실패하였습니다. targetUserId=" + requestDto.getTargetUserId();
+                    return "알림 보내기를 실패하였습니다. targetUserId=" + requestDto.getId();
                 }
             } else {
-                return "서버에 저장된 해당 유저의 FirebaseToken이 존재하지 않습니다. targetUserId=" + requestDto.getTargetUserId();
+                return "서버에 저장된 해당 유저의 FirebaseToken이 존재하지 않습니다. targetUserId=" + requestDto.getId();
             }
 
         } else {
-            return "해당 유저가 존재하지 않습니다. targetUserId=" + requestDto.getTargetUserId();
+            return "해당 유저가 존재하지 않습니다. targetUserId=" + requestDto.getId();
         }
 
 
