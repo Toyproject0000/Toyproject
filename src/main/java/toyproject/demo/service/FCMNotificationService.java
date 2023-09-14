@@ -11,7 +11,6 @@ import toyproject.demo.domain.User;
 import toyproject.demo.repository.UserRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
