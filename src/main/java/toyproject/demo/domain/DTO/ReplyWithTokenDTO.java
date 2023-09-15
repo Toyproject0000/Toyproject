@@ -10,7 +10,9 @@ import java.time.LocalDateTime;
 public class ReplyWithTokenDTO {
     Long id;
     String userId;
+    String nickname;
     String userRoot;
+    String userImage;
     String postId;
     String contents;
     LocalDateTime date;

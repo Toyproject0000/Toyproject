@@ -46,7 +46,7 @@ public class ReplyRepositoryImpl implements ReplyRepository {
 
     @Override
     public List<Reply> findReplyOfPost(Post post) {
-        return jdbcTemplate.query("SELECT r.*, COUNT(rl.reply_id) AS replyLike FROM reply r LEFT JOIN replyLike rl ON r.id = rl.reply_id WHERE r.post_id = ? GROUP BY r.id", rowMapper, post.getId());
+        return jdbcTemplate.query("SELECT r.*, COUNT(rl.reply_id) AS replyLike, u.img_location as userImage, u.nickname as nickname  FROM reply r LEFT JOIN replyLike rl ON r.id = rl.reply_id LEFT JOIN user u on r.user_id = u.id WHERE r.post_id = ? GROUP BY r.id", rowMapper, post.getId());
     }
 
     @Override

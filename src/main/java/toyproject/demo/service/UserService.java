@@ -54,9 +54,9 @@ public class UserService {
     public String duplicateNick(User user){
         List<User> users = userRepository.findNickname(user);
         if(users.size()!=0){
-            return "사용중인 닉네임입니다.";
+            return "cancel";
         }
-        return "사용가능한 닉네임입니다.";
+        return "ok";
     }
 
     public List<ProfileViewDTO> findUser(String id, String root){

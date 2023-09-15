@@ -13,6 +13,8 @@ public class Reply {
     Long id;
     String userId;
     String postId;
+    String nickname;
+    String userImage;
     String contents;
     String userRoot;
     LocalDateTime date;

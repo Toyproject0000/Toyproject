@@ -35,7 +35,7 @@ public class ReplyController {
     private final ReplyConverter replyConverter;
     private final PostConverter postConverter;
 
-    @PostMapping("/add")
+    @PostMapping(value = "/add", produces = "application/json;charset=UTF-8")
     public String add(@RequestBody ReplyWithTokenDTO tokenReply){
         try {
             tokenUtil.parseJwtToken(tokenReply.getToken());
@@ -53,7 +53,7 @@ public class ReplyController {
         }
     }
 
-    @PostMapping("/delete")
+    @PostMapping(value = "/delete", produces = "application/json;charset=UTF-8")
     public String delete(@RequestBody ReplyWithTokenDTO tokenReply){
         try {
             tokenUtil.parseJwtToken(tokenReply.getToken());
@@ -69,7 +69,7 @@ public class ReplyController {
             return "에러 발생";
         }
     }
-    @PostMapping("/edit")
+    @PostMapping(value = "/edit", produces = "application/json;charset=UTF-8")
     public String edit(@RequestBody ReplyWithTokenDTO tokenReply){
         try {
             tokenUtil.parseJwtToken(tokenReply.getToken());
@@ -87,7 +87,7 @@ public class ReplyController {
         }
     }
 
-    @PostMapping("/post")
+    @PostMapping(value = "/post", produces = "application/json;charset=UTF-8")
     public List<Reply> findPost(@RequestBody PostWithTokenDTO tokenPost){
         try {
             tokenUtil.parseJwtToken(tokenPost.getToken());
