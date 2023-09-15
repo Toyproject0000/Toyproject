@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.relational.core.sql.In;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +30,7 @@ import java.util.*;
 @RestController
 @RequestMapping("/")
 @RequiredArgsConstructor
+@Slf4j
 public class UserController {
 
     private final UserService userService;
@@ -137,26 +139,26 @@ public class UserController {
             authenticationRepository.insert(id, num);
             return "ok";
         }catch (Exception e){
-            System.out.println(e.getMessage());
+            log.info("error", e);
         }
         return "cancel";
     }
 
     @PostMapping(value = "/authentication-check", produces = "application/json;charset=UTF-8")
     @Transactional
-    public Boolean authenticationCheck(@RequestBody Authentication data){
+    public String authenticationCheck(@RequestBody Authentication data){
         try {
             String id = data.getId();
             Integer num = data.getNum();
             Integer realNum = authenticationRepository.find(id);
             if (realNum.equals(num)){
                 authenticationRepository.delete(id);
-                return true;
+                return "ok";
             }
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
-        return false;
+        return "cancel";
     }
     /**
      *
