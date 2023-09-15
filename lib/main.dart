@@ -16,7 +16,6 @@ import 'package:smart_dongne/main_page/profile_page/notification_page/cutoff.dar
 import 'package:smart_dongne/main_page/profile_page/notification_page/likeandpost.dart';
 import 'package:smart_dongne/main_page/profile_page/notification_page/notification_page.dart';
 import 'package:smart_dongne/main_page/profile_page/notification_page/reader_page.dart';
-import 'package:smart_dongne/main_page/home_page/search_bar.dart';
 import 'package:smart_dongne/main_page/writing_page/cover.dart';
 import 'package:smart_dongne/main_page/profile_page/profile_edit_page.dart';
 import 'package:smart_dongne/main_page/writing_page/writing_page_final.dart';
@@ -24,6 +23,7 @@ import 'package:smart_dongne/main_page/setpage.dart';
 import 'package:smart_dongne/provider/JoinArgeement.dart';
 import 'package:smart_dongne/provider/LoginMaintenance.dart';
 import 'package:smart_dongne/provider/chattingProvider.dart';
+import 'package:smart_dongne/provider/comment_provider.dart';
 import 'package:smart_dongne/provider/likeProvider.dart';
 import 'package:smart_dongne/provider/setPageData.dart';
 import 'package:smart_dongne/provider/writingSettingProvider.dart';
@@ -47,7 +47,8 @@ void main() {
                 enableComments: false,
                 likeNumber: false)),
         ChangeNotifierProvider(create: (BuildContext context) => ChattingProvider()),
-        ChangeNotifierProvider(create: (BuildContext context) => LikeProvider())
+        ChangeNotifierProvider(create: (BuildContext context) => LikeProvider()),
+        ChangeNotifierProvider(create: (BuildContext context) => CommentProvider())
       ],
       child: const MyApp(),
     ),
@@ -80,7 +81,6 @@ class MyApp extends StatelessWidget {
         LikeAndPost.routeName: (context) => LikeAndPost(),
         ReaderNotification.routeName: (context) => ReaderNotification(),
         Cutoff.routeName: (context) => Cutoff(),
-        Search_Page_bar.routeName: (context) => Search_Page_bar(),
         ShowaContents.routeName: (context) => ShowaContents(),
         SocialLoginSetting.routeName: (context) => SocialLoginSetting(),
         TermsofService.routeName: (context) => TermsofService(),

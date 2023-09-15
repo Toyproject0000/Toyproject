@@ -11,7 +11,6 @@ import 'package:smart_dongne/component/myselfWidget.dart';
 import 'package:smart_dongne/login_page/nickname_page.dart';
 import 'package:smart_dongne/server/Server.dart';
 
-
 class Joinmembership extends StatefulWidget {
   const Joinmembership({Key? key}) : super(key: key);
 
@@ -35,7 +34,7 @@ class _JoinmembershipState extends State<Joinmembership> {
   TextEditingController userPhoneNumberController = TextEditingController();
   TextEditingController userbirthdayController = TextEditingController();
   TextEditingController nicknameController = TextEditingController();
-  
+
   String userEmail = '';
   String userNicName = '';
 
@@ -44,38 +43,44 @@ class _JoinmembershipState extends State<Joinmembership> {
   bool? manButton;
 
   void _tryValidation() async {
-    // if (successfulidentification) {
+    if (successfulidentification) {
       if (passWordCheck()) {
         if (MySelfInformationCheck()) {
-          // birthday create a type 
-          String birthdayType = userbirthdayController.text.substring(0, 4) + '-' + userbirthdayController.text.substring(4, 6) + '-' + userbirthdayController.text.substring(6, 8);
+          // birthday create a type
+          String birthdayType = userbirthdayController.text.substring(0, 4) +
+              '-' +
+              userbirthdayController.text.substring(4, 6) +
+              '-' +
+              userbirthdayController.text.substring(6, 8);
           final data = {
-            'id' : userEmail,
-            'password' : passwordCheckController.text,
-            'name' : userNameController.text,
-            'gender' : manButton,
-            'phoneNumber' : userPhoneNumberController.text,
-            'birth' : birthdayType,
-            'root' : 'local'
+            'id': userEmail,
+            'password': passwordCheckController.text,
+            'name': userNameController.text,
+            'gender': manButton,
+            'phoneNumber': userPhoneNumberController.text,
+            'birth': birthdayType,
+            'root': 'local'
           };
-          Navigator.pushNamed(context, NickNameField.routeName,
+          Navigator.pushNamed(
+            context,
+            NickNameField.routeName,
             arguments: JoinArgument(data),
           );
         }
       }
-    // } else {
-    //   Flushbar(
-    //     margin: EdgeInsets.symmetric(horizontal: 15),
-    //     flushbarPosition: FlushbarPosition.TOP,
-    //     duration: Duration(seconds: 2),
-    //     message: '본인인증을 하시오.',
-    //     messageSize: 15,
-    //     borderRadius: BorderRadius.circular(4),
-    //     backgroundColor: Colors.white,
-    //     messageColor: Colors.black,
-    //     boxShadows: [BoxShadow(color: Colors.black, blurRadius: 8)],
-    //   ).show(context);
-    // }
+    } else {
+      Flushbar(
+        margin: EdgeInsets.symmetric(horizontal: 15),
+        flushbarPosition: FlushbarPosition.TOP,
+        duration: Duration(seconds: 2),
+        message: '본인인증을 하시오.',
+        messageSize: 15,
+        borderRadius: BorderRadius.circular(4),
+        backgroundColor: Colors.white,
+        messageColor: Colors.black,
+        boxShadows: [BoxShadow(color: Colors.black, blurRadius: 8)],
+      ).show(context);
+    }
   }
 
   void _emailValidation() async {
@@ -116,7 +121,7 @@ class _JoinmembershipState extends State<Joinmembership> {
     }
   }
 
-  void ChangeGender(bool man){
+  void ChangeGender(bool man) {
     manButton = man;
   }
 
@@ -242,14 +247,14 @@ class _JoinmembershipState extends State<Joinmembership> {
                     phoneNumberController: userPhoneNumberController,
                     birthdayController: userbirthdayController),
 
-                MyGenderButton(ChangeGender: ChangeGender, currentGender: null,),
+                MyGenderButton(
+                  ChangeGender: ChangeGender,
+                  currentGender: null,
+                ),
                 SizedBox(
                   height: 25,
                 ),
-                MyButton(
-                  text: '회원 가입하기',
-                  onPresse: _tryValidation
-                )
+                MyButton(text: '회원 가입하기', onPresse: _tryValidation)
               ],
             ),
           ),

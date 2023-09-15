@@ -18,6 +18,7 @@ class UserReportAndCutoff {
   void onPressRoportButton() async {
     if(_controller.text.isNotEmpty){
       if (reportORcutoffUser == globalUserId) {
+        Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           duration: Duration(seconds: 2),
           content: Text(

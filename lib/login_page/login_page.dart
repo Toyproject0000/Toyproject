@@ -62,14 +62,14 @@ class _LoginScreenState extends State<LoginScreen> {
       // go to join page
       globalUserId = email;
       LoginRoot = root;
-      Navigator.pushNamed(context, UserConsent.routeName);
+      Navigator.pushReplacementNamed(context, UserConsent.routeName);
     } else {
       final jsonData = jsonDecode(response);
       jwtToken = jsonData['token'];
       globalUserId = jsonData['id'];
       globalNickName = jsonData['nickname'];
       LoginRoot = root;
-      Navigator.pushNamed(context, SetPage.routeName);
+      Navigator.pushReplacementNamed(context, SetPage.routeName);
     }
   }
 
@@ -85,11 +85,6 @@ class _LoginScreenState extends State<LoginScreen> {
     if(result.errorMessage == ''){
       socialLogin(result.account.email, 'naver');
     }
-    // if(result.account['email'] )
-   
-    // if(result == NaverLoginStatus.loggedIn){
-    //   socialLogin(result.account.email, 'naver');
-    // }
   }
 
   void setData() async {

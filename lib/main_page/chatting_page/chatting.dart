@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_dongne/main_page/chatting_page/ChatListTile.dart';
 import 'package:smart_dongne/main_page/chatting_page/chatting_searchmode.dart';
+import 'package:smart_dongne/main_page/home_page/search_bar.dart';
 import 'package:smart_dongne/server/Server.dart';
 import 'package:smart_dongne/server/userId.dart';
 
@@ -71,7 +72,7 @@ class _ChattingState extends State<Chatting> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pushNamed(context, ChatSearchMode.routeName);
+         showSearch(context: context, delegate: MySearchDelegate());
         },
         child: Icon(
           Icons.search,

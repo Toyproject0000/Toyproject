@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:smart_dongne/component/timeWidget.dart';
 import 'package:smart_dongne/main_page/chatting_page/chatting_Content.dart';
-import 'package:smart_dongne/server/userId.dart';
 
 class ChatListTile extends StatelessWidget {
 

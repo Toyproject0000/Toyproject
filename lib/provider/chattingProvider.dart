@@ -16,7 +16,9 @@ class ChattingProvider extends ChangeNotifier {
     };
     final List response = await ServerResponseJsonDataTemplate('/message/user' ,data);
     final List<Widget> MessageList = response.map<Widget>((data) => ChatBubbleWidget(acceptUser: accpetUser, jsonData: data,)).toList();
-    chattingContent =  ListView(reverse: true, children : MessageList);
+    chattingContent =  ListView(
+      keyboardDismissBehavior : ScrollViewKeyboardDismissBehavior.onDrag,
+      reverse: true, children : MessageList);
     
     notifyListeners();
   }

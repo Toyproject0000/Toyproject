@@ -25,7 +25,7 @@ class HomePage extends StatelessWidget {
           actions: [
             IconButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, Search_Page_bar.routeName);
+                  showSearch(context: context, delegate: MySearchDelegate());
                 },
                 icon: Icon(
                   Icons.search,

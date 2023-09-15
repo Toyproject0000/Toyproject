@@ -51,9 +51,6 @@ class _ChattingContentState extends State<ChattingContent> {
     }
   }
 
-  @override
-  Widget? buildLeading(BuildContext context) => null;
-
   // why did i make this??
   @override
   void setState(VoidCallback fn) {
@@ -108,7 +105,6 @@ class _ChattingContentState extends State<ChattingContent> {
 
     // basic appBar
     basicAppBar = AppBar(
-      leading: buildLeading(context),
       centerTitle: true,
       title: Text(
         widget.sendUser,
@@ -132,7 +128,6 @@ class _ChattingContentState extends State<ChattingContent> {
 
   @override
   Widget build(BuildContext context) {
-    print('실행중 입니다.');
     return Scaffold(
       appBar: searchMode == true ? searchAppBar : basicAppBar,
       body: SafeArea(
