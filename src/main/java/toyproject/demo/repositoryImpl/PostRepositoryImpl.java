@@ -23,9 +23,9 @@ public class PostRepositoryImpl implements PostRepository {
     }
     @Override
     public void insert(Post post) {
-        String sql = "INSERT INTO post (user_id, contents, title, category, disclosure, date, possibly_reply, img_location,  visibly_like, root, user_img) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, (select img_location from user u where id = ? and root = ?))";
-        jdbcTemplate.update(sql, post.getUserId(), post.getContents(), post.getTitle(), post.getCategory(), post.getDisclosure(), LocalDateTime.now(), post.getPossiblyReply(), post.getImgLocation(), post.getVisiblyLike(), post.getRoot(), post.getUserId(), post.getRoot());
+        String sql = "INSERT INTO post (user_id, contents, title, category, disclosure, date, possibly_reply, img_location,  visibly_like, root, user_img, nickname) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, (select img_location from user u where u.id = ? and u.root = ?), (select nickname from user u where u.id = ? and u.root = ?))";
+        jdbcTemplate.update(sql, post.getUserId(), post.getContents(), post.getTitle(), post.getCategory(), post.getDisclosure(), LocalDateTime.now(), post.getPossiblyReply(), post.getImgLocation(), post.getVisiblyLike(), post.getRoot(), post.getUserId(), post.getRoot(), post.getUserId(), post.getRoot());
     }
 
     @Override
@@ -65,8 +65,8 @@ public class PostRepositoryImpl implements PostRepository {
                 "FROM post p LEFT JOIN user u ON p.user_id = u.id WHERE ");
 
         if (post.getUserId() != null) {
-            queryBuilder.append("p.user_id = ?");
-            parameters.add(post.getUserId());
+            queryBuilder.append("p.nickname = ?");
+            parameters.add(post.getNickname());
         }
 
         if (post != null) {
