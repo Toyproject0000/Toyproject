@@ -3,7 +3,7 @@ import 'dart:convert';
 
 
 Future<dynamic> loginSendData(address ,data) async {
-  final url = Uri.parse('http://192.168.0.202:8080${address}');
+  final url = Uri.parse('http://192.168.0.197:8080${address}');
   final headers = {'Content-Type': 'application/json'};
   try {    
     final response =
@@ -26,7 +26,7 @@ Future<dynamic> loginSendData(address ,data) async {
 }
 
 Future<String?> ServerResponseOKTemplate(address, data) async {
-  final url = Uri.parse('http://192.168.0.202:8080${address}');
+  final url = Uri.parse('http://192.168.0.197:8080${address}');
   final headers = {'Content-Type': 'application/json'};
   try {
     final response = await http.post(url, headers: headers, body: jsonEncode(data));
@@ -47,8 +47,7 @@ Future<String?> ServerResponseOKTemplate(address, data) async {
 }
 
 Future<dynamic> ServerResponseJsonDataTemplate(address, data) async {
-  
-  final url = Uri.parse('http://192.168.0.202:8080${address}');
+  final url = Uri.parse('http://192.168.0.197:8080${address}');
   final headers = {'Content-Type': 'application/json'};
   try {
     final response = await http.post(url, headers: headers, body: jsonEncode(data));
@@ -60,7 +59,7 @@ Future<dynamic> ServerResponseJsonDataTemplate(address, data) async {
       }else{
         return null;
       }
-    } else {
+    } else {      
       print('요청 실패: ${response.statusCode}');
     }
   } catch (error) {
@@ -70,7 +69,8 @@ Future<dynamic> ServerResponseJsonDataTemplate(address, data) async {
 }
 
 Future<String?> ServerSendImageDataTemplate(address, data, imagePath) async {
-  final url = Uri.parse('http://192.168.0.202:8080${address}');
+  final url = Uri.parse('http://192.168.0.197:8080${address}');
+  print(data);
   var request = http.MultipartRequest('POST', url); 
   if(imagePath == ''){
     try{
@@ -99,6 +99,7 @@ Future<String?> ServerSendImageDataTemplate(address, data, imagePath) async {
       http.StreamedResponse response = await request.send();
       if (response.statusCode == 200) {
         var jsonData = await response.stream.bytesToString();
+
         if(jsonData == 'ok'){
           return 'ok';
         } else {

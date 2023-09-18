@@ -6,31 +6,50 @@ import 'package:smart_dongne/provider/comment_provider.dart';
 import 'package:smart_dongne/server/Server.dart';
 import 'package:smart_dongne/server/userId.dart';
 
+final TextEditingController commentController = TextEditingController();
+final FocusNode commentFocusNodde = FocusNode();
+int? ReplyId;
+
 class CommentPage extends StatelessWidget {
   CommentPage({required this.PostId, super.key});
   final int PostId;
   late CommentProvider _commentProvider;
 
-  final TextEditingController _commetTextController = TextEditingController();
   // sendComment
   void sendMyCommentToServer() async {
-    if (_commetTextController.text.isNotEmpty) {
-      final data = {
-        'token': jwtToken,
-        'userId': globalUserId,
-        'userRoot': LoginRoot,
-        'contents': _commetTextController.text,
-        'postId': PostId,
-      };
-      // 이부분에 sendComment 작성
-      final response = await ServerResponseOKTemplate('/reply/add', data);
-      if (response != null) {
-        _commetTextController.clear();
-        CommentReBuild();
+    if (commentController.text.isNotEmpty) {
+      if(ReplyId == null ){
+        final data = {
+          'token': jwtToken,
+          'userId': globalUserId,
+          'userRoot': LoginRoot,
+          'contents': commentController.text,
+          'postId': PostId,
+        };
+        // 이부분에 sendComment 작성
+        final response = await ServerResponseOKTemplate('/reply/add', data);
+        if (response != null) {
+          commentController.clear();
+          CommentReBuild();
+          commentFocusNodde.unfocus();
+        }
+      }else{
+        final data = {
+          'token' : jwtToken,
+          'id' : ReplyId,
+          'Contents' : commentController.text 
+        };
+        final response = await ServerResponseOKTemplate('/reply/edit', data);
+        if (response != null) {
+          commentController.clear();
+          CommentReBuild();
+          commentFocusNodde.unfocus();
+        }
+
       }
     }
   }
-
+  
   void CommentReBuild() {
     _commentProvider.CommentList(PostId);
   }
@@ -55,9 +74,35 @@ class CommentPage extends StatelessWidget {
           Expanded(child: CommentWidget()),
           // comment send bar
           MySendMessageBar(
-              onTap: sendMyCommentToServer,
-              textController: _commetTextController),
+            onTap: sendMyCommentToServer,
+            textController: commentController,
+            textfocusNode: commentFocusNodde,
+          ),
         ]),
+      ),
+    );
+  }
+
+  Widget CommentSendMessage() {
+    return Container(
+      height: 50,
+      width: double.infinity,
+      padding: EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          Expanded(
+              child: TextFormField(
+            focusNode: commentFocusNodde,
+            controller: commentController,
+            decoration: InputDecoration(
+                focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black, width: 1)),
+                border: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black, width: 1)),
+                hintText: 'send your message'),
+            onTap: sendMyCommentToServer
+          )),
+        ],
       ),
     );
   }

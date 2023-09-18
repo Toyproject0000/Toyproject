@@ -34,8 +34,6 @@ class _LoginScreenState extends State<LoginScreen> {
   String userEmail = '';
   String userPassword = '';
 
-  void upDateEmailAndPassword() {}
-
   void sendIdandPassword() async {
     final data = {
       'id': emailController.text,
@@ -69,7 +67,9 @@ class _LoginScreenState extends State<LoginScreen> {
       globalUserId = jsonData['id'];
       globalNickName = jsonData['nickname'];
       LoginRoot = root;
-      Navigator.pushReplacementNamed(context, SetPage.routeName);
+      if(mounted){
+        Navigator.pushReplacementNamed(context, SetPage.routeName);
+      }
     }
   }
 
@@ -86,6 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
       socialLogin(result.account.email, 'naver');
     }
   }
+
 
   void setData() async {
     final SharedPreferences pref = await SharedPreferences.getInstance();

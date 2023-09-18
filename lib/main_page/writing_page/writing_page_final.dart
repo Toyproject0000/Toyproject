@@ -65,7 +65,6 @@ class _LastSettingState extends State<LastSetting> {
   // }
 
   void sendDateServer() async {
-    print(SelectTopic);
     final titleString = _tryValidation();
 
     if (titleString == null) {

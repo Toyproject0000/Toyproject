@@ -2,10 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class MySendMessageBar extends StatelessWidget {
-  const MySendMessageBar({required this.onTap, required this.textController ,super.key});
+  const MySendMessageBar({required this.onTap, required this.textController, this.textfocusNode ,super.key});
   
   final TextEditingController textController;
   final Function() onTap;
+
+  final FocusNode? textfocusNode;
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +21,7 @@ class MySendMessageBar extends StatelessWidget {
         children: [
           Expanded(
             child: TextFormField(
+              focusNode: textfocusNode,
               controller: textController,
               decoration: InputDecoration(
                 focusedBorder: UnderlineInputBorder(

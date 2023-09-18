@@ -1,15 +1,17 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:smart_dongne/component/timeWidget.dart';
-import 'package:smart_dongne/main_page/home_page/comment/reply_page.dart';
+import 'package:smart_dongne/main_page/home_page/comment/Comment_page.dart';
 import 'package:smart_dongne/server/Server.dart';
 import 'package:smart_dongne/server/userId.dart';
 
 class CommentProvider extends ChangeNotifier {
   bool likeState = false;
 
-  late int commentId;
+  late int PostsId;
 
   Widget allComment = Center(
     child: Text(
@@ -18,28 +20,112 @@ class CommentProvider extends ChangeNotifier {
     ),
   );
 
-  void onDismissedComment() async {
+  Widget popMenuWidget(Map<String, dynamic> jsonData) {
+    if (jsonData['userId'] == globalUserId &&
+        jsonData['userRoot'] == LoginRoot) {
+      return PopupMenuButton(
+          itemBuilder: (context) => [
+                PopupMenuItem(
+                    onTap: () {
+                      showDialogWidget(
+                          content: '해당 댓글을 삭제하시겠습니까??',
+                          context: context,
+                          id: jsonData['id']);
+                    },
+                    child: Text('삭제')),
+                PopupMenuItem(
+                    onTap: () => editComment(jsonData['contents']),
+                    child: Text('수정'))
+              ]);
+    } else {
+      return PopupMenuButton(
+          itemBuilder: (context) => [
+                PopupMenuItem(
+                  onTap: () => commentReport(
+                      jsonData['userId'], jsonData['userRoot'], context),
+                  child: Text('신고'),
+                ),
+              ]);
+    }
+  }
+
+  void commentReport(userId, userRoot, context) async {
+    final data = {
+      'token': jwtToken,
+      'reportingUserId': globalUserId,
+      'reportingUserRoot': LoginRoot,
+      'reportedUserId': userId,
+      'reportedUserRoot': userRoot
+    };
+
+    final response = await ServerResponseOKTemplate('/block/user', data);
+    if (response != null) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          duration: Duration(seconds: 1), content: Text('해당 유저를 신고하였습니다.')));
+    }
+  }
+
+  void showDialogWidget({context, content, id}) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            content: Text(content),
+            actions: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        '취소',
+                        style: TextStyle(color: Colors.black),
+                      )),
+                  TextButton(
+                      onPressed: () {
+                        onDismissedComment(id);
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        '확인',
+                        style: TextStyle(color: Colors.blue),
+                      )),
+                ],
+              ),
+            ],
+          );
+        });
+  }
+
+  void onDismissedComment(int commentId) async {
     final data = {
       'token': jwtToken,
       'id': commentId,
     };
-
+    print(data);
     final response = await ServerResponseOKTemplate('/reply/delete', data);
-    if(response != null){
-      print(response);
+    if (response != null) {
+      // ScaffoldMessenger.of(context)
+      //     .showSnackBar(SnackBar(content: Text('삭제했습니다.')));
+      CommentList(PostsId);
     }
   }
 
-  void editComment() {}
+  void editComment(text) {
+    commentController.text = text;
+    commentFocusNodde.requestFocus();
+  }
 
   Widget CommentsWidget(Map<String, dynamic> jsonData) {
-    commentId = jsonData['id'];
     return Container(
       padding: EdgeInsets.symmetric(vertical: 10),
       child: ListTile(
         onTap: () {},
         leading: CircleAvatar(
           backgroundColor: Colors.grey,
+          backgroundImage: FileImage(File(jsonData['userImage'])),
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -48,7 +134,7 @@ class CommentProvider extends ChangeNotifier {
               children: [
                 Expanded(
                   child: Text(
-                    jsonData['userId'],
+                    jsonData['nickname'],
                     style: TextStyle(color: Colors.black),
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -67,33 +153,17 @@ class CommentProvider extends ChangeNotifier {
             Row(
               children: [
                 CommentLikeState(commentId: jsonData['id']),
-                SizedBox(
-                  width: 30,
-                ),
-                MoveReplyWidget(
-                  content: jsonData['contents'],
-                  date: jsonData['date'],
-                  likeState: false,
-                  nickname: jsonData['userId'],
-                ),
               ],
             ),
           ],
         ),
-        trailing: Column(
-          children: [
-            PopupMenuWidget(
-                label1: '삭제',
-                onTap1: onDismissedComment,
-                label2: '수정',
-                onTap2: editComment),
-          ],
-        ),
+        trailing: popMenuWidget(jsonData),
       ),
     );
   }
 
   Future<void> CommentList(postsId) async {
+    PostsId = postsId;
     final data = {'id': postsId, 'token': jwtToken};
     final List? response =
         await ServerResponseJsonDataTemplate('/reply/post', data);
@@ -109,29 +179,6 @@ class CommentProvider extends ChangeNotifier {
       );
       notifyListeners();
     }
-  }
-}
-
-class PopupMenuWidget extends StatelessWidget {
-  const PopupMenuWidget({
-    required this.label1,
-    required this.label2,
-    required this.onTap1,
-    required this.onTap2,
-    super.key,
-  });
-  final String label1;
-  final String label2;
-  final Function() onTap1;
-  final Function() onTap2;
-
-  @override
-  Widget build(BuildContext context) {
-    return PopupMenuButton(
-        itemBuilder: (context) => [
-              PopupMenuItem(onTap: onTap1, child: Text(label1)),
-              PopupMenuItem(onTap: onTap2, child: Text(label2))
-            ]);
   }
 }
 
@@ -158,9 +205,11 @@ class _CommentLikeStateState extends State<CommentLikeState> {
     };
 
     if (likeState == true) {
-      await ServerResponseOKTemplate('/reply-like/add', data);
+      final response = await ServerResponseOKTemplate('/reply-like/add', data);
+      print(response);
     } else {
-      await ServerResponseOKTemplate('/reply-like/remove', data);
+      final response = await ServerResponseOKTemplate('/reply-like/remove', data);
+      print(response);
     }
   }
 
@@ -179,37 +228,5 @@ class _CommentLikeStateState extends State<CommentLikeState> {
               size: 20,
             ),
     );
-  }
-}
-
-class MoveReplyWidget extends StatelessWidget {
-  MoveReplyWidget(
-      {required this.nickname,
-      required this.content,
-      required this.date,
-      required this.likeState,
-      super.key});
-
-  final String nickname;
-  final String content;
-  final String date;
-  bool likeState;
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-        onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return ReplyPage(
-                nickname: nickname,
-                content: content,
-                date: date,
-                likeState: likeState);
-          }));
-        },
-        icon: Icon(
-          Icons.chat,
-          size: 20,
-        ));
   }
 }

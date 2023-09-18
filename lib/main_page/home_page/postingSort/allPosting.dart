@@ -12,7 +12,7 @@ class AllPosts extends StatefulWidget {
 }
 
 class _AllPostsState extends State<AllPosts> {
-  
+  ScrollController _controller = ScrollController();
   Widget PostsWidget = Center(child: CircularProgressIndicator(color: Colors.blue,));
 
   Future<void> GetMainData() async {
@@ -21,8 +21,28 @@ class _AllPostsState extends State<AllPosts> {
     List<Widget> FinishedWidgetList = 
         mainData.map<Widget>((factor) => PostingWidget(data:factor)).toList();
     setState(() {
-      PostsWidget = ListView(children: FinishedWidgetList,);
+      PostsWidget = ListView(controller: _controller ,children: FinishedWidgetList,);
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(_onScrollEnd);
+  }
+
+  @override
+  void dispose() {
+    _controller.removeListener(_onScrollEnd);
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _onScrollEnd() {
+    if (_controller.position.pixels == _controller.position.maxScrollExtent) {
+      // 스크롤이 끝까지 내려갔을 때 원하는 작업을 수행
+      print('스크롤 끝까지 내려감!');
+    }
   }
 
   @override
