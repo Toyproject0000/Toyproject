@@ -1,10 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_summernote/flutter_summernote.dart';
+import 'package:smart_dongne/main_page/writing_page/test.dart';
+
 import 'package:smart_dongne/main_page/writing_page/writing_page_final.dart';
+import 'package:zefyrka/zefyrka.dart';
 
 class WritingPage extends StatefulWidget {
-  const WritingPage({required this.postsId ,required this.contents, Key? key}) : super(key: key);
+  const WritingPage({required this.postsId, required this.contents, Key? key})
+      : super(key: key);
 
   final String? contents;
   final int? postsId;
@@ -41,6 +45,26 @@ class _WritingPageState extends State<WritingPage> {
     }
   }
 
+  ZefyrController _controller = ZefyrController();
+
+  Widget zefyrkaWidget() {
+    return Column(
+      children: [
+        ZefyrToolbar.basic(
+          controller: _controller,
+          hideQuote: true,
+          hideListNumbers: true,
+          hideListBullets: true,
+          hideLink: true,
+          hideCodeBlock: true,
+          
+        ),
+        Divider(color: Colors.grey, height: 1, thickness: 1),
+        Expanded(child: ZefyrEditor(controller: _controller, padding: EdgeInsets.all(10), ))
+      ],
+    );
+  }
+
   @override
   void dispose() {
     _keyEditor.currentState!.dispose();
@@ -50,36 +74,39 @@ class _WritingPageState extends State<WritingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: SelectableText('새 게시물'),
-        elevation: 1,
-        actions: [
-          TextButton(
-            onPressed: () {
-              saveText().then((value) async {
-                if (value != null) {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return LastSetting(
-                      edit: widget.contents != null ? true : false,
-                      summerNoteKey: _keyEditor,
-                      contents: value,
-                      postId: widget.postsId,
-                    );
-                  }));
-                }
-              });
-            },
-            child: Text(
-              '다음',
-              style: TextStyle(color: Colors.blue, fontSize: 20),
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          title: SelectableText('새 게시물'),
+          elevation: 1,
+          actions: [
+            TextButton(
+              onPressed: () {
+                // saveText().then((value) async {
+                //   if (value != null) {
+                //     Navigator.push(context, MaterialPageRoute(builder: (context) {
+                //       return LastSetting(
+                //         edit: widget.contents != null ? true : false,
+                //         summerNoteKey: _keyEditor,
+                //         contents: value,
+                //         postId: widget.postsId,
+                //       );
+                //     }));
+                //   }
+                // });
+
+                Navigator.push(context, MaterialPageRoute(builder: (context){
+                  return MyWidget(document: _controller.document,);
+                }));
+              },
+              child: Text(
+                '다음',
+                style: TextStyle(color: Colors.blue, fontSize: 20),
+              ),
             ),
-          ),
-        ],
-        automaticallyImplyLeading: true,
-      ),
-      body: SummerNoteWidget(),
-    );
+          ],
+          automaticallyImplyLeading: true,
+        ),
+        body: zefyrkaWidget());
   }
 
   FlutterSummernote SummerNoteWidget() {
