@@ -8,9 +8,10 @@ class SetPageProvider extends ChangeNotifier {
 
   int currentIndex = 0;
 
+
   List<Widget> screens = [
     HomePage(),
-    WritingPage(),
+    WritingPage(contents: null, postsId: null),
     Chatting(),
     ProfilePage(),
   ];
@@ -19,4 +20,5 @@ class SetPageProvider extends ChangeNotifier {
     currentIndex = index;
     notifyListeners();
   }
+
 }

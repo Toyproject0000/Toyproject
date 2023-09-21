@@ -8,7 +8,6 @@ import 'package:smart_dongne/login_page/join_membership_page.dart';
 import 'package:smart_dongne/login_page/login_page.dart';
 import 'package:smart_dongne/login_page/nickname_page.dart';
 import 'package:smart_dongne/main_page/chatting_page/chatting_searchmode.dart';
-import 'package:smart_dongne/main_page/home_page/Content_page.dart';
 import 'package:smart_dongne/main_page/profile_page/User_setting/Account_management.dart';
 import 'package:smart_dongne/main_page/profile_page/User_setting/setting_page.dart';
 import 'package:smart_dongne/main_page/profile_page/User_setting/userName_change.dart';
@@ -18,7 +17,6 @@ import 'package:smart_dongne/main_page/profile_page/notification_page/notificati
 import 'package:smart_dongne/main_page/profile_page/notification_page/reader_page.dart';
 import 'package:smart_dongne/main_page/writing_page/cover.dart';
 import 'package:smart_dongne/main_page/profile_page/profile_edit_page.dart';
-import 'package:smart_dongne/main_page/writing_page/writing_page_final.dart';
 import 'package:smart_dongne/main_page/setpage.dart';
 import 'package:smart_dongne/provider/JoinArgeement.dart';
 import 'package:smart_dongne/provider/LoginMaintenance.dart';
@@ -71,7 +69,6 @@ class MyApp extends StatelessWidget {
         FindPassword.routeName: (context) => FindPassword(),
         SetPage.routeName: (context) => SetPage(),
         ProfileEdit.routeName: (context) => ProfileEdit(),
-        LastSetting.routeName: (context) => LastSetting(),
         CoverPage.routeName: (context) => CoverPage(),
         ChatSearchMode.routeName: (context) => ChatSearchMode(),
         UserSetting.routeName: (context) => UserSetting(),
@@ -81,7 +78,6 @@ class MyApp extends StatelessWidget {
         LikeAndPost.routeName: (context) => LikeAndPost(),
         ReaderNotification.routeName: (context) => ReaderNotification(),
         Cutoff.routeName: (context) => Cutoff(),
-        ShowaContents.routeName: (context) => ShowaContents(),
         SocialLoginSetting.routeName: (context) => SocialLoginSetting(),
         TermsofService.routeName: (context) => TermsofService(),
         PersonalInformation.routeName: (context) => PersonalInformation(),

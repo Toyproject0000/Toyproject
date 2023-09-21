@@ -1,32 +1,32 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_dongne/component/postingWidget.dart';
-import 'package:smart_dongne/main.dart';
 import 'package:smart_dongne/server/Server.dart';
 import 'package:smart_dongne/server/userId.dart';
 
-class AllPosts extends StatefulWidget {
-  const AllPosts({super.key});
+class MainPageTemplate extends StatefulWidget {
+  const MainPageTemplate({required this.category ,super.key});
+  final String category;
+
 
   @override
-  State<AllPosts> createState() => _AllPostsState();
+  State<MainPageTemplate> createState() => _MainPageTemplateState();
 }
 
-class _AllPostsState extends State<AllPosts> {
+class _MainPageTemplateState extends State<MainPageTemplate> {
+
   ScrollController _controller = ScrollController();
-  Widget PostsWidget = Center(
-      child: CircularProgressIndicator(
-    color: Colors.blue,
-  ));
+  Widget PostsWidget = Center(child: CircularProgressIndicator(color: Colors.blue,));
+  List<Widget> FinishedWidgetList = [];
   List? mainData;
 
   Future<void> GetMainData() async {
-    print('실행중?');
-    final data = {'id': globalUserId, 'token': jwtToken, 'root': LoginRoot};
-    mainData = await ServerResponseJsonDataTemplate('/main/recommend', data);
-    setState(() {});
+    final data = {'userId': globalUserId, 'token' : jwtToken, 'root' : LoginRoot, 'category' : widget.category};
+    mainData = await ServerResponseJsonDataTemplate('/main/recommend/category' ,data);
+    if(mounted){
+      setState(() {});
+    }
   }
-
 
   @override
   void initState() {
@@ -43,8 +43,9 @@ class _AllPostsState extends State<AllPosts> {
 
   void _onScrollEnd() async {
     if (_controller.position.pixels == _controller.position.maxScrollExtent) {
-      final data = {'id': globalUserId, 'token': jwtToken, 'root': LoginRoot};
-      var newData = await ServerResponseJsonDataTemplate('/main/recommend', data);
+      final data = {'userId': globalUserId, 'token': jwtToken, 'root': LoginRoot, 'category' : widget.category};
+      // newData category
+      var newData = await ServerResponseJsonDataTemplate('/main/recommend/category', data);
       setState(() {
         mainData!.addAll(newData);
       });
@@ -57,10 +58,12 @@ class _AllPostsState extends State<AllPosts> {
     GetMainData();
   }
 
+  Future refresh() async {}
+
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-      onRefresh: GetMainData,
+      onRefresh: refresh,
       color: Colors.blue,
       child: mainData == null
           ? Center(

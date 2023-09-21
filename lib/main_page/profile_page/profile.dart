@@ -19,7 +19,8 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   File? imagePath;
   dynamic jsonDataofprofile;
-  List? userPosts;
+  List userPosts = [];
+  ScrollController _controller = ScrollController();
 
   String dropDownValue = '최신순';
   void ChangePostOrder(String order){
@@ -29,7 +30,7 @@ class _ProfilePageState extends State<ProfilePage> {
   late List<Widget> FinishedWidgetList;
   Widget? BuildFinshWidget;
 
-  void callProfileData() async {
+  Future<void> callProfileData() async {
     // bring Profile data
     final email = {'id': globalUserId, 'token': jwtToken, 'root': LoginRoot};
     final response = await ServerResponseJsonDataTemplate('/profile', email);
@@ -37,21 +38,6 @@ class _ProfilePageState extends State<ProfilePage> {
       jsonDataofprofile = response[0];
       userPosts = jsonDataofprofile['posts'];
     });
-
-    if (userPosts!.isEmpty) {      
-      setState(() {
-        BuildFinshWidget = Center(
-          child: Text('게시물이 없습니다.', style: TextStyle(color: Colors.black),),
-        );
-      });
-    } else {
-      setState(() {
-        FinishedWidgetList = userPosts!
-            .map<Widget>((data) => PostingWidget(data: data))
-            .toList();
-        BuildFinshWidget = Column(children: FinishedWidgetList);
-      });
-    }
   }
 
   void PostsSortOrder(index){
@@ -70,10 +56,25 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
+  
   @override
   void initState() {
     callProfileData();
     super.initState();
+    _controller.addListener(_onScrollEnd);
+  }
+
+  @override
+  void dispose() {
+    _controller.removeListener(_onScrollEnd);
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _onScrollEnd() async {
+    if (_controller.position.pixels == _controller.position.maxScrollExtent) {
+      print('실행 준비 완료');
+    }
   }
 
   @override
@@ -110,20 +111,38 @@ class _ProfilePageState extends State<ProfilePage> {
               ))
         ],
       ),
-      body: ListView(
-        children: [
-          ProfileviewWidget(jsonDataofprofile: jsonDataofprofile,),
-          SortOrderWidget(changeSort: PostsSortOrder),
-          BuildFinshWidget == null
-            ? Center(
-                child: CircularProgressIndicator(
-                  color: Colors.blue,
-                  backgroundColor: Colors.grey,
-                ),
-              )
-            : BuildFinshWidget!
-],
-          ),
+      body: RefreshIndicator(
+        onRefresh: callProfileData,
+        child: ListView.builder(
+          itemCount: userPosts.length + 1,
+          itemBuilder: (context, index){
+            if(userPosts.isEmpty){
+              return Column(
+                children: [
+                  ProfileviewWidget(jsonDataofprofile: jsonDataofprofile,),
+                  Center(child: Text('게시물이 없습니다.', style: TextStyle(color: Colors.black),),)
+                ],
+              );
+            } else {
+              if (index < userPosts.length){
+                if(index == 0){
+                  return Column(
+                    children: [
+                      ProfileviewWidget(jsonDataofprofile: jsonDataofprofile,),
+                      PostingWidget(data: userPosts[index]),
+                    ],
+                  );
+                }
+                return PostingWidget(data: userPosts[index]);
+              }else {
+                return Center(child: CircularProgressIndicator(color: Colors.blue),);
+              }
+            }
+
+          }
+      ),
+      ),
+          
     );
   }
 }

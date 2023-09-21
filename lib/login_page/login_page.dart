@@ -41,14 +41,13 @@ class _LoginScreenState extends State<LoginScreen> {
       'root': 'local'
     };
     final response = await loginSendData('/login', data);
-    if (response != null && response != '닉네임 설정 안됨') {
+    if (response != null) {
       final jsonData = jsonDecode(response);
       jwtToken = jsonData['token'];
       globalNickName = jsonData['nickname'];
       globalUserId = jsonData['id'];
-      Navigator.pushNamed(context, SetPage.routeName);
-    } else if (response == '닉네임 설정 안됨') {
-    } else {
+      Navigator.pushReplacementNamed(context, UserConsent.routeName);
+    }else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('이메일 혹은 비밀번호가 틀렸습니다.')));
     }
   }

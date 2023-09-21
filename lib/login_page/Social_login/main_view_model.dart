@@ -1,9 +1,6 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:smart_dongne/login_page/Social_login/social_login.dart';
 
-import '../../server/Server.dart';
 
 class MainViewModel {
   final SocialLogin _socialLogin;

@@ -6,6 +6,7 @@ import 'package:flutter_summernote/flutter_summernote.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_dongne/component/myShowDialog.dart';
 import 'package:smart_dongne/component/topicSelectWidget.dart';
+import 'package:smart_dongne/main_page/setpage.dart';
 import 'package:smart_dongne/main_page/writing_page/cover.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:smart_dongne/provider/setPageData.dart';
@@ -14,9 +15,16 @@ import 'package:smart_dongne/server/Server.dart';
 import 'package:smart_dongne/server/userId.dart';
 
 class LastSetting extends StatefulWidget {
-  const LastSetting({super.key});
-
-  static const routeName = '/LastSetting';
+  const LastSetting(
+      {required this.edit,
+      required this.summerNoteKey,
+      required this.contents,
+      required this.postId,
+      super.key});
+  final bool edit;
+  final GlobalKey<FlutterSummernoteState> summerNoteKey;
+  final String contents;
+  final int? postId;
 
   @override
   State<LastSetting> createState() => _LastSettingState();
@@ -29,13 +37,11 @@ class _LastSettingState extends State<LastSetting> {
   List<bool> ButtonColorList = [];
   Color backGroundColor = Color(0xFF98DFFF);
   String title = '';
-  late String contents;
-  late GlobalKey<FlutterSummernoteState> summerNoteKey;
   dynamic finalImage; // 꾸밈까지 맞친 최종 이미지
   late File imageFile;
   late SetPageProvider _setPageProvider;
   late WritingSettingProvider _writingSettingProvder;
-  String disclosureValue = '';  
+  String disclosureValue = '';
 
   bool commentvalue = false;
   bool numberoflike = false;
@@ -43,7 +49,7 @@ class _LastSettingState extends State<LastSetting> {
   // topic Material
   String? SelectTopic;
 
-  void ChangeTopic(String topic){
+  void ChangeTopic(String topic) {
     SelectTopic = topic;
   }
 
@@ -77,14 +83,12 @@ class _LastSettingState extends State<LastSetting> {
         duration: Duration(seconds: 2),
         content: Text('표지를 선택해 주세요.'),
       ));
-    } 
-    else if (SelectTopic == null) {
+    } else if (SelectTopic == null) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         duration: Duration(seconds: 2),
         content: Text('주제를 선택해주세요.'),
       ));
-    } 
-    else {
+    } else {
       final settingComment = commentFunc();
       final settingNumberofLike = likeNumberFunc();
       final tempDir = await getTemporaryDirectory();
@@ -95,18 +99,26 @@ class _LastSettingState extends State<LastSetting> {
         'userId': globalUserId,
         'root': LoginRoot,
         'title': titleString,
-        'contents': contents,
+        'contents': widget.contents,
         'category': SelectTopic!,
         'disclosure': disclosureValue,
         'possibleReply': settingComment,
         'token': jwtToken,
-        'visiblyLike': settingNumberofLike
+        'visiblyLike': settingNumberofLike,
       };
+
+      if(widget.postId != null){
+        data['id'] = widget.postId!.toString();
+      }
+
       final response = await ServerSendImageDataTemplate(
-          '/post/submit', data, finalImageFile.path);
+          widget.edit == false ? '/post/submit' : '/post/edit',
+          data,
+          finalImageFile.path);
       if (response == 'ok') {
         Navigator.pop(context);
-        summerNoteKey.currentState!.setEmpty();
+        Navigator.popUntil(context, ModalRoute.withName(SetPage.routeName));
+        widget.summerNoteKey.currentState!.setEmpty();
         _setPageProvider.ChangeScreen(0);
       }
     }
@@ -114,12 +126,12 @@ class _LastSettingState extends State<LastSetting> {
 
   void changedImage(changedImagePath) async {
     setState(() {
-        imagePath = changedImagePath;
-        selectCover = true;
-      });
+      imagePath = changedImagePath;
+      selectCover = true;
+    });
 
-      finalImage = await Navigator.pushNamed(context, CoverPage.routeName,
-          arguments: ScreenArguments(imagePath!));
+    finalImage = await Navigator.pushNamed(context, CoverPage.routeName,
+        arguments: ScreenArguments(imagePath!));
   }
 
   String commentFunc() {
@@ -140,18 +152,20 @@ class _LastSettingState extends State<LastSetting> {
 
   @override
   void didChangeDependencies() {
-    // argument allocation
-    final args = ModalRoute.of(context)!.settings.arguments as Contents;
-    contents = args.content;
-    summerNoteKey = args.summerNoteKey;
     myShowDialog = MyShowDialog(context: context, changeImagePath: changedImage);
-
     super.didChangeDependencies();
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    _writingSettingProvder = Provider.of<WritingSettingProvider>(context, listen: false);
+    _writingSettingProvder =
+        Provider.of<WritingSettingProvider>(context, listen: false);
     _setPageProvider = Provider.of<SetPageProvider>(context, listen: false);
     disclosureValue = Provider.of<WritingSettingProvider>(context).disclosure;
 
@@ -242,7 +256,10 @@ class _LastSettingState extends State<LastSetting> {
               ),
             ),
           ),
-          TopicSelectWidget(SelectTopic: SelectTopic, ChangeTopic: ChangeTopic,),
+          TopicSelectWidget(
+            SelectTopic: SelectTopic,
+            ChangeTopic: ChangeTopic,
+          ),
           Container(
             decoration: BoxDecoration(
                 border: Border(
@@ -262,19 +279,25 @@ class _LastSettingState extends State<LastSetting> {
                 Consumer(
                   builder: (context, value, child) {
                     return DropdownButton<String>(
-                      value: Provider.of<WritingSettingProvider>(context).disclosure,
+                      value: Provider.of<WritingSettingProvider>(context)
+                          .disclosure,
                       icon: Icon(
                         Icons.keyboard_arrow_down_outlined,
                       ),
-                      items: Provider.of<WritingSettingProvider>(context).disclosureList.map((String value) {
+                      items: Provider.of<WritingSettingProvider>(context)
+                          .disclosureList
+                          .map((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
-                          child: Text(value, style: TextStyle(color: Colors.black),),
+                          child: Text(
+                            value,
+                            style: TextStyle(color: Colors.black),
+                          ),
                         );
                       }).toList(),
-                      onChanged: (String? newValue){
+                      onChanged: (String? newValue) {
                         disclosureValue = newValue!;
-                        _writingSettingProvder.selectDisclosure(newValue!);
+                        _writingSettingProvder.selectDisclosure(newValue);
                       },
                     );
                   },
@@ -298,9 +321,11 @@ class _LastSettingState extends State<LastSetting> {
                   Consumer(
                     builder: (context, value, child) {
                       return Switch(
-                        value: Provider.of<WritingSettingProvider>(context).enableComments,
+                        value: Provider.of<WritingSettingProvider>(context)
+                            .enableComments,
                         onChanged: (onChanged) {
-                          _writingSettingProvder.commentActivationState(onChanged);
+                          _writingSettingProvder
+                              .commentActivationState(onChanged);
                         },
                         activeTrackColor: Colors.blue,
                         activeColor: backGroundColor,
@@ -324,14 +349,15 @@ class _LastSettingState extends State<LastSetting> {
                 Consumer(
                   builder: (context, value, child) {
                     return Switch(
-                    value: Provider.of<WritingSettingProvider>(context).likeNumber,
-                    onChanged: (onChanged) {
-                      _writingSettingProvder.selectlikeNumber(onChanged);
-                    },
-                    activeTrackColor: Colors.blue,
-                    activeColor: backGroundColor,
+                      value: Provider.of<WritingSettingProvider>(context)
+                          .likeNumber,
+                      onChanged: (onChanged) {
+                        _writingSettingProvder.selectlikeNumber(onChanged);
+                      },
+                      activeTrackColor: Colors.blue,
+                      activeColor: backGroundColor,
                     );
-                  } ,
+                  },
                 ),
               ],
             ),
@@ -340,11 +366,4 @@ class _LastSettingState extends State<LastSetting> {
       ),
     );
   }
-}
-
-class Contents {
-  final String content;
-  final GlobalKey<FlutterSummernoteState> summerNoteKey;
-
-  Contents(this.content, this.summerNoteKey);
 }

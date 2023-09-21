@@ -1,10 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_dongne/main_page/home_page/postingSort/allPosting.dart';
-import 'package:smart_dongne/main_page/home_page/postingSort/diaryPosts.dart';
-import 'package:smart_dongne/main_page/home_page/postingSort/knowledge.dart';
-import 'package:smart_dongne/main_page/home_page/postingSort/motivationPosts.dart';
-import 'package:smart_dongne/main_page/home_page/postingSort/novelPosts.dart';
+import 'package:smart_dongne/main_page/home_page/postingSort/pageTemplate.dart';
 import 'package:smart_dongne/main_page/home_page/search_bar.dart';
 
 class HomePage extends StatelessWidget {
@@ -54,10 +51,10 @@ class HomePage extends StatelessWidget {
             child: TabBarView(
               children: [
                 AllPosts(),
-                MotivationPosts(),
-                NovelPosts(),
-                DiaryPosts(),
-                KnowledgePosts()
+                MainPageTemplate(category: '동기부여'),
+                MainPageTemplate(category: '소설'),
+                MainPageTemplate(category: '일기'),
+                MainPageTemplate(category: '지식'),
               ]),
           ),
         ),

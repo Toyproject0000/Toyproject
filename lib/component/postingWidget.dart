@@ -86,13 +86,14 @@ class PostingWidget extends StatelessWidget {
           ),
           InkWell(
             onTap: () {
-              Navigator.pushNamed(context, ShowaContents.routeName,
-                  arguments: ContentArguments(
-                    data['contents'],
-                    data['userId'],
-                    data['id'],
-                    data['root'],
-                  ));
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return ShowaContents(
+                  contents: data['contents'],
+                  id: data['id'],
+                  userId: data['userId'],
+                  userRoot: data['root'],
+                );
+              }));
             },
             child: AspectRatio(
               aspectRatio: 4 / 4,
@@ -113,59 +114,10 @@ class PostingWidget extends StatelessWidget {
               child: Row(
                 children: [
                   TimeWidget(contentsTime: data['date']),
-                  ],
+                ],
               )),
         ],
       ),
     );
   }
 }
-
-class SortOrderWidget extends StatefulWidget {
-  SortOrderWidget({required this.changeSort , super.key});
-  final Function(int index) changeSort;
-
-
-  @override
-  State<SortOrderWidget> createState() => _SortOrderWidgetState();
-}
-
-class _SortOrderWidgetState extends State<SortOrderWidget> {
-  String dropDownValue = '최신순';
-  List<String> dropDownList = ['최신순', '오래된 순'];
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        DropdownButton<String>(
-          value: dropDownValue,
-          icon: Icon(Icons.arrow_drop_down),
-          onChanged: (String? newValue) {
-            setState(() {
-              dropDownValue = newValue!;
-            });
-          },
-          items: [
-            DropdownMenuItem<String>(
-              value: dropDownList[0],
-              child: Text(dropDownList[0]),
-              onTap: () {
-                widget.changeSort(0);
-              },
-            ),
-            DropdownMenuItem<String>(
-              value: dropDownList[1],
-              child: Text(dropDownList[1]),
-              onTap: () {
-                widget.changeSort(1);
-              },
-            ),
-          ],
-        )
-      ],
-    );
-  }
-}
-

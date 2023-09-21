@@ -72,7 +72,7 @@ class ProfileviewWidget extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.fromLTRB(0, 12, 0, 0),
+            padding: EdgeInsets.fromLTRB(0, 12, 0, 20),
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
