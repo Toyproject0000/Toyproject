@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_summernote/flutter_summernote.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_dongne/component/myShowDialog.dart';
 import 'package:smart_dongne/component/topicSelectWidget.dart';
@@ -13,18 +12,19 @@ import 'package:smart_dongne/provider/setPageData.dart';
 import 'package:smart_dongne/provider/writingSettingProvider.dart';
 import 'package:smart_dongne/server/Server.dart';
 import 'package:smart_dongne/server/userId.dart';
+import 'package:flutter_quill/flutter_quill.dart' as quill;
+
 
 class LastSetting extends StatefulWidget {
   const LastSetting(
       {required this.edit,
-      required this.summerNoteKey,
-      required this.contents,
       required this.postId,
+      required this.editController,
       super.key});
   final bool edit;
-  final GlobalKey<FlutterSummernoteState> summerNoteKey;
-  final String contents;
   final int? postId;
+  final quill.QuillController editController;
+
 
   @override
   State<LastSetting> createState() => _LastSettingState();
@@ -99,14 +99,13 @@ class _LastSettingState extends State<LastSetting> {
         'userId': globalUserId,
         'root': LoginRoot,
         'title': titleString,
-        'contents': widget.contents,
+        // 'contents': widget.editorController.document.toString(),
         'category': SelectTopic!,
         'disclosure': disclosureValue,
         'possibleReply': settingComment,
         'token': jwtToken,
         'visiblyLike': settingNumberofLike,
       };
-
       if(widget.postId != null){
         data['id'] = widget.postId!.toString();
       }
@@ -118,7 +117,6 @@ class _LastSettingState extends State<LastSetting> {
       if (response == 'ok') {
         Navigator.pop(context);
         Navigator.popUntil(context, ModalRoute.withName(SetPage.routeName));
-        widget.summerNoteKey.currentState!.setEmpty();
         _setPageProvider.ChangeScreen(0);
       }
     }

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_dongne/component/myButton.dart';
 import 'package:smart_dongne/component/my_Text_Form_Field.dart';
+import 'package:smart_dongne/login_page/join_membership_page.dart';
 import 'package:smart_dongne/login_page/login_page.dart';
 import 'package:smart_dongne/server/Server.dart';
 
@@ -20,20 +21,26 @@ class _NickNameFieldState extends State<NickNameField> {
 
   void SignUp() async {
     SignUpdata['nickname'] = nicknameController.text;
-    print(SignUpdata);
     final response = await ServerResponseOKTemplate('/join', SignUpdata);
+
     if(response != null){
       Navigator.popUntil(context, ModalRoute.withName(LoginScreen.routeName));
+    }else {
+      
+      Navigator.popUntil(context, ModalRoute.withName(Joinmembership.routeName));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('해당 이메일은 이미 가입된 아이디 입니다.'), duration: Duration(seconds: 2),));
+      
     }
   }
 
-  void duplicateResponse(Text content, Widget? onTap) {
+  void duplicateResponse(Text content, Widget onTap) {
     showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
             content: content,
-            actions: onTap == null ? null : [onTap],
+            actions: [onTap],
           );
         });
   }
@@ -47,16 +54,14 @@ class _NickNameFieldState extends State<NickNameField> {
             '닉네임을 ${nicknameController.text} 로 설정하시겠습니까?',
             style: TextStyle(color: Colors.black),
           ),
-          TextButton(onPressed: (){
-            SignUp();
-          }, child: Text('확인', style: TextStyle(color: Colors.blue),)));
+          TextButton(onPressed: SignUp, child: Text('확인', style: TextStyle(color: Colors.blue),)));
     } else {
       duplicateResponse(
           Text(
             '해당 닉네임은 이미 존재하는 닉네임 입니다.',
             style: TextStyle(color: Colors.red),
           ),
-          null);
+          TextButton(onPressed: () => Navigator.pop(context), child: Text('확인', style: TextStyle(color: Colors.black),)));
     }
   }
 

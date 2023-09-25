@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_naver_login/flutter_naver_login.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_dongne/component/my_Text_Form_Field.dart';
 import 'package:smart_dongne/login_page/Social_login/kakao_login.dart';
@@ -12,7 +14,6 @@ import 'package:smart_dongne/server/Server.dart';
 import 'package:smart_dongne/login_page/find_password.dart';
 import 'package:smart_dongne/main_page/setpage.dart';
 import 'package:smart_dongne/server/userId.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -24,6 +25,10 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  // id, password storge valiable
+  static final storage = FlutterSecureStorage();
+  dynamic userInfo = ''; // storage에 있는 유저 정보를 저장
+
   final viewModel = MainViewModel(KakaoLogin());
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -34,68 +39,105 @@ class _LoginScreenState extends State<LoginScreen> {
   String userEmail = '';
   String userPassword = '';
 
-  void sendIdandPassword() async {
-    final data = {
-      'id': emailController.text,
-      'password': passwordController.text,
-      'root': 'local'
-    };
+  void sendIdandPassword(data) async {
     final response = await loginSendData('/login', data);
     if (response != null) {
       final jsonData = jsonDecode(response);
       jwtToken = jsonData['token'];
       globalNickName = jsonData['nickname'];
       globalUserId = jsonData['id'];
-      Navigator.pushReplacementNamed(context, UserConsent.routeName);
-    }else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('이메일 혹은 비밀번호가 틀렸습니다.')));
+      LoginRoot = 'local';
+      if (Provider.of<LoginMaintenance>(context, listen: false)
+              .loginMaintenance ==
+          true) {
+        emailpasswordSave(
+            emailController.text, 'local', passwordController.text,);
+      }
+      Navigator.pushReplacementNamed(context, SetPage.routeName);
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('이메일 혹은 비밀번호가 틀렸습니다.')));
     }
   }
 
-  void socialLogin(email, root) async {
-    final data = {'id': email, 'root': root};
+  void socialLogin(data) async {
     final response = await loginSendData('/socialLogin', data);
+
     if (response == null) {
       // go to join page
-      globalUserId = email;
-      LoginRoot = root;
-      Navigator.pushReplacementNamed(context, UserConsent.routeName);
+      
+      globalUserId = data['id'];
+      LoginRoot = data['root'];
+      Navigator.pushNamed(context, UserConsent.routeName);
     } else {
       final jsonData = jsonDecode(response);
       jwtToken = jsonData['token'];
       globalUserId = jsonData['id'];
       globalNickName = jsonData['nickname'];
-      LoginRoot = root;
-      if(mounted){
+      LoginRoot = data['root'];
+      emailpasswordSave(jsonData['id'], data['root'], null);
+      if (mounted) {
         Navigator.pushReplacementNamed(context, SetPage.routeName);
       }
     }
   }
 
-  // auto Login lmplementation
-  void upDateEmailandPassword() async {
-    final SharedPreferences pref = await SharedPreferences.getInstance();
-    pref.setString('useremail', userEmail);
-    pref.setString('userPassword', userPassword);
-  }
-
   void LoginNaver() async {
     NaverLoginResult result = await FlutterNaverLogin.logIn();
-    if(result.errorMessage == ''){
-      socialLogin(result.account.email, 'naver');
+    if (result.errorMessage == '') {
+      final data = {'id': result.account.email, 'root': 'naver'};
+
+      socialLogin(data);
     }
   }
 
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _asyncMethod();
+    });
+    super.initState();
+  }
 
-  void setData() async {
-    final SharedPreferences pref = await SharedPreferences.getInstance();
-    try {
-      StayLogin stayLoginInstance = StayLogin();
-      stayLoginInstance.userEmail = pref.getString('useremail');
-      stayLoginInstance.userPassword = pref.getString('userPassword');
-    } catch (e) {
-      print('에러 : $e');
+  _asyncMethod() async {
+    userInfo = await storage.read(key: 'login');
+    if (userInfo != null) {
+      var userData = jsonDecode(userInfo);
+      if (userData['root'] == 'local') {
+        sendIdandPassword(userData);
+      } else {
+        socialLogin(userData);
+      }
+    } else {
+      FlutterNativeSplash.remove();
+      print('로그인이 필요합니다');
     }
+  }
+
+  void emailpasswordSave(email, root, String? password) async {
+    final data = password == null
+        ? {'id': email, 'root': root}
+        : {'id': email, 'password': password, 'root': root};
+    await storage.write(key: 'login', value: jsonEncode(data));
+    await storage.write(
+      key: "id",
+      value: email,
+    );
+    await storage.write(
+      key: "password",
+      value: password,
+    );
+    await storage.write(
+      key: "root",
+      value: root,
+    );
+  }
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
   }
 
   @override
@@ -166,21 +208,24 @@ class _LoginScreenState extends State<LoginScreen> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Consumer(
-                                    builder: (context, provider, child){
+                                    builder: (context, provider, child) {
                                       return IconButton(
-                                      onPressed: () {
-                                        _loginMaintenance.loginMaintenanceOnpress();
-                                      },
-                                      icon: Icon(
-                                        Icons.check_circle,
-                                        size: 20,
-                                        color: Provider.of<LoginMaintenance>(context).loginMaintenance == false
-                                            ? Colors.grey
-                                            : Colors.blue,
-                                      ),
+                                        onPressed: () {
+                                          _loginMaintenance
+                                              .loginMaintenanceOnpress();
+                                        },
+                                        icon: Icon(
+                                          Icons.check_circle,
+                                          size: 20,
+                                          color: Provider.of<LoginMaintenance>(
+                                                          context)
+                                                      .loginMaintenance ==
+                                                  false
+                                              ? Colors.grey
+                                              : Colors.blue,
+                                        ),
                                       );
                                     },
-                          
                                   ),
                                   Text(
                                     '로그인 상태를 유지',
@@ -194,10 +239,15 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             // 로그인 버튼
                             ElevatedButton(
-                              onPressed:() {
+                              onPressed: () {
                                 if (emailController.text.isNotEmpty &&
                                     passwordController.text.isNotEmpty) {
-                                  sendIdandPassword();
+                                  final data = {
+                                    'id': emailController.text,
+                                    'password': passwordController.text,
+                                    'root': 'local'
+                                  };
+                                  sendIdandPassword(data);
                                 } else {
                                   null;
                                 }
@@ -241,9 +291,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                 InkWell(
                                   onTap: () async {
                                     // kakaoAccountServer();
-                                    final data = await viewModel.login();
-                                    if(data != null){
-                                      socialLogin(data, 'kakao');
+                                    final kakaoEmail = await viewModel.login();
+                                    if (kakaoEmail != null) {
+                                      final data = {
+                                        'id': kakaoEmail,
+                                        'root': 'kakao'
+                                      };
+                                      socialLogin(data);
                                     }
                                   },
                                   child: CircleAvatar(

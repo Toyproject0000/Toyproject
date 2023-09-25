@@ -29,11 +29,12 @@ class _UserConsentState extends State<UserConsent> {
       }
     }
   }
+  
 
   @override
   Widget build(BuildContext context) {
     _joinArgeement = Provider.of<JoinArgeement>(context, listen: false);
-    print('지금 이용약관, 개인정보 실행되고 있습니다.');
+    
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(

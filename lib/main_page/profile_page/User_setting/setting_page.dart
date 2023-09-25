@@ -1,13 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_login/flutter_naver_login.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_dongne/login_page/Social_login/kakao_login.dart';
 import 'package:smart_dongne/login_page/Social_login/main_view_model.dart';
+import 'package:smart_dongne/login_page/login_page.dart';
 import 'package:smart_dongne/main_page/profile_page/User_setting/Account_management.dart';
-import 'package:smart_dongne/main_page/profile_page/notification_page/cutoff.dart';
+import 'package:smart_dongne/main_page/profile_page/User_setting/cutoff.dart';
 import 'package:smart_dongne/main_page/profile_page/notification_page/notification_page.dart';
-import 'package:smart_dongne/main_page/setpage.dart';
 import 'package:smart_dongne/provider/setPageData.dart';
 import 'package:smart_dongne/server/userId.dart';
 
@@ -26,16 +27,19 @@ class _UserSettingState extends State<UserSetting> {
 
 
   void accountSetInitialization(){
+      final storage = FlutterSecureStorage();
+      storage.delete(key: 'login');
       LoginRoot = '';
       globalNickName = '';
       globalUserId = '';
       _setPageProvider.ChangeScreen(0);
-      Navigator.popUntil(context, ModalRoute.withName('/'));
+      Navigator.pushReplacementNamed(context, LoginScreen.routeName);
+
   }
 
   void logOut() async {
     if (LoginRoot == 'naver')  {
-      NaverLoginResult result2 = await FlutterNaverLogin.logOut();
+      await FlutterNaverLogin.logOutAndDeleteToken();
       accountSetInitialization();
     } else if (LoginRoot == 'kakao') {
       viewModel.logout();

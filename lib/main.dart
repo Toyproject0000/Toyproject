@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:smart_dongne/login_page/social_login_setting.dart';
 import 'package:smart_dongne/login_page/TermsofService/agreement.dart';
@@ -11,7 +12,7 @@ import 'package:smart_dongne/main_page/chatting_page/chatting_searchmode.dart';
 import 'package:smart_dongne/main_page/profile_page/User_setting/Account_management.dart';
 import 'package:smart_dongne/main_page/profile_page/User_setting/setting_page.dart';
 import 'package:smart_dongne/main_page/profile_page/User_setting/userName_change.dart';
-import 'package:smart_dongne/main_page/profile_page/notification_page/cutoff.dart';
+import 'package:smart_dongne/main_page/profile_page/User_setting/cutoff.dart';
 import 'package:smart_dongne/main_page/profile_page/notification_page/likeandpost.dart';
 import 'package:smart_dongne/main_page/profile_page/notification_page/notification_page.dart';
 import 'package:smart_dongne/main_page/profile_page/notification_page/reader_page.dart';
@@ -29,6 +30,8 @@ import 'login_page/TermsofService/personalinformaition.dart';
 import 'package:provider/provider.dart';
 
 void main() {
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   KakaoSdk.init(nativeAppKey: 'ca6e54286fb5cc0bc83d0320f4cb60d8');
   runApp(
     MultiProvider(

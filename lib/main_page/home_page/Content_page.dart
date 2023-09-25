@@ -1,6 +1,6 @@
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_dongne/main_page/UserReportandCutoff.dart';
 import 'package:smart_dongne/main_page/home_page/comment/Comment_page.dart';
@@ -53,11 +53,22 @@ class _ShowaContentsState extends State<ShowaContents> {
     }
   }
 
+
+  // @override
+  // void initState() {
+
+  //   Delta variable = Delta()..insert(widget.contents + '\n');
+  //   NotusDocument document = NotusDocument.fromDelta(variable);
+  //   print(document);
+  //   zefyrController = ZefyrController(document);
+  //   super.initState();
+  // }
+
   @override
   Widget build(BuildContext context) {
     _likeProvider = Provider.of<LikeProvider>(context, listen: false);
     userReportAndCutoff = UserReportAndCutoff(context);
-    PostingContents = webviewHtmlCode + widget.contents;
+    // PostingContents = webviewHtmlCode + widget.contents;
 
     return Scaffold(
         appBar: AppBar(
@@ -65,7 +76,7 @@ class _ShowaContentsState extends State<ShowaContents> {
           elevation: 1,
           centerTitle: true,
           title:
-              Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+            Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
             Row(
               children: [
                 Consumer(
@@ -116,14 +127,22 @@ class _ShowaContentsState extends State<ShowaContents> {
           ]),
           actions: [PopmenuWidget()],
         ),
-        body: InAppWebView(
-          initialData: InAppWebViewInitialData(
-            data: '''
-            $PostingContents
-          ''',
-            encoding: 'utf-8',
-          ),
-        ));
+        // body: InAppWebView(
+        //   initialData: InAppWebViewInitialData(
+        //     data: '''
+        //     $PostingContents
+        //   ''',
+        //     encoding: 'utf-8',
+        //   ),
+        // ));
+
+        body: Center(child: Text('점검 중')),
+        // body: ZefyrEditor(
+        //     controller: zefyrController,
+        //     showCursor: false,
+        //     padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+        //   ),
+      );
   }
 
   void postsDelete() async {

@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_dongne/server/Server.dart';
+import 'package:smart_dongne/server/userId.dart';
 
 class Cutoff extends StatefulWidget {
   const Cutoff({super.key});
@@ -10,6 +12,19 @@ class Cutoff extends StatefulWidget {
 }
 
 class _CutoffState extends State<Cutoff> {
+
+  void cutoffUserData() async {
+    final data = {'token' : jwtToken, 'reportingUserId' : globalUserId, 'reportingUserRoot' : LoginRoot};
+    print(data);
+    final response = await ServerResponseJsonDataTemplate('/find/post/user', data);
+    print(response);
+  }
+
+  @override
+  void didChangeDependencies() {
+    cutoffUserData();
+    super.didChangeDependencies();
+  }
 
   bool notExist = true;
   @override
