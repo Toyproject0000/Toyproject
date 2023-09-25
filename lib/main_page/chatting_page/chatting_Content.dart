@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:smart_dongne/component/messageTime.dart';
 import 'package:smart_dongne/component/mySendMessageBar.dart';
+import 'package:smart_dongne/main_page/chatting_page/ChatBubbleWidget.dart';
 import 'package:smart_dongne/provider/chattingProvider.dart';
 import 'package:smart_dongne/server/Server.dart';
 import 'package:smart_dongne/server/userId.dart';
@@ -20,8 +23,8 @@ class ChattingContent extends StatefulWidget {
 
 class _ChattingContentState extends State<ChattingContent> {
   bool searchMode = false;
-  ScrollController scrollController = ScrollController();
-  List? jsonDataList;
+  ScrollController _scrollController = ScrollController();
+  List jsonDataList = [];
   ChattingProvider? _chattingProvider;
 
   RichText? finshedFindWidget;
@@ -34,6 +37,40 @@ class _ChattingContentState extends State<ChattingContent> {
 
   TextEditingController searchController = TextEditingController();
   FocusNode _focusNode = FocusNode();
+
+  // message date
+  String time(index) {
+    bool isSameDate = false;
+    String? newDate = '';
+
+    if(index == 0){
+      newDate =  MessageTime.groupMessageDateAndTime(jsonDataList[index]['date'].toString());
+      return newDate;
+    }else {
+      final DateTime date = MessageTime.returnDateAndTimeFormat(jsonDataList[index]['date'].toString());
+      final DateTime prevDate = MessageTime.returnDateAndTimeFormat(jsonDataList[index -1]['date'].toString()); // 0일 때 문제
+      isSameDate = date.isAtSameMomentAs(prevDate);
+      newDate =  isSameDate ?  '' : MessageTime.groupMessageDateAndTime(jsonDataList[index]['date'].toString()).toString() ;
+      return newDate;
+    }
+  }
+
+  // message time
+  String timeOfHourandMinute(index){
+    bool isSameDate = false;
+    String? newDate = '';
+
+    if (index == jsonDataList.length - 1){
+      newDate = MessageTime.groupMessageHoureandMinute(jsonDataList[index]['date']);
+      return newDate;
+    }else {
+      final DateTime date = MessageTime.returnHourAndMinuteFormat(jsonDataList[index]['date'].toString());
+      final DateTime prevDate = MessageTime.returnHourAndMinuteFormat(jsonDataList[index + 1]['date'].toString()); // 0일 때 문제
+      isSameDate = date.isAtSameMomentAs(prevDate);
+      newDate =  isSameDate ?  '' : MessageTime.groupMessageHoureandMinute(jsonDataList[index]['date'].toString());
+      return newDate;
+    }
+  }
 
   void SendMessage() async {
     if (chattingBarController.text.isNotEmpty) {
@@ -50,6 +87,7 @@ class _ChattingContentState extends State<ChattingContent> {
       }
     }
   }
+
 
   // why did i make this??
   @override
@@ -102,7 +140,6 @@ class _ChattingContentState extends State<ChattingContent> {
         ),
       ),
     );
-
     // basic appBar
     basicAppBar = AppBar(
       centerTitle: true,
@@ -139,13 +176,49 @@ class _ChattingContentState extends State<ChattingContent> {
                   FocusScope.of(context).unfocus();
                 },
                 child: Padding(
-                  padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
-                  child: Consumer(
-                    builder: (context, value, child) {
-                      return Provider.of<ChattingProvider>(context).chattingContent;
-                    },
-                  ),
-                ),
+                    padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+                    child: Consumer(
+                      builder: (context, value, child) {
+                        return ListView.builder(
+                          controller: _scrollController,
+                            itemCount: Provider.of<ChattingProvider>(context)
+                                .chattingContents
+                                .length,
+                            itemBuilder: (context, index) {
+                              jsonDataList = Provider.of<ChattingProvider>(context)
+                                      .chattingContents;
+                              if (jsonDataList.isEmpty) {
+                                return Center(
+                                  child: Text('채팅 내용이 없습니다.'),
+                                );
+                              }
+                              String timedate = time(index);
+                              return Column(
+                                children: [
+                                  // date display
+                                  if(timedate != '')
+                                  Center(
+                                    child: Container(
+                                      margin: EdgeInsets.symmetric(vertical: 5),
+                                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                                      decoration: BoxDecoration(
+                                        color: Colors.black38,
+                                        borderRadius: BorderRadius.circular(15)
+                                      ),
+                                      child: Text(time(index), style: TextStyle(color: Colors.white),)),
+                                  ),
+                                  
+                                  ChatBubbleWidget(
+                                    time: timeOfHourandMinute(index),
+                                    acceptUser: widget.acceptUser,
+                                    jsonData: Provider.of<ChattingProvider>(context)
+                                        .chattingContents[index],
+                                  ),
+                                ],
+                              );
+                            });
+                      },
+                    )),
               ),
             ),
             if (searchMode == false)
