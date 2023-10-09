@@ -58,7 +58,7 @@ class _UserSettingState extends State<UserSetting> {
         elevation: 1,
         title: Text(
           '설정',
-          style: TextStyle(fontSize: 18, color: Colors.black),
+          style: const TextStyle(fontSize: 18, color: Colors.black),
         ),
       ),
       body: Column(

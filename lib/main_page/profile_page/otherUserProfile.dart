@@ -126,7 +126,6 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                     if (userPosts.isEmpty) {
                       return Column(
                         children: [
-
                           SubsribileWidget(
                               boolfactor: subscibing,
                               onTap: UserSubscription),
@@ -165,9 +164,10 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                 builder: (context) =>
                                                     ChattingContent(
                                                         sendUser:
-                                                            widget.nickname,
+                                                            globalNickName,
                                                         acceptUser:
-                                                            globalNickName)));
+                                                            widget.nickname
+                                                            )));
                                       },
                                       child: Container(
                                         alignment: Alignment.center,

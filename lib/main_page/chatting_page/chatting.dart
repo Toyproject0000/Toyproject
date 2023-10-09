@@ -32,8 +32,8 @@ class _ChattingState extends State<Chatting> {
   
   Future<Widget> getChatdata() async {
     final data = {'sendUser': globalNickName, 'token' : jwtToken};
-
     final response = await ServerResponseJsonDataTemplate('/message/findAll', data);
+
     if(response.isEmpty){
       return Center(
         child: Text('메세지가 없습니다.')

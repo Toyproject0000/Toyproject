@@ -13,6 +13,12 @@ class MySendMessageBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(
+            color: Colors.grey,
+            width: 1
+          )
+        ),
         color: Colors.white
       ),
       padding: EdgeInsets.all(10),

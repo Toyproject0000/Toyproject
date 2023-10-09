@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -187,6 +189,8 @@ class _ChattingContentState extends State<ChattingContent> {
                             itemBuilder: (context, index) {
                               jsonDataList = Provider.of<ChattingProvider>(context)
                                       .chattingContents;
+                              print(jsonDataList);
+                              bool isMe = widget.acceptUser == jsonDataList[index]['acceptUser'];
                               if (jsonDataList.isEmpty) {
                                 return Center(
                                   child: Text('채팅 내용이 없습니다.'),
@@ -207,12 +211,10 @@ class _ChattingContentState extends State<ChattingContent> {
                                       ),
                                       child: Text(time(index), style: TextStyle(color: Colors.white),)),
                                   ),
-                                  
                                   ChatBubbleWidget(
+                                    isMe: isMe,
+                                    jsonData: jsonDataList[index],
                                     time: timeOfHourandMinute(index),
-                                    acceptUser: widget.acceptUser,
-                                    jsonData: Provider.of<ChattingProvider>(context)
-                                        .chattingContents[index],
                                   ),
                                 ],
                               );
